@@ -1,0 +1,17 @@
+env:
+  browser: true
+  es2021: true
+  node: true
+extends:
+  - standard
+parser: '@typescript-eslint/parser'
+parserOptions:
+  ecmaVersion: latest
+  sourceType: module
+  project:
+    - './tsconfig.json'
+plugins:
+  - '@typescript-eslint'
+rules: {
+  '@typescript-eslint/strict-boolean-expressions': 0
+}
