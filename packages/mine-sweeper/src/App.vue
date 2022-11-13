@@ -1,36 +1,122 @@
 <template>
   <div class="mine-sweeper">
+    <PageHeader />
+
     <MineSweeper />
+
+    <FinishedModal />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, provide } from 'vue'
+import { ref, computed, provide, watch } from 'vue'
+import { levels } from './config'
+import { createStatistics, getBoxes } from './lib/utils'
+import { MINE_SWEEPER_SETTING } from './config/constants'
+import type { Box, CustomSetting, GameStatus, LevelInfo } from './types'
 
+import PageHeader from './components/header/index.vue'
 import MineSweeper from './components/MineSweeper.vue'
-import { LevelInfo, levels } from './config'
+import FinishedModal from './components/modal/Finished.vue'
 
-const currentLevel = ref<LevelInfo['level']>(1)
+let defaultSetting: any = {}
+try {
+  defaultSetting = JSON.parse(localStorage.getItem(MINE_SWEEPER_SETTING) || '{}')
+} catch {}
 
-const levelInfo = computed(() => {
-  const info = levels.find(item => item.level === currentLevel.value)
+const currentLevel = ref<LevelInfo['level']>(typeof defaultSetting.level === 'number' ? defaultSetting.level : 1)
+// 是否使用问号标记
+const useDoubtful = ref(!!defaultSetting.useDoubtful)
+// 自定义设置
+const customSetting = ref<CustomSetting>(defaultSetting.customSetting || {
+  column: 10,
+  row: 10,
+  totalOfMines: 10
+})
+
+const boxes = ref<Box[]>([])
+// 游戏运行状态
+const gameStatus = ref<GameStatus>('playing')
+// 游戏时长
+const gameTime = ref(0)
+// 剩余旗子数
+const remainingFlags = ref(0)
+
+let startTime = 0
+let requestId = 0
+
+const levelInfo = computed<LevelInfo>(() => {
+  const info = levels.find(item => item.level === currentLevel.value)!
 
   if (currentLevel.value === 0) {
-    try {
-      const localInfo = JSON.parse(localStorage.getItem('MINE_SWEEPER_CUSTOM') || '')
-      if (localInfo) {
-        return localInfo
-      }
-    } catch {
-      return info
-    }
+    return {
+      ...info,
+      ...customSetting.value
+    } as LevelInfo
   }
 
   return info
 })
 
+const run = () => {
+  gameTime.value = Math.floor((new Date().getTime() - startTime) / 1000)
+
+  requestId = requestAnimationFrame(run)
+}
+
+const reset = () => {
+  boxes.value = getBoxes(levelInfo.value)
+  gameTime.value = 0
+  remainingFlags.value = levelInfo.value.totalOfMines
+  startTime = new Date().getTime()
+
+  cancelAnimationFrame(requestId)
+  run()
+}
+
+watch(gameStatus, (newVal, oldVal) => {
+  switch (newVal) {
+    case 'playing':
+      if (gameTime.value !== 0 && oldVal === 'finished') {
+        // 统计上一局信息
+        createStatistics(currentLevel.value, 'defeat', gameTime.value)
+      }
+
+      reset()
+      break
+
+    case 'defeat':
+    case 'complete':
+      cancelAnimationFrame(requestId)
+      // 统计当前局信息
+      createStatistics(currentLevel.value, newVal, gameTime.value)
+      break
+
+    default:
+      break
+  }
+}, {
+  immediate: true
+})
+
+watch(currentLevel, () => {
+  if (gameTime.value !== 0 && (gameStatus.value === 'finished' || gameStatus.value === 'playing')) {
+    // 统计上一局信息
+    createStatistics(currentLevel.value, 'defeat', gameTime.value)
+  }
+
+  reset()
+})
+
+provide('boxes', boxes)
 provide('currentLevel', currentLevel)
 provide('levelInfo', levelInfo)
+provide('gameStatus', gameStatus)
+provide('useDoubtful', useDoubtful)
+provide('customSetting', customSetting)
+
+provide('gameTime', gameTime)
+provide('remainingFlags', remainingFlags)
 </script>
 
 <style lang="scss" scoped>

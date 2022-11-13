@@ -1,10 +1,4 @@
-export type LevelInfo = {
-  level: 0 | 1 | 2 | 3,
-  text: string
-  row: number
-  column: number
-  totalOfMines: number
-}
+import { LevelInfo } from '../types'
 
 /**
  * 游戏难度
@@ -26,7 +20,7 @@ export const levels: LevelInfo[] = [
     text: '简单',
     row: 9,
     column: 9,
-    totalOfMines: 20
+    totalOfMines: 10
   },
   {
     level: 2,
@@ -50,3 +44,15 @@ export const levels: LevelInfo[] = [
 export const areaSize = 32
 
 export const gap = 4
+
+export const numberColors = [
+  'transparent',
+  '#0088ff', /** 1 */
+  '#10b20a', /** 2 */
+  '#f40', /** 3 */
+  '#0511f1', /** 4 */
+  '#972727', /** 5 */
+  '#1bdab5', /** 6 */
+  '#333', /** 7 */
+  '#777' /** 8 */
+]

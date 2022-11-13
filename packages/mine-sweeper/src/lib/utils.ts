@@ -1,14 +1,5 @@
-import { LevelInfo } from '../config'
-
-type BoxType = number | 'mine'
-type BoxStatus = 'default' | 'open' | 'doubtful' | 'marked'
-
-type Box = {
-  x: number
-  y: number
-  type: BoxType
-  status: BoxStatus
-}
+import { MINE_SWEEPER_STATISTICS } from '../config/constants'
+import { Box, GameStatus, LevelInfo } from '../types'
 
 export const getBoxes = ({
   row,
@@ -23,7 +14,7 @@ export const getBoxes = ({
     status: 'default'
   }))).map((item, index) => {
     item.x = index % column + 1
-    item.y = index % row === 0 ? Math.ceil(index / row) + 1 : Math.ceil(index / row)
+    item.y = index % column === 0 ? Math.ceil(index / column) + 1 : Math.ceil(index / column)
     return item
   })
 
@@ -41,11 +32,7 @@ export const getBoxes = ({
     })
   })
 
-  console.log(boxes)
-
   return boxes
-
-  // console.log(shuffle(boxes))
 }
 
 /**
@@ -68,4 +55,100 @@ export function shuffle <T extends any[] = []> (input: T): T {
   }
 
   return input
+}
+
+export const getRectFillColor = (item: Box, gameStatus: GameStatus) => {
+  switch (item.status) {
+    case 'active':
+      return 'transparent'
+    case 'open':
+      if (item.type === 'mine') {
+        return '#f40'
+      }
+      return 'transparent'
+    case 'doubtful':
+    case 'marked':
+      return '#0088ff'
+    case 'default':
+    default:
+      return '#0088ff'
+  }
+}
+
+export const isLeftButton = (button: number) => button === 0
+export const isRightButton = (button: number) => button === 2
+
+export const checkGameStatus = (boxes: Box[], levelInfo: LevelInfo): GameStatus => {
+  const {
+    totalOfMines: total,
+    column,
+    row
+  } = levelInfo
+
+  let markedCount = 0
+  // 非雷格子数量
+  let notMineCount = row * column - total
+
+  for (let i = 0; i < boxes.length; i++) {
+    const item = boxes[i]
+    // 1. 检测是否有雷被开启
+    if (item.type === 'mine' && item.status === 'open') {
+      return 'defeat'
+    }
+
+    // 2. 检测是否所有雷都被标记
+    if (item.type === 'mine' && item.status === 'marked' && ++markedCount >= total) {
+      return 'complete'
+    }
+
+    // 3. 检测是否所有非雷格子都被开启了
+    if (item.type !== 'mine' && item.status === 'open' && --notMineCount <= 0) {
+      return 'complete'
+    }
+  }
+
+  return 'playing'
+}
+
+export const zeroFill = (input: number | string) => {
+  if (input < 10) {
+    return `0${input}`
+  }
+
+  return input
+}
+
+export const createStatistics = (
+  level: LevelInfo['level'],
+  status: Extract<GameStatus, 'complete' | 'defeat'>,
+  time: number
+) => {
+  try {
+    // 不统计自定义的难度
+    if (level === 0) {
+      return
+    }
+
+    let item = JSON.parse(localStorage.getItem(MINE_SWEEPER_STATISTICS) || 'null')
+    if (!item) {
+      item = {
+        [level]: [[status, time]]
+      }
+    } else {
+      if (!item[level]) {
+        item[level] = [[status, time]]
+      } else {
+        item[level].push([status, time])
+      }
+    }
+
+    localStorage.setItem(MINE_SWEEPER_STATISTICS, JSON.stringify(item))
+  } catch {}
+}
+
+export const formatTime = (val: number) => {
+  const m = Math.floor(val / 60)
+  const s = val % 60
+
+  return `${zeroFill(m)}′${zeroFill(s)}″`
 }
