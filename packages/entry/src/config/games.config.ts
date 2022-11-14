@@ -6,7 +6,7 @@ export interface GameConfig {
 
 export const games: GameConfig[] = [
   {
-    path: '/games/mine-sweeper/index.html',
+    path: '/mini-games/games/mine-sweeper/index.html',
     name: '扫雷',
     cover: ''
   }
