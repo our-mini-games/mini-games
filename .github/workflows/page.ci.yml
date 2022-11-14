@@ -38,7 +38,7 @@ jobs:
         run: cd ./packages/entry && pnpm install && pnpm run build && mkdir dist/games && cp dist/index.html dist/404.html
       # 构建扫雷项目
       - name: Build Mine-sweeper
-        run: pwd && cd ./packages/mine-sweeper && pnpm install && pnpm run build && mv dist ../entry/dist/games
+        run: pwd && cd ./packages/mine-sweeper && pnpm install && pnpm run build && mv dist ../entry/dist/games/mine-sweeper
       - name: Ls
         run: pwd && cd ./packages/entry/dist/games && ls
       - name: Setup Pages
