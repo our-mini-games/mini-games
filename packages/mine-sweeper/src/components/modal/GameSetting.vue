@@ -93,12 +93,17 @@
       </template>
 
       <a-form-item
+        label="是否允许问号"
         name="useDoubtful"
-        :wrapper-col="{ span: 16, offset: 8 }"
       >
-        <a-checkbox v-model:checked="formState.useDoubtful">
-          是否允许问号
-        </a-checkbox>
+        <a-switch v-model:checked="formState.useDoubtful" />
+      </a-form-item>
+
+      <a-form-item
+        label="是否使用左键增强"
+        name="useLeftClickEnhancements"
+      >
+        <a-switch v-model:checked="formState.useLeftClickEnhancements" />
       </a-form-item>
     
       <a-form-item :wrapper-col="{ span: 16, offset: 8 }">
@@ -131,6 +136,7 @@ import { CustomSetting, LevelInfo } from '../../types'
 interface FormState {
   level: LevelInfo['level']
   useDoubtful: boolean
+  useLeftClickEnhancements: boolean,
   customSetting: CustomSetting
 }
 
@@ -140,6 +146,7 @@ const visible = ref(true)
 
 const currentLevel = inject('currentLevel', ref<LevelInfo['level']>(0))
 const useDoubtful = inject('useDoubtful', ref<boolean>(false))
+const useLeftClickEnhancements = inject('useLeftClickEnhancements', ref(false))
 const customSetting = inject('customSetting', ref<CustomSetting>({
   row: 10,
   column: 10,
@@ -149,6 +156,7 @@ const customSetting = inject('customSetting', ref<CustomSetting>({
 const formState = reactive<FormState>({
   level: currentLevel.value,
   useDoubtful: useDoubtful.value,
+  useLeftClickEnhancements: useLeftClickEnhancements.value,
   customSetting: customSetting.value
 })
 
@@ -162,6 +170,7 @@ const onFinish = (values: any) => {
     } else {
       localState.level = values.level
       localState.useDoubtful = values.useDoubtful
+      localState.useLeftClickEnhancements = values.useLeftClickEnhancements
       localState.customSetting = values.customSetting || localState.customSetting || {
         row: 10,
         column: 10,
@@ -173,6 +182,7 @@ const onFinish = (values: any) => {
     customSetting.value = localState.customSetting
     useDoubtful.value = localState.useDoubtful
     currentLevel.value = localState.level
+    useLeftClickEnhancements.value = localState.useLeftClickEnhancements
 
     emit('close')
   } catch {}

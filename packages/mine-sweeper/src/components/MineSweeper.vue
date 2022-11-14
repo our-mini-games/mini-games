@@ -94,14 +94,16 @@
       </g>
     </svg>
 
-    <Statistics
-    
+    <Statistics />
+
+    <Enhancements
+      v-if="useLeftClickEnhancements"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, inject, watch, Ref } from 'vue'
+import { ref, computed, inject, watch, Ref, defineAsyncComponent } from 'vue'
 import { areaSize, gap, numberColors } from '../config'
 import { getRectFillColor, checkGameStatus } from '../lib/utils'
 import useEvent from '../composables/event'
@@ -115,11 +117,14 @@ import bugPic from '../assets/img/bug.png'
 import doubtfulPic from '../assets/img/doubtful.png'
 import path from 'path'
 
+const Enhancements = defineAsyncComponent(() => import('../components/enhancements/index.vue'))
+
 const boxes = inject<Ref<Box[]>>('boxes')!
 const levelInfo = inject<Ref<LevelInfo>>('levelInfo')!
 const gameStatus = inject<Ref<GameStatus>>('gameStatus')!
 const useDoubtful = inject('useDoubtful', ref(true))
 const remainingFlags = inject('remainingFlags', ref(0))
+const useLeftClickEnhancements = inject('useLeftClickEnhancements', ref(false))
 
 const svgRef = ref<HTMLElement>()
 
