@@ -25,6 +25,8 @@ declare module '@vue/runtime-core' {
     Header: typeof import('./src/components/header/index.vue')['default']
     LevelSetting: typeof import('./src/components/modal/LevelSetting.vue')['default']
     MineSweeper: typeof import('./src/components/MineSweeper.vue')['default']
+    MinusOutlined: typeof import('@ant-design/icons-vue')['MinusOutlined']
+    PlusOutlined: typeof import('@ant-design/icons-vue')['PlusOutlined']
     Statistics: typeof import('./src/components/modal/Statistics.vue')['default']
   }
 }

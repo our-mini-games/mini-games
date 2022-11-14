@@ -5,6 +5,9 @@
       :width="viewBoxSize.width"
       :height="viewBoxSize.height"
       :view-box="`0 0 ${viewBoxSize.width} ${viewBoxSize.height}`"
+      :style="{
+        transform: `scale(${scale})`
+      }"
     >
       <g>
         <g
@@ -99,6 +102,26 @@
     <Enhancements
       v-if="useLeftClickEnhancements"
     />
+
+    <Teleport to="body">
+      <div class="scale-wrapper">
+        <div
+          class="btn zoom-in"
+          @click="handleZoom('in')"
+        >
+          <plus-outlined />
+        </div>
+        <div class="scale">
+          {{ percentage }}
+        </div>
+        <div
+          class="btn zoom-out"
+          @click="handleZoom('out')"
+        >
+          <minus-outlined />
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -127,6 +150,12 @@ const remainingFlags = inject('remainingFlags', ref(0))
 const useLeftClickEnhancements = inject('useLeftClickEnhancements', ref(false))
 
 const svgRef = ref<HTMLElement>()
+
+const scale = ref(1)
+const percentage = computed(() => (scale.value * 100).toFixed(0) + '%')
+const handleZoom = (type: 'in' | 'out') => {
+  scale.value = Math.max(0.1, Math.min(3, type === 'in' ? scale.value + 0.1 : scale.value - 0.1))
+}
 
 const {
   handleMousedown,
@@ -158,5 +187,37 @@ watch(boxes, (newBoxes) => {
   gap: 16px;
   height: 100%;
   user-select: none;
+}
+
+.scale-wrapper {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 999;
+  background-color: #0088ff;
+  border-radius: 16px;
+  user-select: none;
+
+  .btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    color: #fff;
+    cursor: pointer;
+
+    * {
+      pointer-events: none;
+    }
+  }
+
+  .scale {
+    font-size: 12px;
+    text-align: center;
+    margin: 4px 0;
+    color: #fff;
+    transform: scale(0.8);
+  }
 }
 </style>
