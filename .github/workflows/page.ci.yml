@@ -35,10 +35,10 @@ jobs:
           version: 7.13.4
       # 构建入口项目
       - name: Build Entry
-        run: cd ./packages/entry && pnpm install && pnpm run build
+        run: cd ./packages/entry && pnpm install && pnpm run build && mkdir dist/games
       # 构建扫雷项目
       - name: Build Mine-sweeper
-        run: pwd && cd ./packages/mine-sweeper && pnpm install && pnpm run build && cp -R dist/ ../entry/dist/games/mine-sweeper
+        run: pwd && cd ./packages/mine-sweeper && pnpm install && pnpm run build && mv dist ../entry/dist/games
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
