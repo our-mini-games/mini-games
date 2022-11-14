@@ -13,7 +13,7 @@ import { ref, computed, provide, watch } from 'vue'
 import { levels } from './config'
 import { createStatistics, getBoxes } from './lib/utils'
 import { MINE_SWEEPER_SETTING } from './config/constants'
-import type { Box, CustomSetting, GameStatus, LevelInfo } from './types'
+import type { Box, CustomSetting, GameStatus, LeftButtonBehavious, LevelInfo } from './types'
 
 import PageHeader from './components/header/index.vue'
 import MineSweeper from './components/MineSweeper.vue'
@@ -27,6 +27,8 @@ try {
 const currentLevel = ref<LevelInfo['level']>(typeof defaultSetting.level === 'number' ? defaultSetting.level : 1)
 // 是否使用问号标记
 const useDoubtful = ref(!!defaultSetting.useDoubtful)
+// 是否使用左键增加
+const useLeftClickEnhancements = ref(!!defaultSetting.useLeftClickEnhancements)
 // 自定义设置
 const customSetting = ref<CustomSetting>(defaultSetting.customSetting || {
   column: 10,
@@ -41,6 +43,8 @@ const gameStatus = ref<GameStatus>('playing')
 const gameTime = ref(0)
 // 剩余旗子数
 const remainingFlags = ref(0)
+// 左键行为
+const leftButtonBehavious = ref<LeftButtonBehavious>('open')
 
 let startTime = 0
 let requestId = 0
@@ -113,10 +117,12 @@ provide('currentLevel', currentLevel)
 provide('levelInfo', levelInfo)
 provide('gameStatus', gameStatus)
 provide('useDoubtful', useDoubtful)
+provide('useLeftClickEnhancements', useLeftClickEnhancements)
 provide('customSetting', customSetting)
 
 provide('gameTime', gameTime)
 provide('remainingFlags', remainingFlags)
+provide('leftButtonBehavious', leftButtonBehavious)
 </script>
 
 <style lang="scss" scoped>

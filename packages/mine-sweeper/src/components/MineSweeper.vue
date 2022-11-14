@@ -5,6 +5,9 @@
       :width="viewBoxSize.width"
       :height="viewBoxSize.height"
       :view-box="`0 0 ${viewBoxSize.width} ${viewBoxSize.height}`"
+      :style="{
+        transform: `scale(${scale})`
+      }"
     >
       <g>
         <g
@@ -94,14 +97,36 @@
       </g>
     </svg>
 
-    <Statistics
-    
+    <Statistics />
+
+    <Enhancements
+      v-if="useLeftClickEnhancements"
     />
+
+    <Teleport to="body">
+      <div class="scale-wrapper">
+        <div
+          class="btn zoom-in"
+          @click="handleZoom('in')"
+        >
+          <plus-outlined />
+        </div>
+        <div class="scale">
+          {{ percentage }}
+        </div>
+        <div
+          class="btn zoom-out"
+          @click="handleZoom('out')"
+        >
+          <minus-outlined />
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, inject, watch, Ref } from 'vue'
+import { ref, computed, inject, watch, Ref, defineAsyncComponent } from 'vue'
 import { areaSize, gap, numberColors } from '../config'
 import { getRectFillColor, checkGameStatus } from '../lib/utils'
 import useEvent from '../composables/event'
@@ -115,13 +140,22 @@ import bugPic from '../assets/img/bug.png'
 import doubtfulPic from '../assets/img/doubtful.png'
 import path from 'path'
 
+const Enhancements = defineAsyncComponent(() => import('../components/enhancements/index.vue'))
+
 const boxes = inject<Ref<Box[]>>('boxes')!
 const levelInfo = inject<Ref<LevelInfo>>('levelInfo')!
 const gameStatus = inject<Ref<GameStatus>>('gameStatus')!
 const useDoubtful = inject('useDoubtful', ref(true))
 const remainingFlags = inject('remainingFlags', ref(0))
+const useLeftClickEnhancements = inject('useLeftClickEnhancements', ref(false))
 
 const svgRef = ref<HTMLElement>()
+
+const scale = ref(1)
+const percentage = computed(() => (scale.value * 100).toFixed(0) + '%')
+const handleZoom = (type: 'in' | 'out') => {
+  scale.value = Math.max(0.1, Math.min(3, type === 'in' ? scale.value + 0.1 : scale.value - 0.1))
+}
 
 const {
   handleMousedown,
@@ -153,5 +187,37 @@ watch(boxes, (newBoxes) => {
   gap: 16px;
   height: 100%;
   user-select: none;
+}
+
+.scale-wrapper {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 999;
+  background-color: #0088ff;
+  border-radius: 16px;
+  user-select: none;
+
+  .btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    color: #fff;
+    cursor: pointer;
+
+    * {
+      pointer-events: none;
+    }
+  }
+
+  .scale {
+    font-size: 12px;
+    text-align: center;
+    margin: 4px 0;
+    color: #fff;
+    transform: scale(0.8);
+  }
 }
 </style>

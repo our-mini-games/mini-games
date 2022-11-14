@@ -1,5 +1,5 @@
-import { Ref, ref, onMounted, onBeforeUnmount } from 'vue'
-import { GameStatus, Box, BoxStatus } from '../types'
+import { Ref, ref, onMounted, onBeforeUnmount, inject } from 'vue'
+import { GameStatus, Box, BoxStatus, LeftButtonBehavious } from '../types'
 
 import { isLeftButton, isRightButton } from '../lib/utils'
 
@@ -10,6 +10,9 @@ export default (
   gameStatus: Ref<GameStatus>,
   remainingFlags: Ref<number>
 ) => {
+  const useLeftClickEnhancements = inject('useLeftClickEnhancements', ref(false))
+  const leftButtonBehavious = inject('leftButtonBehavious', ref<LeftButtonBehavious>('open'))
+
   let clickTimes = 0
 
   let cachedPos = {
@@ -103,7 +106,9 @@ export default (
 
     cachedPos = { x, y }
 
-    setClickTimes(clickTimes + 1)
+    if (!useLeftClickEnhancements.value) {
+      setClickTimes(clickTimes + 1)
+    }
 
     if (clickTimes >= 2) {
       if (item.type !== 'mine' && item.status === 'open') {
@@ -126,11 +131,48 @@ export default (
       return
     }
 
-    setClickTimes(clickTimes - 1)
+    if (!useLeftClickEnhancements.value) {
+      setClickTimes(clickTimes - 1)
+    }
 
     const { button } = e
 
     const { x, y, status } = item
+
+    // 左键增强处理
+    if (useLeftClickEnhancements.value) {
+      switch (leftButtonBehavious.value) {
+        case 'open':
+          if (status === 'active' && x === cachedPos.x && y === cachedPos.y) {
+            setCurrentStatus(item, 'open')
+          } else {
+            clearActiveStatus()
+          }
+          break
+        case 'doubtful':
+          if ((status === 'active' || status === 'marked') && x === cachedPos.x && y === cachedPos.y) {
+            setCurrentStatus(item, 'doubtful')
+
+            if (status === 'marked') {
+              remainingFlags.value++
+            }
+          } else {
+            clearActiveStatus()
+          }
+          break
+        case 'marked':
+          if ((status === 'active' || status === 'doubtful') && x === cachedPos.x && y === cachedPos.y) {
+            setCurrentStatus(item, 'marked')
+            remainingFlags.value--
+          } else {
+            clearActiveStatus()
+          }
+          break
+        default:
+          break
+      }
+      return
+    }
 
     // 双击情况处理
     if (clickTimes >= 1) {
