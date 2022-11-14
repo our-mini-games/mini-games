@@ -40,7 +40,7 @@ jobs:
       - name: Build Mine-sweeper
         run: pwd && cd ./packages/mine-sweeper && pnpm install && pnpm run build && mv dist ../entry/dist/games
       - name: Ls
-        run: pwd && cd ./packages/entry && ls
+        run: pwd && cd ./packages/entry/dist && ls
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
