@@ -2,9 +2,12 @@
 
 A collection of small games.
 
+## Playground
+https://humandetail.github.io/mini-games/games/
+
 ## Todo
 
-- [ ] 扫雷
+- [x] 扫雷
 
 - [ ] 贪吃蛇
 
