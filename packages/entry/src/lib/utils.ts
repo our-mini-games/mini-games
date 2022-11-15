@@ -1,18 +1,18 @@
 import { GameConfig } from '../config'
 
 export const createGameList = (games: GameConfig[]) => {
-  const oUl = document.createElement('ul')
-  oUl.className = 'games'
+  const oUl = Object.assign(document.createElement('ul'), {
+    className: 'games'
+  })
 
   games.forEach(game => {
-    const oLi = document.createElement('li')
-    oLi.className = 'game-item'
-    oLi.innerHTML = `
-      <a href="${game.path}" title="${game.name}">
-        ${game.name}
-      </a>
-    `
-    oLi.setAttribute('data-path', game.path)
+    const oLi = Object.assign(document.createElement('li'), {
+      className: 'game-item',
+      innerHTML: `<a href="${game.path}" title="${game.name}">
+        ${game.cover ? `<img class="game-cover" :src="${game.cover}" />` : ''}
+        <span>${game.name}</span>
+      </a>`
+    })
 
     oUl.appendChild(oLi)
   })
