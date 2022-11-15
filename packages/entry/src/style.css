@@ -1,0 +1,36 @@
+body, ul {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit
+}
+
+.games {
+  display: flex;
+  padding: 20px;
+  list-style: none;
+}
+
+.game-item {
+  width: 33.33%
+}
+
+
+.game-item:hover {
+  background-color: #f7f8fa
+}
+
+.game-item a {
+  padding: 15px 20px;
+}
+
+.game-item a,
+.game-item img {
+  display: block;
+}
+
+.game-item img {
+  object-fit: fill;
+}
