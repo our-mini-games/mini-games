@@ -110,13 +110,7 @@ export const checkGameStatus = (boxes: Box[], levelInfo: LevelInfo): GameStatus 
   return 'playing'
 }
 
-export const zeroFill = (input: number | string) => {
-  if (input < 10) {
-    return `0${input}`
-  }
-
-  return input
-}
+export const zeroFill = (input: number | string) => `${input}`.padStart(2, '0')
 
 export const createStatistics = (
   level: LevelInfo['level'],
