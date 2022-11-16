@@ -4,7 +4,7 @@
       <clock-circle-outlined class="icon" />
       {{ time }}
     </div>
-    <div class="item mines">
+    <div class="item mines" :class="isNegative ? 'negative' : ''">
       <img :src="minePic" class="icon" width="32" height="32" />
       {{ remainingFlags }}
     </div>
@@ -20,6 +20,7 @@ import { zeroFill } from '../../lib/utils';
 const gameTime = inject('gameTime', ref(0))
 const remainingFlags = inject('remainingFlags', ref(0))
 
+const isNegative = computed(() => remainingFlags.value < 0)
 const time = computed(() => {
   const m = Math.floor(gameTime.value / 60)
   const s = gameTime.value % 60
@@ -49,6 +50,22 @@ const time = computed(() => {
       color: #333;
       font-size: 22px;
     }
+  }
+  
+  .negative {
+    color: red;
+    transition: color .4s;
+    animation: twinkle linear infinite 1s;
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    color: #efcece;
+  }
+
+  50% {
+    color: #f92020;
   }
 }
 </style>
