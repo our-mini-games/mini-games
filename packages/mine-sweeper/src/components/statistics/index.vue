@@ -12,21 +12,17 @@
 </template>
 
 <script setup lang="ts">
+import { format } from 'path';
 import { inject, ref, computed } from 'vue'
 
 import minePic from '../../assets/img/mine.png'
-import { zeroFill } from '../../lib/utils';
+import { formatTime } from '../../lib/utils';
 
 const gameTime = inject('gameTime', ref(0))
 const remainingFlags = inject('remainingFlags', ref(0))
 
 const isNegative = computed(() => remainingFlags.value < 0)
-const time = computed(() => {
-  const m = Math.floor(gameTime.value / 60)
-  const s = gameTime.value % 60
-
-  return `${zeroFill(m)}:${zeroFill(s)}`
-})
+const time = computed(() => formatTime(gameTime.value))
 </script>
 
 <style lang="scss" scoped>
@@ -51,7 +47,7 @@ const time = computed(() => {
       font-size: 22px;
     }
   }
-  
+
   .negative {
     color: red;
     transition: color .4s;
