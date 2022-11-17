@@ -30,37 +30,37 @@ export const gameConfig: Record<Level, LevelInfo> = {
   [Level.easy]: {
     level: Level.easy,
     text: '简单',
-    row: 10,
-    column: 10,
+    row: 8,
+    column: 8,
     // @todo
-    totalOfItems: 10, // 使用 25 种元素 4 * 25
+    totalOfItems: 8, // 使用 16 种元素 8 * 8
     size: 44,
     useBoundary: false
   },
   [Level.middle]: {
     level: Level.middle,
     text: '中等',
-    row: 16,
-    column: 16,
-    totalOfItems: 64, // 使用 64 种元素 4 * 64
+    row: 10,
+    column: 12,
+    totalOfItems: 15, // 使用 30 种元素 8 * 15
     size: 40,
     useBoundary: false
   },
   [Level.hard]: {
     level: Level.hard,
     text: '困难',
-    row: 24,
+    row: 12,
     column: 16,
-    totalOfItems: 96, // 使用 96 种元素 4 * 96
+    totalOfItems: 32, // 使用32 种元素 6 * 32
     size: 36,
     useBoundary: false
   },
   [Level.extreme]: {
     level: Level.extreme,
     text: '地狱',
-    row: 30,
-    column: 20,
-    totalOfItems: 300, // 使用 300 种元素 2 * 300
+    row: 12,
+    column: 16,
+    totalOfItems: 32, // 使用 32 种元素 6 * 32
     size: 32,
     useBoundary: true
   }

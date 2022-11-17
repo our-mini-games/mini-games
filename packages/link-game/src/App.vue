@@ -9,7 +9,7 @@ import { gameConfig, GameStatus, Level } from './config'
 
 import LinkGame from './components/LinkGame.vue'
 
-const currentLevel = ref(Level.easy)
+const currentLevel = ref(Level.extreme)
 const gameStatus = ref(GameStatus.playing)
 
 const levelInfo = computed(() => gameConfig[currentLevel.value])

@@ -15,19 +15,16 @@ export const canIRemoveThem = (
 
   // 1. 两者相邻
   if (isAdjacent(...checkedItems)) {
-    console.log('相邻')
     return [true, []]
   }
 
   // 2. 两者在同一条直线
   if (isCollinear(...checkedItems, boxes)) {
-    console.log('同一直线')
     return [true, checkedItems]
   }
 
   // 3. 两者可以通过一个拐角连接
   if (canConnectedByACorner(...checkedItems, boxes, _crossItems)) {
-    console.log('一个拐角')
     const c = [...checkedItems]
     c.splice(1, 0, ..._crossItems)
     return [true, c]
@@ -35,7 +32,6 @@ export const canIRemoveThem = (
 
   // 4. 两者可以通过一条直线 + 一个拐角连接
   if (canConnectedByTwoCorners(...checkedItems, boxes, levelInfo, _crossItems)) {
-    console.log('两个拐角')
     const c = [...checkedItems]
     c.splice(1, 0, ..._crossItems)
     return [true, c]

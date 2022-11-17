@@ -44,7 +44,9 @@ importers:
 
   packages/link-game:
     specifiers:
+      '@types/lodash.clonedeep': ^4.5.7
       '@vitejs/plugin-vue': ^3.2.0
+      lodash.clonedeep: ^4.5.0
       typescript: ^4.6.4
       unplugin-auto-import: ^0.11.4
       vite: ^3.2.3
@@ -52,8 +54,10 @@ importers:
       vue: ^3.2.41
       vue-tsc: ^1.0.9
     dependencies:
+      lodash.clonedeep: 4.5.0
       vue: 3.2.41
     devDependencies:
+      '@types/lodash.clonedeep': 4.5.7
       '@vitejs/plugin-vue': 3.2.0_vite@3.2.3+vue@3.2.41
       typescript: 4.8.4
       unplugin-auto-import: 0.11.4
@@ -484,6 +488,16 @@ packages:
 
   /@types/json5/0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+    dev: true
+
+  /@types/lodash.clonedeep/4.5.7:
+    resolution: {integrity: sha512-ccNqkPptFIXrpVqUECi60/DFxjNKsfoQxSQsgcBJCX/fuX1wgyQieojkcWH/KpE3xzLoWN/2k+ZeGqIN3paSvw==}
+    dependencies:
+      '@types/lodash': 4.14.189
+    dev: true
+
+  /@types/lodash/4.14.189:
+    resolution: {integrity: sha512-kb9/98N6X8gyME9Cf7YaqIMvYGnBSWqEci6tiettE6iJWH1XdJz/PO8LB0GtLCG7x8dU3KWhZT+lA1a35127tA==}
     dev: true
 
   /@types/minimist/1.2.2:
@@ -2789,6 +2803,10 @@ packages:
 
   /lodash-es/4.17.21:
     resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: false
+
+  /lodash.clonedeep/4.5.0:
+    resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
     dev: false
 
   /lodash.map/4.6.0:
