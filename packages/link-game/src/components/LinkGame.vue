@@ -105,7 +105,7 @@ const sleep = (delay: number) => {
 const linkAnimation = async (items: Box[]) => {
   animationItems.value.push(...items)
 
-  await sleep(2000)
+  await sleep(500)
 
   animationItems.value = []
 }

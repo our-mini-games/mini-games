@@ -3,13 +3,13 @@ import { Level } from '../config'
 
 import {
   createTestBoxes,
-  isEmpty,
   isAdjacent,
   isCollinear,
   canConnectedByACorner,
-  canConnectedByTwoCorners
+  canConnectedByTwoCorners,
+  boxesSort
 } from '../lib/utils'
-import { LevelInfo } from '../types'
+import { Box, LevelInfo } from '../types'
 
 describe('寻路算法测试', () => {
   it('相邻元素', () => {
@@ -243,6 +243,21 @@ describe('寻路算法测试', () => {
 
     expect(canConnectedByTwoCorners(checkedItems8[0], checkedItems8[1], boxes8, unuseBoundarylevelInfo, [])).toBeTruthy()
     expect(canConnectedByTwoCorners(checkedItems8[0], checkedItems8[1], boxes8, useBoundarylevelInfo, [])).toBeTruthy()
+
+    expect(1 + 1).toEqual(2)
+  })
+
+  it('boxesSort Should work', () => {
+    const crossItems: Box[] = [
+      { x: 0, y: 5, seq: 0, status: 'default' },
+      { x: 1, y: 5, seq: 0, status: 'default' },
+      { x: 2, y: 5, seq: 0, status: 'default' },
+      { x: 3, y: 5, seq: 0, status: 'default' }
+    ]
+
+    const compareItem: Box = { x: 4, y: 5, seq: 0, status: 'default' }
+
+    console.log(boxesSort(crossItems, compareItem))
 
     expect(1 + 1).toEqual(2)
   })

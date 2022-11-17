@@ -44,6 +44,27 @@ export function shuffle <T extends any[] = []> (input: T): T {
   return input
 }
 
+// 排序
+// @todo 寻找最短路线排序
+export const boxesSort = (source: Box[], compareItem: Box) => {
+  return [...source].sort((a, b) => {
+    if (Math.abs(a.x - compareItem.x) > Math.abs(b.x - compareItem.x)) {
+      if (Math.abs(a.y - compareItem.y) > Math.abs(b.y - compareItem.y)) {
+        return 1
+      } else {
+        return -1
+      }
+    } else {
+      if (Math.abs(a.y - compareItem.y) > Math.abs(b.y - compareItem.y)) {
+        return 1
+      } else {
+        return -1
+      }
+    }
+  })
+}
+
+// 判断选中元素是否可以消除
 export const canIRemoveThem = (
   checkedItems: [Box, Box],
   boxes: Box[],
@@ -252,20 +273,13 @@ export const canConnectedByTwoCorners = (
       )
     }
 
-    const crossAItems = _boxes.filter(item => (
+    const crossAItems = boxesSort(_boxes.filter(item => (
       isEmpty(item) &&
       ((item.x === currentItem.x && item.y !== currentItem.y && isCollinear(item, currentItem, _boxes)) ||
       (item.y === currentItem.y && item.x !== currentItem.x && isCollinear(item, currentItem, _boxes)))
-    )).sort((a, b) => {
-      if (Math.abs(a.x - currentItem.x) > Math.abs(b.x - currentItem.x)) {
-        if (Math.abs(a.y - currentItem.y) > Math.abs(b.y - currentItem.y)) {
-          return 1
-        } else {
-          return -1
-        }
-      }
-      return -1
-    })
+    )).map(item => unref(item)), currentItem)
+
+    console.log('here', currentItem, crossAItems)
 
     const item = crossAItems.find(item => {
       return canConnectedByACorner(
