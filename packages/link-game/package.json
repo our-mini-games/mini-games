@@ -1,0 +1,22 @@
+{
+  "name": "link-game",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "test": "vitest",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.2.41"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^3.2.0",
+    "typescript": "^4.6.4",
+    "unplugin-auto-import": "^0.11.4",
+    "vite": "^3.2.3",
+    "vitest": "^0.24.3",
+    "vue-tsc": "^1.0.9"
+  }
+}
