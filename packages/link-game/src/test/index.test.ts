@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import { Level } from '../config'
 
+import { createTestBoxes } from '../lib/utils'
 import {
-  createTestBoxes,
   isAdjacent,
   isCollinear,
   canConnectedByACorner,
   canConnectedByTwoCorners,
   boxesSort
-} from '../lib/utils'
+} from '../lib/pathFinding'
 import { Box, LevelInfo } from '../types'
 
 describe('寻路算法测试', () => {
@@ -221,11 +221,9 @@ describe('寻路算法测试', () => {
     expect(canConnectedByTwoCorners(checkedItems1[0], checkedItems1[1], boxes1, unuseBoundarylevelInfo, [])).toBeTruthy()
     expect(canConnectedByTwoCorners(checkedItems1[0], checkedItems1[1], boxes1, useBoundarylevelInfo, [])).toBeTruthy()
 
-    console.log('--------2-------')
     expect(canConnectedByTwoCorners(checkedItems2[0], checkedItems2[1], boxes2, unuseBoundarylevelInfo, [])).toBeTruthy()
     expect(canConnectedByTwoCorners(checkedItems2[0], checkedItems2[1], boxes2, useBoundarylevelInfo, [])).toBeFalsy()
 
-    console.log('---------------------------------')
     expect(canConnectedByTwoCorners(checkedItems3[0], checkedItems3[1], boxes3, unuseBoundarylevelInfo, [])).toBeTruthy()
     expect(canConnectedByTwoCorners(checkedItems3[0], checkedItems3[1], boxes3, useBoundarylevelInfo, [])).toBeFalsy()
 
@@ -245,6 +243,43 @@ describe('寻路算法测试', () => {
     expect(canConnectedByTwoCorners(checkedItems8[0], checkedItems8[1], boxes8, useBoundarylevelInfo, [])).toBeTruthy()
 
     expect(1 + 1).toEqual(2)
+  })
+
+  it('Should not remove', () => {
+    const boxes1 = createTestBoxes([
+      'x', 'x', '', 'x', '', 1, 'x',
+      'x', 'x', '', '', '', 'x', 'x',
+      'x', 'x', '', '', 'x', 'x', 'x',
+      '', 'x', '', 1, 'x', 'x', 'x',
+      'x', 'x', 'x', 'x', 'x', 'x', 'x',
+      'x', 'x', 'x', 'x', 'x', 'x', 'x',
+      'x', 'x', 'x', 'x', 'x', 'x', 'x'
+    ], 7, 6)
+    const checkedItems1 = boxes1.filter(item => item.seq === 1)
+
+    const useBoundarylevelInfo: LevelInfo = {
+      level: Level.easy,
+      text: '简单',
+      row: 7,
+      column: 7,
+      // @todo
+      totalOfItems: 10, // 使用 25 种元素 4 * 25
+      size: 44,
+      useBoundary: true
+    }
+    const unuseBoundarylevelInfo: LevelInfo = {
+      level: Level.easy,
+      text: '简单',
+      row: 7,
+      column: 7,
+      // @todo
+      totalOfItems: 10, // 使用 25 种元素 4 * 25
+      size: 44,
+      useBoundary: false
+    }
+
+    expect(canConnectedByTwoCorners(checkedItems1[0], checkedItems1[1], boxes1, unuseBoundarylevelInfo, [])).toBeFalsy()
+    expect(canConnectedByTwoCorners(checkedItems1[0], checkedItems1[1], boxes1, useBoundarylevelInfo, [])).toBeFalsy()
   })
 
   it('boxesSort Should work', () => {

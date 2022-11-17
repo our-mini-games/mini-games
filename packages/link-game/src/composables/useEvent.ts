@@ -1,6 +1,6 @@
 import { Ref } from 'vue'
 import { GameStatus } from '../config'
-import { canIRemoveThem } from '../lib/utils'
+import { canIRemoveThem } from '../lib/pathFinding'
 import { Box, LevelInfo } from '../types'
 
 export default (
