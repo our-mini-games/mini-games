@@ -114,12 +114,22 @@ export const isAdjacent = (item1: Box, item2: Box) => {
  * [-][-][ ][-]
  * [-][-][ ][-]
  */
-export const isCollinear = (item1: Box, item2: Box, boxes: Box[]) => {
-  if (
-    (item1.x === item2.x && item1.x === 0) ||
-    (item1.y === item2.y && item2.y === 0)
-  ) {
+export const isCollinear = (item1: Box, item2: Box, boxes: Box[], levelInfo?: LevelInfo) => {
+  // 相邻元素
+  if (isAdjacent(item1, item2)) {
     return true
+  }
+
+  // 位于边界上的元素
+  if (levelInfo && !levelInfo.useBoundary) {
+    if (
+      (item1.x === item2.x && item1.x === 0) ||
+      (item1.y === item2.y && item2.y === 0) ||
+      (item1.x === item2.x && item1.x === levelInfo.column + 1) ||
+      (item1.y === item2.y && item1.y === levelInfo.column + 1)
+    ) {
+      return true
+    }
   }
 
   return (['x', 'y'] as ['x', 'y']).some(key => {
@@ -131,7 +141,7 @@ export const isCollinear = (item1: Box, item2: Box, boxes: Box[]) => {
 
       // 同一直线上都是空元素
       if (inLineItems.length === 0) return false
-      console.log({ item1, item2, inLineItems })
+
       return inLineItems.every(item => isEmpty(item))
     }
     return false
@@ -186,20 +196,6 @@ export const canConnectedByACorner = (
     )
   }
 
-  // // 找出 AC CB AD DB 四条直线
-  // const [xMin, xMax] = [Math.min(item1.x, item2.x), Math.max(item1.x, item2.x)]
-  // const [yMin, yMax] = [Math.min(item1.y, item2.y), Math.max(item1.y, item2.y)]
-  // // [xMin, yMin] [xMax, yMin]
-  // // [xMax, yMin] [xMax, yMax]
-  // const AC = _boxes.filter(item => {
-  //   (item.y === item1.y && item.x > xMin && item.x < xMax) ||
-  //   (item.x === item1.x && item.y > yMin && item.y < yMax)
-  // })
-  // const CB = _boxes.filter(item => {
-  //   (isEmpty(item) && item.y === item1.y && item.x > xMin && item.x < xMax) ||
-  //   (isEmpty(item) && item.x === item1.x && item.y > yMin && item.y < yMax)
-  // })
-
   // 取出 C D 两个点
   const crossItems = _boxes.filter(item => (
     // C
@@ -210,13 +206,12 @@ export const canConnectedByACorner = (
 
   // 取出相交点，需要做消除连线
   const crossItem = crossItems.find(item => (
-    isCollinear(item1, item, _boxes) && isCollinear(item2, item, _boxes)
+    isCollinear(item1, item, _boxes, levelInfo) && isCollinear(item2, item, _boxes, levelInfo)
   ))
 
   if (crossItem) {
     _crossItems.push(crossItem)
     return true
-    // return crossItem
   }
 
   return false
@@ -271,7 +266,7 @@ export const canConnectedByTwoCorners = (
       }
       return -1
     })
-    console.log(1, currentItem, crossAItems)
+
     const item = crossAItems.find(item => {
       return canConnectedByACorner(
         anotherItem,
@@ -280,22 +275,38 @@ export const canConnectedByTwoCorners = (
         _crossItems,
         levelInfo
       )
-      // if (i) {
-      //   // throughItems.push(i)
-      //   return true
-      // }
-
-      // return false
     })
-    console.log('2', item)
 
     if (item) {
       throughItems.push(item)
       _crossItems.unshift(item)
-      // console.log('两个拐角', [currentItem, ...throughItems, anotherItem])
       return true
     }
 
     return false
   })
+}
+
+/**
+ * 创建测试用的元素
+ * @example
+ * createTextBoxes(
+ *   [
+ *     'x', 'x', 'x', 1, 'x',
+ *     'x', 'x', 'x', '', 'x',
+ *     'x', 'x', 'x', '', 'x',
+ *     'x', 'x', 'x', '', 'x',
+ *     'x', 'x', 'x', 1, 'x'
+ *   ],
+ *   5,
+ *   5
+ * )
+ */
+export const createTestBoxes = (input: Array<'x' | '' | 1>, column: number, _row: number) => {
+  return input.map((item, index) => (<Box>{
+    seq: item === 'x' ? -1 : item === '' ? 0 : 1,
+    x: index % column + 1,
+    y: index % column === 0 ? Math.ceil(index / column) + 1 : Math.ceil(index / column),
+    status: 'default'
+  }))
 }
