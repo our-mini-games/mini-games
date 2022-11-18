@@ -79,7 +79,7 @@ export const isCollinear = (item1: Box, item2: Box, boxes: Box[], levelInfo?: Le
       (item1.x === item2.x && item1.x === 0) ||
       (item1.y === item2.y && item2.y === 0) ||
       (item1.x === item2.x && item1.x === levelInfo.column + 1) ||
-      (item1.y === item2.y && item1.y === levelInfo.column + 1)
+      (item1.y === item2.y && item1.y === levelInfo.row + 1)
     ) {
       return true
     }
@@ -232,7 +232,6 @@ export const canConnectedByTwoCorners = (
 }
 
 // 排序
-// @todo 寻找最短路线排序
 export const boxesSort = (source: Box[], compareItem: Box) => {
   return [...source].sort((a, b) => {
     if (Math.abs(a.x - compareItem.x) > Math.abs(b.x - compareItem.x)) {
