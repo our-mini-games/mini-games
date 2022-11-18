@@ -1,11 +1,12 @@
-import { MINE_SWEEPER_STATISTICS } from '../config/constants'
 import { Box, GameStatus, LevelInfo } from '../types'
+
+import { MINE_SWEEPER_STATISTICS } from '../config/constants'
 
 export const getBoxes = ({
   row,
   column,
   totalOfMines
-}: LevelInfo) => {
+}: LevelInfo): Box[] => {
   let total = totalOfMines
   const boxes = shuffle(Array.from({ length: row * column }, () => (<Box>{
     x: 0,
@@ -57,7 +58,7 @@ export function shuffle <T extends any[] = []> (input: T): T {
   return input
 }
 
-export const getRectFillColor = (item: Box, gameStatus: GameStatus) => {
+export const getRectFillColor = (item: Box, gameStatus: GameStatus): string => {
   switch (item.status) {
     case 'active':
       return 'transparent'
@@ -75,8 +76,8 @@ export const getRectFillColor = (item: Box, gameStatus: GameStatus) => {
   }
 }
 
-export const isLeftButton = (button: number) => button === 0
-export const isRightButton = (button: number) => button === 2
+export const isLeftButton = (button: number): boolean => button === 0
+export const isRightButton = (button: number): boolean => button === 2
 
 export const checkGameStatus = (boxes: Box[], levelInfo: LevelInfo): GameStatus => {
   const {
@@ -110,20 +111,20 @@ export const checkGameStatus = (boxes: Box[], levelInfo: LevelInfo): GameStatus 
   return 'playing'
 }
 
-export const zeroFill = (input: number | string) => `${input}`.padStart(2, '0')
+export const zeroFill = (input: number | string): string => `${input}`.padStart(2, '0')
 
 export const createStatistics = (
   level: LevelInfo['level'],
   status: Extract<GameStatus, 'complete' | 'defeat'>,
   time: number
-) => {
+): void => {
   try {
     // 不统计自定义的难度
     if (level === 0) {
       return
     }
 
-    let item = JSON.parse(localStorage.getItem(MINE_SWEEPER_STATISTICS) || 'null')
+    let item = JSON.parse(localStorage.getItem(MINE_SWEEPER_STATISTICS) ?? 'null')
     if (!item) {
       item = {
         [level]: [[status, time]]
@@ -140,7 +141,7 @@ export const createStatistics = (
   } catch {}
 }
 
-export const formatTime = (val: number) => {
+export const formatTime = (val: number): string => {
   const m = Math.floor(val / 60)
   const s = val % 60
 

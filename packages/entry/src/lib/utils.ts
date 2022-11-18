@@ -1,6 +1,6 @@
 import { GameConfig } from '../config'
 
-export const createGameList = (games: GameConfig[]) => {
+export const createGameList = (games: GameConfig[]): HTMLUListElement => {
   const oUl = Object.assign(document.createElement('ul'), {
     className: 'games'
   })

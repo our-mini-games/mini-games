@@ -21,7 +21,7 @@ import FinishedModal from './components/modal/Finished.vue'
 
 let defaultSetting: any = {}
 try {
-  defaultSetting = JSON.parse(localStorage.getItem(MINE_SWEEPER_SETTING) || '{}')
+  defaultSetting = JSON.parse(localStorage.getItem(MINE_SWEEPER_SETTING) ?? '{}')
 } catch {}
 
 const currentLevel = ref<LevelInfo['level']>(typeof defaultSetting.level === 'number' ? defaultSetting.level : 1)
@@ -49,26 +49,28 @@ const leftButtonBehavious = ref<LeftButtonBehavious>('open')
 let startTime = 0
 let requestId = 0
 
-const levelInfo = computed<LevelInfo>(() => {
+const levelInfo = computed<LevelInfo>((): LevelInfo => {
   const info = levels.find(item => item.level === currentLevel.value)!
 
   if (currentLevel.value === 0) {
-    return {
+    const _info: LevelInfo = {
       ...info,
       ...customSetting.value
-    } as LevelInfo
+    }
+
+    return _info
   }
 
   return info
 })
 
-const run = () => {
+const run = (): void => {
   gameTime.value = Math.floor((new Date().getTime() - startTime) / 1000)
 
   requestId = requestAnimationFrame(run)
 }
 
-const reset = () => {
+const reset = (): void => {
   boxes.value = getBoxes(levelInfo.value)
   gameTime.value = 0
   remainingFlags.value = levelInfo.value.totalOfMines

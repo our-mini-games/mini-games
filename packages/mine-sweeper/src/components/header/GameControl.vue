@@ -19,10 +19,10 @@ const text = computed(() => {
     : '开始游戏'
 })
 
-const handleClick = () => {
+const handleClick = (): void => {
   if (gameStatus.value === 'playing') {
     gameStatus.value = 'finished'
-    nextTick(() => {
+    nextTick((): void => {
       gameStatus.value = 'playing'
     })
     return

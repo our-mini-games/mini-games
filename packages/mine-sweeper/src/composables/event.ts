@@ -1,7 +1,11 @@
-import { Ref, ref, onMounted, onBeforeUnmount, inject } from 'vue'
-import { GameStatus, Box, BoxStatus, LeftButtonBehavious } from '../types'
-
+import { Box, BoxStatus, GameStatus, LeftButtonBehavious } from '../types'
+import { Ref, inject, onBeforeUnmount, onMounted, ref } from 'vue'
 import { isLeftButton, isRightButton } from '../lib/utils'
+
+interface EventReturnType {
+  handleMousedown: (item: Box, e: MouseEvent) => void
+  handleMouseup: (item: Box, e: MouseEvent) => void
+}
 
 export default (
   el: Ref<HTMLElement | undefined>,
@@ -9,7 +13,7 @@ export default (
   useDoubtful: Ref<Boolean>,
   gameStatus: Ref<GameStatus>,
   remainingFlags: Ref<number>
-) => {
+): EventReturnType => {
   const useLeftClickEnhancements = inject('useLeftClickEnhancements', ref(false))
   const leftButtonBehavious = inject('leftButtonBehavious', ref<LeftButtonBehavious>('open'))
 
@@ -36,12 +40,12 @@ export default (
     document.removeEventListener('mouseup', handleDocumentMouseup)
   })
 
-  const setClickTimes = (val: number) => {
+  const setClickTimes = (val: number): void => {
     clickTimes = Math.max(0, Math.min(2, val))
   }
 
   // 设置自身状态
-  const setCurrentStatus = (item: Box, status: BoxStatus) => {
+  const setCurrentStatus = (item: Box, status: BoxStatus): void => {
     isPause = true
 
     item.status = status
@@ -54,7 +58,7 @@ export default (
   }
 
   // 设置周边元素状态
-  const setSurroundStatus = (item: Box, status: BoxStatus) => {
+  const setSurroundStatus = (item: Box, status: BoxStatus): void => {
     isPause = true
     const { x, y } = item
     ;[
@@ -71,7 +75,7 @@ export default (
   }
 
   // 获取周边被标记元素统计
-  const getSurroundMarkedCount = (item: Box) => {
+  const getSurroundMarkedCount = (item: Box): number => {
     const { x, y } = item
     return [
       [x - 1, y - 1], [x, y - 1], [x + 1, y - 1],
@@ -86,7 +90,7 @@ export default (
     }, 0)
   }
 
-  const clearActiveStatus = () => {
+  const clearActiveStatus = (): void => {
     boxes.value.forEach(box => {
       if (box.status === 'active') {
         box.status = 'default'
@@ -95,7 +99,7 @@ export default (
   }
 
   // 鼠标点击
-  const handleMousedown = (item: Box, e: MouseEvent) => {
+  const handleMousedown = (item: Box, e: MouseEvent): void => {
     e.preventDefault()
 
     if (isPause || gameStatus.value !== 'playing') {
@@ -123,7 +127,7 @@ export default (
     }
   }
 
-  const handleMouseup = (item: Box, e: MouseEvent) => {
+  const handleMouseup = (item: Box, e: MouseEvent): void => {
     e.preventDefault()
     e.stopPropagation()
 
@@ -218,7 +222,7 @@ export default (
     }
   }
 
-  const handleDocumentMouseup = () => {
+  const handleDocumentMouseup = (): void => {
     setClickTimes(0)
     isPause = false
 

@@ -12,11 +12,11 @@
 </template>
 
 <script setup lang="ts">
-import { format } from 'path';
+// import { format } from 'path'
 import { inject, ref, computed } from 'vue'
 
 import minePic from '../../assets/img/mine.png'
-import { formatTime } from '../../lib/utils';
+import { formatTime } from '../../lib/utils'
 
 const gameTime = inject('gameTime', ref(0))
 const remainingFlags = inject('remainingFlags', ref(0))
