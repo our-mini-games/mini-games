@@ -25,32 +25,34 @@ import { ref, computed, inject } from 'vue'
 import OpenPic from '../../assets/img/open.png'
 import DoubtfulPic from '../../assets/img/doubtful.png'
 import BugPic from '../../assets/img/bug.png'
-import { LeftButtonBehavious } from '../../types';
+import { LeftButtonBehavious } from '../../types'
 
 const useDoubtful = inject('useDoubtful', ref(false))
 
 const leftButtonBehavious = inject('leftButtonBehavious', ref<LeftButtonBehavious>('open'))
 
-const behavious = computed(() => <{
+const behavious = computed(() => <Array<{
   label: string
   type: LeftButtonBehavious
   pic: string
-}[]>[
+}>>[
   {
     label: '铲子',
     type: 'open',
     pic: OpenPic
   },
-  ...(useDoubtful.value ? [{
-    label: '问号',
-    type: 'doubtful',
-    pic: DoubtfulPic
-  }] : []),
+  ...(useDoubtful.value
+    ? [{
+        label: '问号',
+        type: 'doubtful',
+        pic: DoubtfulPic
+      }]
+    : []),
   {
     label: '标记',
     type: 'marked',
     pic: BugPic
-  },
+  }
 ])
 </script>
 

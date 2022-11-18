@@ -83,8 +83,8 @@ const levelInfo = inject<Ref<LevelInfo>>('levelInfo')!
 const gameTime = inject<Ref<number>>('gameTime')!
 
 const bestRecord = computed(() => {
-  const statistics = JSON.parse(localStorage.getItem(MINE_SWEEPER_STATISTICS) || 'null')
-  const _a = visible.value
+  const statistics = JSON.parse(localStorage.getItem(MINE_SWEEPER_STATISTICS) ?? 'null')
+  // const _a = visible.value
   if (!statistics) {
     return gameTime.value
   }
@@ -100,7 +100,7 @@ const bestRecord = computed(() => {
   }
 })
 
-const handleAgain = () => {
+const handleAgain = (): void => {
   visible.value = false
   gameStatus.value = 'playing'
 }

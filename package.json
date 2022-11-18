@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "eslint": "eslint ./packages --fix"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",
@@ -13,14 +14,16 @@
     "@typescript-eslint/parser": "^5.41.0",
     "commitizen": "^4.2.5",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^8.0.1",
+    "eslint": "^8.22.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-n": "^15.0.0",
     "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-vue": "^9.3.0",
     "husky": "^8.0.0",
     "lint-staged": "^13.0.3",
-    "typescript": "^4.8.4"
+    "typescript": "^4.8.4",
+    "@vue/eslint-config-standard-with-typescript": "^8.0.0"
   },
   "lint-staged": {
     "*.{ts,js}": "eslint --fix"

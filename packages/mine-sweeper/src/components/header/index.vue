@@ -14,7 +14,6 @@
 
       <GameControl />
 
-      
       <div
         class="btn btn-setting"
         @click="levelSettingVisible = true"
@@ -51,15 +50,15 @@
 import { defineAsyncComponent, ref } from 'vue'
 import GameControl from './GameControl.vue'
 
-const GameSettingModal = defineAsyncComponent(() => import('../modal/GameSetting.vue'))
-const LevelSettingModal = defineAsyncComponent(() => import('../modal/LevelSetting.vue'))
-const StatisticsModal = defineAsyncComponent(() => import('../modal/Statistics.vue'))
+const GameSettingModal = defineAsyncComponent(async () => await import('../modal/GameSetting.vue'))
+const LevelSettingModal = defineAsyncComponent(async () => await import('../modal/LevelSetting.vue'))
+const StatisticsModal = defineAsyncComponent(async () => await import('../modal/Statistics.vue'))
 
 const gameSettingVisible = ref(false)
 const levelSettingVisible = ref(false)
 const statisticsVisible = ref(false)
 
-const handleBack = () => {
+const handleBack = (): void => {
   window.location.href = '/mini-games'
 }
 </script>

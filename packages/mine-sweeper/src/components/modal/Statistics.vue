@@ -62,19 +62,19 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { MINE_SWEEPER_STATISTICS } from '../../config/constants'
-import { formatTime } from '../../lib/utils';
+import { formatTime } from '../../lib/utils'
 
-defineEmits<{ (e: 'close'): void }>()
+defineEmits<(e: 'close') => void>()
 
 const visible = ref(true)
 
-const statistics = ref<any>(JSON.parse(localStorage.getItem(MINE_SWEEPER_STATISTICS) || 'null'))
+const statistics = ref<any>(JSON.parse(localStorage.getItem(MINE_SWEEPER_STATISTICS) ?? 'null'))
 
 const level1Info = computed(() => statistics.value?.[1] || [])
 const level2Info = computed(() => statistics.value?.[2] || [])
 const level3Info = computed(() => statistics.value?.[3] || [])
 
-const getRate = (arr: any[]) => {
+const getRate = (arr: any[]): string => {
   if (arr.length === 0) {
     return '0.00%'
   }
@@ -84,7 +84,7 @@ const getRate = (arr: any[]) => {
   return (100 * c.length / arr.length).toFixed(2) + '%'
 }
 
-const getBest = (arr: any[]) => {
+const getBest = (arr: any[]): number => {
   const c = arr.filter(item => item[0] === 'complete')
 
   if (c.length === 0) {
@@ -115,7 +115,7 @@ const records = computed(() => [
   }
 ])
 
-const handleClear = () => {
+const handleClear = (): void => {
   localStorage.removeItem(MINE_SWEEPER_STATISTICS)
   statistics.value = null
 }

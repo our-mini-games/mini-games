@@ -27,13 +27,13 @@
 import { ref, inject } from 'vue'
 import { levels } from '../../config'
 
-const emits = defineEmits<{ (e: 'close'): void }>()
+const emits = defineEmits<(e: 'close') => void>()
 
 const visible = ref(true)
 
 const currentLevel = inject('currentLevel', ref(0))
 
-const handleItemClick = (level: number) => {
+const handleItemClick = (level: number): void => {
   if (currentLevel.value !== level) {
     currentLevel.value = level
     emits('close')

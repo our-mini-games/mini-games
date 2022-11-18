@@ -105,7 +105,7 @@
       >
         <a-switch v-model:checked="formState.useLeftClickEnhancements" />
       </a-form-item>
-    
+
       <a-form-item :wrapper-col="{ span: 16, offset: 8 }">
         <a-space>
           <a-button
@@ -114,7 +114,7 @@
           >
             Submit
           </a-button>
-          
+
           <a-button
             type="default"
             @click="$emit('close')"
@@ -136,11 +136,11 @@ import { CustomSetting, LevelInfo } from '../../types'
 interface FormState {
   level: LevelInfo['level']
   useDoubtful: boolean
-  useLeftClickEnhancements: boolean,
+  useLeftClickEnhancements: boolean
   customSetting: CustomSetting
 }
 
-const emit = defineEmits<{ (e: 'close'): void }>()
+const emit = defineEmits<(e: 'close') => void>()
 
 const visible = ref(true)
 
@@ -160,10 +160,9 @@ const formState = reactive<FormState>({
   customSetting: customSetting.value
 })
 
-
-const onFinish = (values: any) => {
+const onFinish = (values: any): void => {
   try {
-    const localState = JSON.parse(localStorage.getItem(MINE_SWEEPER_SETTING) || 'null')
+    const localState = JSON.parse(localStorage.getItem(MINE_SWEEPER_SETTING) ?? 'null')
 
     if (!localState) {
       localStorage.setItem(MINE_SWEEPER_SETTING, JSON.stringify(values))

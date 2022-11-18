@@ -14,7 +14,7 @@
           v-for="item of boxes"
           :key="`${item.x}-${item.y}`"
           :transform="`translate(${(item.x - 1) * areaSize + item.x * gap}, ${(item.y - 1) * areaSize + item.y * gap})`"
-          
+
           @mousedown="(e: any) => handleMousedown(item, e)"
           @mouseup="(e: any) => handleMouseup(item, e)"
         >
@@ -138,9 +138,8 @@ import Statistics from '../components/statistics/index.vue'
 import minePic from '../assets/img/mine.png'
 import bugPic from '../assets/img/bug.png'
 import doubtfulPic from '../assets/img/doubtful.png'
-import path from 'path'
 
-const Enhancements = defineAsyncComponent(() => import('../components/enhancements/index.vue'))
+const Enhancements = defineAsyncComponent(async () => await import('../components/enhancements/index.vue'))
 
 const boxes = inject<Ref<Box[]>>('boxes')!
 const levelInfo = inject<Ref<LevelInfo>>('levelInfo')!
@@ -153,7 +152,7 @@ const svgRef = ref<HTMLElement>()
 
 const scale = ref(1)
 const percentage = computed(() => (scale.value * 100).toFixed(0) + '%')
-const handleZoom = (type: 'in' | 'out') => {
+const handleZoom = (type: 'in' | 'out'): void => {
   scale.value = Math.max(0.1, Math.min(3, type === 'in' ? scale.value + 0.1 : scale.value - 0.1))
 }
 

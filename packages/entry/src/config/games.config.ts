@@ -1,6 +1,6 @@
 export interface GameConfig {
-  path: string,
-  name: string,
+  path: string
+  name: string
   cover: string
 }
 
