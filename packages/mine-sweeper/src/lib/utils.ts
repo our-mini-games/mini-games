@@ -29,9 +29,9 @@ export const countMines = (item: Box): void => {
 
   // 若首次点击为地雷则置换
   if (type === 'mine') {
-    const itemIsntMine = boxes.find(item => item.type !== 'mine')
-    item.type = itemIsntMine!.type
-    itemIsntMine!.type = 'mine'
+    const itemIsntMine = boxes.find(item => item.type !== 'mine')!
+    item.type = itemIsntMine.type
+    itemIsntMine.type = 'mine'
   }
 
   // 计算雷周边数量
