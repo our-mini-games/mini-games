@@ -234,18 +234,21 @@ export const canConnectedByTwoCorners = (
 // 排序
 export const boxesSort = (source: Box[], compareItem: Box) => {
   return [...source].sort((a, b) => {
-    if (Math.abs(a.x - compareItem.x) > Math.abs(b.x - compareItem.x)) {
-      if (Math.abs(a.y - compareItem.y) >= Math.abs(b.y - compareItem.y)) {
-        return 1
-      } else {
-        return -1
-      }
-    } else {
-      if (Math.abs(a.y - compareItem.y) >= Math.abs(b.y - compareItem.y)) {
+    if (a.y === b.y) {
+      if (Math.abs(a.x - compareItem.x) < Math.abs(b.x - compareItem.x)) {
         return -1
       } else {
         return 1
       }
     }
+    if (a.x === b.x) {
+      if (Math.abs(a.y - compareItem.y) < Math.abs(b.y - compareItem.y)) {
+        return -1
+      } else {
+        return 1
+      }
+    }
+
+    return -1
   })
 }
