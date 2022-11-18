@@ -1,6 +1,6 @@
 import { Box, BoxStatus, GameStatus, LeftButtonBehavious } from '../types'
 import { Ref, inject, onBeforeUnmount, onMounted, ref } from 'vue'
-import { isLeftButton, isRightButton } from '../lib/utils'
+import { countMines, isLeftButton, isRightButton } from '../lib/utils'
 
 interface EventReturnType {
   handleMousedown: (item: Box, e: MouseEvent) => void
@@ -14,6 +14,7 @@ export default (
   gameStatus: Ref<GameStatus>,
   remainingFlags: Ref<number>
 ): EventReturnType => {
+  const firstClick = inject('firstClick', ref(true))
   const useLeftClickEnhancements = inject('useLeftClickEnhancements', ref(false))
   const leftButtonBehavious = inject('leftButtonBehavious', ref<LeftButtonBehavious>('open'))
 
@@ -130,6 +131,11 @@ export default (
   const handleMouseup = (item: Box, e: MouseEvent): void => {
     e.preventDefault()
     e.stopPropagation()
+
+    if (firstClick.value) {
+      countMines(item)
+      firstClick.value = false
+    }
 
     if (isPause || gameStatus.value !== 'playing') {
       return

@@ -2,13 +2,15 @@ import { Box, GameStatus, LevelInfo } from '../types'
 
 import { MINE_SWEEPER_STATISTICS } from '../config/constants'
 
+let boxes: Box[] = []
+
 export const getBoxes = ({
   row,
   column,
   totalOfMines
 }: LevelInfo): Box[] => {
   let total = totalOfMines
-  const boxes = shuffle(Array.from({ length: row * column }, () => (<Box>{
+  boxes = shuffle(Array.from({ length: row * column }, () => (<Box>{
     x: 0,
     y: 0,
     type: --total < 0 ? 0 : 'mine',
@@ -18,6 +20,19 @@ export const getBoxes = ({
     item.y = index % column === 0 ? Math.ceil(index / column) + 1 : Math.ceil(index / column)
     return item
   })
+
+  return boxes
+}
+
+export const countMines = (item: Box): void => {
+  const { type } = item
+
+  // 若首次点击为地雷则置换
+  if (type === 'mine') {
+    const itemIsntMine = boxes.find(item => item.type !== 'mine')!
+    item.type = itemIsntMine.type
+    itemIsntMine.type = 'mine'
+  }
 
   // 计算雷周边数量
   boxes.filter(item => item.type === 'mine').forEach(item => {
@@ -32,8 +47,6 @@ export const getBoxes = ({
       }
     })
   })
-
-  return boxes
 }
 
 /**
