@@ -22,8 +22,9 @@ import FinishedModal from './components/modal/Finished.vue'
 let defaultSetting: any = {}
 try {
   defaultSetting = JSON.parse(localStorage.getItem(MINE_SWEEPER_SETTING) ?? '{}')
-} catch {}
+} catch { }
 
+const firstClick = ref(true)
 const currentLevel = ref<LevelInfo['level']>(typeof defaultSetting.level === 'number' ? defaultSetting.level : 1)
 // 是否使用问号标记
 const useDoubtful = ref(!!defaultSetting.useDoubtful)
@@ -71,6 +72,7 @@ const run = (): void => {
 }
 
 const reset = (): void => {
+  firstClick.value = true
   boxes.value = getBoxes(levelInfo.value)
   gameTime.value = 0
   remainingFlags.value = levelInfo.value.totalOfMines
@@ -114,6 +116,7 @@ watch(currentLevel, () => {
   reset()
 })
 
+provide('firstClick', firstClick)
 provide('boxes', boxes)
 provide('currentLevel', currentLevel)
 provide('levelInfo', levelInfo)
