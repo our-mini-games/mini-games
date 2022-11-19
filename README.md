@@ -11,6 +11,6 @@ https://humandetail.github.io/mini-games/games/
 
 - [ ] 贪吃蛇
 
-- [ ] 连连看
+- [x] 连连看
 
 - [ ] 俄罗斯方块
