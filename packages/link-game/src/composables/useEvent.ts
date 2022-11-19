@@ -1,7 +1,7 @@
 import { Ref } from 'vue'
 import { GameStatus } from '../config'
 import { canIRemoveThem } from '../lib/pathFinding'
-import { sleep } from '../lib/utils'
+import { isComplete, sleep } from '../lib/utils'
 import { Box, LevelInfo } from '../types'
 
 export default (
@@ -10,10 +10,10 @@ export default (
   levelInfo: Ref<LevelInfo>,
   linkAnimation: (items: Box[]) => Promise<void>
 ) => {
-  const checkedItems = ref<Box[]>([])
+  // const checkedItems = ref<Box[]>([])
+  const checkedItems = computed(() => boxes.value.filter(box => box.status !== 'default'))
 
   const handleCheck = (item: Box, e: MouseEvent) => {
-    console.log('gameStatus: ', GameStatus[gameStatus.value])
     if (gameStatus.value !== GameStatus.playing) {
       return
     }
@@ -22,23 +22,27 @@ export default (
       checkedItems.value.forEach(c => {
         c.status = 'default'
       })
-      checkedItems.value = []
+      // checkedItems.value = []
       return
     }
 
     if (checkedItems.value.find(c => c.x === item.x && c.y === item.y)) {
       item.status = 'default'
-      checkedItems.value = checkedItems.value.filter(c => c.x !== item.x && c.y !== item.y)
+      // checkedItems.value = checkedItems.value.filter(c => c.x !== item.x && c.y !== item.y)
     } else {
       item.status = 'checked'
-      checkedItems.value.push(item)
+      // checkedItems.value.push(item)
     }
   }
 
   watch(checkedItems, async items => {
+    if (gameStatus.value !== GameStatus.playing) {
+      return
+    }
+
     if (items.length >= 2) {
       // 暂停游戏
-      gameStatus.value = GameStatus.paused
+      gameStatus.value = GameStatus['in-the-animation']
 
       const [canRemove, crossItems] = canIRemoveThem(
         items as [Box, Box],
@@ -47,7 +51,6 @@ export default (
       )
       if (canRemove) {
         // 启动连接动画
-        console.log(crossItems)
         await linkAnimation(crossItems)
       }
 
@@ -66,8 +69,13 @@ export default (
         item.status = 'default'
       })
 
-      checkedItems.value = []
+      // checkedItems.value = []
       gameStatus.value = GameStatus.playing
+
+      // 游戏结束检测
+      if (canRemove && isComplete(boxes.value)) {
+        gameStatus.value = GameStatus.complete
+      }
     }
   }, {
     immediate: true,

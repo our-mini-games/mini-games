@@ -3,11 +3,14 @@
     v-bind="size"
     :view-box="`0 0 ${size.width} ${size.height}`"
     xmlns="http://www.w3.org/2000/svg"
+    :style="{
+      transform: `scale(${scale})`
+    }"
   >
     <g>
       <g
         v-for="item of boxes"
-        :key="item.x + item.y"
+        :key="`${item.x}-${item.y}`"
         :transform="`translate(${getPosition(item.x, levelInfo.size, levelInfo.useBoundary)}, ${getPosition(item.y, levelInfo.size, levelInfo.useBoundary)})`"
         :style="{
           cursor: 'pointer'
@@ -106,7 +109,27 @@
         />
       </g>
     </g> -->
-</svg>
+  </svg>
+
+  <Teleport to="body">
+    <div class="scale-wrapper">
+      <div
+        class="btn zoom-in"
+        @click="handleZoom('in')"
+      >
+        +
+      </div>
+      <div class="scale">
+        {{ percentage }}
+      </div>
+      <div
+        class="btn zoom-out"
+        @click="handleZoom('out')"
+      >
+        -
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
@@ -118,6 +141,9 @@ import { Box, LevelInfo } from '../types'
 const gameStatus = inject<Ref<GameStatus>>('gameStatus')!
 const levelInfo = inject<Ref<LevelInfo>>('levelInfo')!
 const boxes = inject('boxes', ref<Box[]>([]))
+
+const scale = inject('scale', ref(1))
+const percentage = computed(() => (scale.value * 100).toFixed(0) + '%')
 
 const animationItems = ref<Box[]>([])
 const isRemoveSuccess = ref(false)
@@ -169,4 +195,42 @@ const linkAnimation = async (items: Box[]) => {
 }
 
 const { checkedItems, handleCheck } = useEvent(boxes, gameStatus, levelInfo, linkAnimation)
+
+const handleZoom = (type: 'in' | 'out') => {
+  scale.value = Math.max(0.1, Math.min(3, type === 'in' ? scale.value + 0.1 : scale.value - 0.1))
+}
 </script>
+
+<style lang="scss" scoped>
+.scale-wrapper {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 999;
+  background-color: #0088ff;
+  border-radius: 16px;
+  user-select: none;
+
+  .btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    color: #fff;
+    cursor: pointer;
+
+    * {
+      pointer-events: none;
+    }
+  }
+
+  .scale {
+    font-size: 12px;
+    text-align: center;
+    margin: 4px 0;
+    color: #fff;
+    transform: scale(0.8);
+  }
+}
+</style>

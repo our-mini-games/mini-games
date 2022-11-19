@@ -26,10 +26,12 @@ export const getBoxes = (levelInfo: LevelInfo): Box[] => {
 
   // 深拷贝一份数据用于全解测试
   if (!fullSolutionTest(cloneDeep(boxes), levelInfo)) {
-    console.log('失败')
+    // eslint-disable-next-line no-console
+    console.log('%c生成游戏失败', 'color: #f40')
     return getBoxes(levelInfo)
   }
-  console.log('成功')
+  // eslint-disable-next-line no-console
+  console.log('%c生成游戏成功，%c祝你游戏愉快', 'color: #10b20a; font-size: 20px; font-weight: 700', 'color: #333')
   return boxes
 }
 
@@ -152,3 +154,5 @@ export const sleep = (delay: number) => {
     }, delay)
   })
 }
+
+export const isComplete = (boxes: Box[]) => boxes.every(box => box.seq === 0)

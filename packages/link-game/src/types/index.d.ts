@@ -1,6 +1,11 @@
 import { Level } from '../config'
 
-export interface LevelInfo {
+export interface GameProps {
+  rearrangement: number
+  tips: number
+}
+
+export interface LevelInfo extends GameProps {
   level: Level
   text: string
   row: number
