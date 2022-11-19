@@ -20,5 +20,5 @@ export interface Box {
   seq: number
   x: number
   y: number
-  status: 'default' | 'checked'
+  status: 'default' | 'checked' | 'error'
 }

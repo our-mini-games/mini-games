@@ -8,7 +8,7 @@
       <g
         v-for="item of boxes"
         :key="item.x + item.y"
-        :transform="`translate(${(!levelInfo.useBoundary ? item.x : (item.x - 1)) * levelInfo.size}, ${(!levelInfo.useBoundary ? item.y : (item.y - 1)) * levelInfo.size})`"
+        :transform="`translate(${getPosition(item.x, levelInfo.size, levelInfo.useBoundary)}, ${getPosition(item.y, levelInfo.size, levelInfo.useBoundary)})`"
         :style="{
           cursor: 'pointer'
         }"
@@ -17,11 +17,35 @@
         <rect
           :width="levelInfo.size"
           :height="levelInfo.size"
-          :fill="item.status === 'checked' ? 'orange' : 'transparent'"
+          :fill="item.status === 'checked' ? 'rgba(126, 201, 109, 0.63)' : item.status === 'error' ? '#f80' : 'transparent'"
           stroke="#0088ff"
+        />
+        <image
+          v-if="item.seq !== 0"
+          :width="levelInfo.size"
+          :height="levelInfo.size"
+          :xlink:href="`/materials/${item.seq}.png`"
         >
-        </rect>
-        <text
+          <animateTransform 
+            v-if="item.status === 'error'"
+            attributeName="transform"
+            attributeType="XML"
+            type="translate"
+            values="-4;4;-4"
+            dur="100ms"
+            repeatCount="indefinite"
+          />
+          <animateTransform 
+            v-if="item.status === 'checked' && !isRemoveSuccess"
+            attributeName="transform"
+            attributeType="XML"
+            type="scale"
+            values="1.1;1;1.1"
+            dur="500ms"
+            repeatCount="indefinite"
+          />
+        </image>
+        <!-- <text
           v-if="item.seq !== 0"
           :x="levelInfo.size / 2"
           :y="levelInfo.size / 2 + 2"
@@ -34,50 +58,61 @@
           style="pointer-events: none;"
         >
           {{ item.seq }}
-        </text>
+        </text> -->
       </g>
     </g>
 
-    <g
-      data-name="link-animation"
-    >
+    <defs> 
+      <filter id="path-f1" x="0" y="0" width="200%" height="200%"> 
+        <feOffset result="offOut" in="SourceAlpha" dx="0" dy="0" /> 
+        <feGaussianBlur result="blurOut" in="offOut" stdDeviation="1" /> 
+        <feBlend in="SourceGraphic" in2="blurOut" mode="normal" /> 
+      </filter>
+
+      <filter id="path-f2">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="Gau1" />
+        <feOffset dx="0" dy="0" />
+        <feGaussianBlur stdDeviation="1" out="Gau2" result="Gau1" />
+        <feComposite in="Gau1" in2="SourceAlpha" operator="over" />
+      </filter>
+    </defs> 
+
+    <!-- 连接路径 -->
+    <g data-group="link-path">
+      <path
+        v-if="animationItems.length > 0"
+        :d="animationPath"
+        stroke="#f40"
+        stroke-width="2"
+        fill="transparent"
+      />
+    </g>
+
+    <!-- 特效 -->
+    <!-- <g v-show="isRemoveSuccess">
       <g
-        v-for="(item, index) of animationItems"
-        :key="item.x + item.y"
-        :transform="`translate(${(!levelInfo.useBoundary ? item.x : (item.x - 1)) * levelInfo.size}, ${(!levelInfo.useBoundary ? item.y : (item.y - 1)) * levelInfo.size})`"
-        :style="{
-          cursor: 'pointer'
-        }"
-        @click="(e: MouseEvent) => handleCheck(item, e)"
+        v-for="item of checkedItems"
+        :transform="`translate(${getPosition(item.x, levelInfo.size, levelInfo.useBoundary)}, ${getPosition(item.y, levelInfo.size, levelInfo.useBoundary)})`"
       >
         <rect
           :width="levelInfo.size"
           :height="levelInfo.size"
-          :fill="item.status === 'checked' ? 'orange' : 'transparent'"
-          stroke="#0088ff"
-        >
-        </rect>
-        <text
-          :x="levelInfo.size / 2"
-          :y="levelInfo.size / 2 + 2"
-          font-weight="bold"
-          font-family="Verdana"
-          :font-size="levelInfo.size / 3"
-          text-anchor="middle"
-          dominant-baseline="middle"
-          fill="#f00"
-          style="pointer-events: none;"
-        >
-          {{ index + 1 }}
-        </text>
+          fill="#fff"
+        />
+        <image
+          :width="levelInfo.size"
+          :height="levelInfo.size"
+          :xlink:href="`/effects/lightning.png`"
+        />
       </g>
-    </g>
-  </svg>
+    </g> -->
+</svg>
 </template>
 
 <script setup lang="ts">
 import { Ref } from 'vue';
 import { GameStatus } from '../config';
+import { getFromPosition, getPosition, getToPosition, sleep } from '../lib/utils';
 import { Box, LevelInfo } from '../types'
 
 const gameStatus = inject<Ref<GameStatus>>('gameStatus')!
@@ -85,6 +120,35 @@ const levelInfo = inject<Ref<LevelInfo>>('levelInfo')!
 const boxes = inject('boxes', ref<Box[]>([]))
 
 const animationItems = ref<Box[]>([])
+const isRemoveSuccess = ref(false)
+
+const animationPath = computed(() => {
+  if (animationItems.value.length < 2) {
+    return ''
+  }
+  const { size, useBoundary } = levelInfo.value
+  const halfSize = size / 2
+
+  const it = animationItems.value[Symbol.iterator]()
+  let first = it.next()
+  let next = it.next()
+
+  let d = `M ${getFromPosition(first.value, next.value, levelInfo.value).join(' ')}`
+  // 第一条连接线
+  d += `\nL ${getToPosition(first.value, next.value, levelInfo.value).join(' ')}`
+  first = next
+  next = it.next()
+
+  while (next.value) {
+    // 拐角
+    d += `\nQ ${getPosition(first.value.x, size, useBoundary) + halfSize} ${getPosition(first.value.y, size, useBoundary) + halfSize}, ${getFromPosition(first.value, next.value, levelInfo.value).join(' ')}`
+    d += `\nL ${getToPosition(first.value, next.value, levelInfo.value).join(' ')}`
+    first = next
+    next = it.next()
+  }
+
+  return d
+})
 
 const size = computed(() => {
   const { column, row, size, useBoundary } = levelInfo.value
@@ -94,21 +158,15 @@ const size = computed(() => {
   }
 })
 
-const sleep = (delay: number) => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(delay)
-    }, delay)
-  })
-}
-
 const linkAnimation = async (items: Box[]) => {
   animationItems.value.push(...items)
+  isRemoveSuccess.value = true
 
-  await sleep(500)
+  await sleep(200)
 
   animationItems.value = []
+  isRemoveSuccess.value = false
 }
 
-const { handleCheck } = useEvent(boxes, gameStatus, levelInfo, linkAnimation)
+const { checkedItems, handleCheck } = useEvent(boxes, gameStatus, levelInfo, linkAnimation)
 </script>

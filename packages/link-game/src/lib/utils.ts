@@ -106,3 +106,49 @@ const fullSolutionTest = (boxes: Box[], levelInfo: LevelInfo, solutionLength = 0
     newSolutionLength
   )
 }
+
+export const getPosition = (val: number, size: number, useBoundary: boolean) => {
+  return (!useBoundary ? val : (val - 1)) * size
+}
+
+export const getFromPosition = (from: Box, to: Box, { size, useBoundary }: LevelInfo) => {
+  const halfSize = size / 2
+
+  if (from.x === to.x) {
+    return [
+      getPosition(from.x, size, useBoundary) + halfSize,
+      getPosition(from.y, size, useBoundary) + (from.y > to.y ? 0 : size)
+    ]
+  } else if (from.y === to.y) {
+    return [
+      getPosition(from.x, size, useBoundary) + (from.x > to.x ? 0 : size),
+      getPosition(from.y, size, useBoundary) + halfSize
+    ]
+  }
+  return []
+}
+
+export const getToPosition = (from: Box, to: Box, { size, useBoundary }: LevelInfo) => {
+  const halfSize = size / 2
+
+  if (from.x === to.x) {
+    return [
+      getPosition(from.x, size, useBoundary) + halfSize,
+      getPosition(to.y, size, useBoundary) + (from.y > to.y ? size : 0)
+    ]
+  } else if (from.y === to.y) {
+    return [
+      getPosition(to.x, size, useBoundary) + (from.x > to.x ? size : 0),
+      getPosition(to.y, size, useBoundary) + halfSize
+    ]
+  }
+  return []
+}
+
+export const sleep = (delay: number) => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(delay)
+    }, delay)
+  })
+}

@@ -24,7 +24,7 @@ export enum GameStatus {
   defeat
 }
 
-export const itemSequences = (() => Array.from({ length: 300 }, (_, i) => i + 1))()
+export const itemSequences = (() => Array.from({ length: 272 }, (_, i) => i + 1))()
 
 export const gameConfig: Record<Level, LevelInfo> = {
   [Level.easy]: {

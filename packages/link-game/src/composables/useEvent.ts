@@ -1,6 +1,7 @@
 import { Ref } from 'vue'
 import { GameStatus } from '../config'
 import { canIRemoveThem } from '../lib/pathFinding'
+import { sleep } from '../lib/utils'
 import { Box, LevelInfo } from '../types'
 
 export default (
@@ -12,6 +13,19 @@ export default (
   const checkedItems = ref<Box[]>([])
 
   const handleCheck = (item: Box, e: MouseEvent) => {
+    console.log('gameStatus: ', GameStatus[gameStatus.value])
+    if (gameStatus.value !== GameStatus.playing) {
+      return
+    }
+
+    if (item.seq === 0) {
+      checkedItems.value.forEach(c => {
+        c.status = 'default'
+      })
+      checkedItems.value = []
+      return
+    }
+
     if (checkedItems.value.find(c => c.x === item.x && c.y === item.y)) {
       item.status = 'default'
       checkedItems.value = checkedItems.value.filter(c => c.x !== item.x && c.y !== item.y)
@@ -31,10 +45,17 @@ export default (
         boxes.value,
         levelInfo.value
       )
-      if (canRemove && crossItems.length > 0) {
+      if (canRemove) {
         // 启动连接动画
         console.log(crossItems)
         await linkAnimation(crossItems)
+      }
+
+      if (!canRemove) {
+        checkedItems.value.forEach(item => {
+          item.status = 'error'
+        })
+        await sleep(200)
       }
 
       checkedItems.value.forEach(item => {
@@ -54,6 +75,7 @@ export default (
   })
 
   return {
+    checkedItems,
     handleCheck
   }
 }
