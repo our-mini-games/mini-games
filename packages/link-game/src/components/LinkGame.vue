@@ -27,9 +27,9 @@
           v-if="item.seq !== 0"
           :width="levelInfo.size"
           :height="levelInfo.size"
-          :xlink:href="`/materials/${item.seq}.png`"
+          :xlink:href="`${PATHNAME}materials/${item.seq}.png`"
         >
-          <animateTransform 
+          <animateTransform
             v-if="item.status === 'error'"
             attributeName="transform"
             attributeType="XML"
@@ -38,7 +38,7 @@
             dur="100ms"
             repeatCount="indefinite"
           />
-          <animateTransform 
+          <animateTransform
             v-if="item.status === 'checked' && !isRemoveSuccess"
             attributeName="transform"
             attributeType="XML"
@@ -65,11 +65,11 @@
       </g>
     </g>
 
-    <defs> 
-      <filter id="path-f1" x="0" y="0" width="200%" height="200%"> 
-        <feOffset result="offOut" in="SourceAlpha" dx="0" dy="0" /> 
-        <feGaussianBlur result="blurOut" in="offOut" stdDeviation="1" /> 
-        <feBlend in="SourceGraphic" in2="blurOut" mode="normal" /> 
+    <defs>
+      <filter id="path-f1" x="0" y="0" width="200%" height="200%">
+        <feOffset result="offOut" in="SourceAlpha" dx="0" dy="0" />
+        <feGaussianBlur result="blurOut" in="offOut" stdDeviation="1" />
+        <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
       </filter>
 
       <filter id="path-f2">
@@ -78,7 +78,7 @@
         <feGaussianBlur stdDeviation="1" out="Gau2" result="Gau1" />
         <feComposite in="Gau1" in2="SourceAlpha" operator="over" />
       </filter>
-    </defs> 
+    </defs>
 
     <!-- 连接路径 -->
     <g data-group="link-path">
@@ -105,7 +105,7 @@
         <image
           :width="levelInfo.size"
           :height="levelInfo.size"
-          :xlink:href="`/effects/lightning.png`"
+          :xlink:href="`${PATHNAME}effects/lightning.png`"
         />
       </g>
     </g> -->
@@ -137,6 +137,8 @@ import { Ref } from 'vue';
 import { GameStatus } from '../config';
 import { getFromPosition, getPosition, getToPosition, sleep } from '../lib/utils';
 import { Box, LevelInfo } from '../types'
+
+const PATHNAME = import.meta.env.VITE_APP_PATHNAME
 
 const gameStatus = inject<Ref<GameStatus>>('gameStatus')!
 const levelInfo = inject<Ref<LevelInfo>>('levelInfo')!

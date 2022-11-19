@@ -7,13 +7,13 @@
       <div class="wrapper">
         <img
           class="head-pic"
-          src="/icons/complete.png"
+          :src="`${PATHNAME}icons/complete.png`"
           height="100"
         />
 
         <img
           class="btn-close"
-          src="/icons/close.png"
+          :src="`${PATHNAME}icons/close.png`"
           width="44"
           @click="$emit('close')"
         />
@@ -51,6 +51,8 @@ import { Ref } from 'vue'
 import { LevelInfo } from '../../types'
 
 import { GameStatus } from '../../config'
+
+const PATHNAME = import.meta.env.VITE_APP_PATHNAME
 
 const emit = defineEmits<{
   (e: 'close'): void
