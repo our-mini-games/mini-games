@@ -32,15 +32,17 @@ import { gameConfig, GameStatus, Level, LINK_GAME_LEVEL } from './config'
 import PageHeader from './components/header/index.vue'
 import LinkGame from './components/LinkGame.vue'
 import PageFooter from './components/footer/index.vue'
-import { getBoxes } from './lib/utils';
+import { getBoxes } from './lib/utils'
 
+// eslint-disable-next-line @typescript-eslint/promise-function-async
 const GameSettingModal = defineAsyncComponent(() => import('./components/modal/GameSetting.vue'))
+// eslint-disable-next-line @typescript-eslint/promise-function-async
 const CompleteModal = defineAsyncComponent(() => import('./components/modal/Finished.vue'))
 
 let initialLevel = Level.easy
 
 try {
-  initialLevel = JSON.parse(localStorage.getItem(LINK_GAME_LEVEL) || '0')
+  initialLevel = JSON.parse(localStorage.getItem(LINK_GAME_LEVEL) ?? '0')
 } catch {}
 
 const currentLevel = ref(initialLevel)
@@ -53,9 +55,9 @@ const completeModalVisible = ref(false)
 
 const scale = ref(1)
 
-const boxes = useBoxes(levelInfo)
+const boxes = useBoxes(levelInfo, gameStatus)
 
-const handleRefresh = () => {
+const handleRefresh = (): void => {
   gameStatus.value = GameStatus.finished
 
   boxes.value = getBoxes(levelInfo.value)

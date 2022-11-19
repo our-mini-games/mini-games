@@ -50,8 +50,6 @@
 import { Ref } from 'vue'
 import { LevelInfo } from '../../types'
 
-import { GameStatus } from '../../config'
-
 const PATHNAME = import.meta.env.VITE_APP_PATHNAME
 
 const emit = defineEmits<{
@@ -60,10 +58,9 @@ const emit = defineEmits<{
   (e: 'refresh'): void
 }>()
 
-const gameStatus = inject('gameStatus', ref<GameStatus>(GameStatus.finished))
 const levelInfo = inject<Ref<LevelInfo>>('levelInfo')!
 
-const handleRefresh = () => {
+const handleRefresh = (): void => {
   emit('close')
   emit('refresh')
 }

@@ -4,7 +4,10 @@
     :view-box="`0 0 ${size.width} ${size.height}`"
     xmlns="http://www.w3.org/2000/svg"
     :style="{
-      transform: `scale(${scale})`
+      transform: `scale(${scale})`,
+      ...(levelInfo.useBoundary ? {
+        border: '10px solid #0088ff',
+      } : null)
     }"
   >
     <g>
@@ -133,9 +136,9 @@
 </template>
 
 <script setup lang="ts">
-import { Ref } from 'vue';
-import { GameStatus } from '../config';
-import { getFromPosition, getPosition, getToPosition, sleep } from '../lib/utils';
+import { Ref } from 'vue'
+import { GameStatus } from '../config'
+import { getFromPosition, getPosition, getToPosition, sleep } from '../lib/utils'
 import { Box, LevelInfo } from '../types'
 
 const PATHNAME = import.meta.env.VITE_APP_PATHNAME
@@ -186,7 +189,7 @@ const size = computed(() => {
   }
 })
 
-const linkAnimation = async (items: Box[]) => {
+const linkAnimation = async (items: Box[]): Promise<void> => {
   animationItems.value.push(...items)
   isRemoveSuccess.value = true
 
@@ -196,9 +199,9 @@ const linkAnimation = async (items: Box[]) => {
   isRemoveSuccess.value = false
 }
 
-const { checkedItems, handleCheck } = useEvent(boxes, gameStatus, levelInfo, linkAnimation)
+const { handleCheck } = useEvent(boxes, gameStatus, levelInfo, linkAnimation)
 
-const handleZoom = (type: 'in' | 'out') => {
+const handleZoom = (type: 'in' | 'out'): void => {
   scale.value = Math.max(0.1, Math.min(3, type === 'in' ? scale.value + 0.1 : scale.value - 0.1))
 }
 </script>
