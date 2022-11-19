@@ -203,7 +203,9 @@ describe('寻路算法测试', () => {
       column: 5,
       totalOfItems: 10,
       size: 44,
-      useBoundary: true
+      useBoundary: true,
+      rearrangement: 0,
+      tips: 0
     }
     const unuseBoundarylevelInfo: LevelInfo = {
       level: Level.easy,
@@ -212,7 +214,9 @@ describe('寻路算法测试', () => {
       column: 5,
       totalOfItems: 10,
       size: 44,
-      useBoundary: false
+      useBoundary: false,
+      rearrangement: 0,
+      tips: 0
     }
 
     expect(canConnectedByTwoCorners(checkedItems1[0], checkedItems1[1], boxes1, unuseBoundarylevelInfo, [])).toBeTruthy()
@@ -261,7 +265,9 @@ describe('寻路算法测试', () => {
       column: 7,
       totalOfItems: 10,
       size: 44,
-      useBoundary: true
+      useBoundary: true,
+      rearrangement: 0,
+      tips: 0
     }
     const unuseBoundarylevelInfo: LevelInfo = {
       level: Level.easy,
@@ -270,7 +276,9 @@ describe('寻路算法测试', () => {
       column: 7,
       totalOfItems: 10,
       size: 44,
-      useBoundary: false
+      useBoundary: false,
+      rearrangement: 0,
+      tips: 0
     }
 
     expect(canConnectedByTwoCorners(checkedItems1[0], checkedItems1[1], boxes1, unuseBoundarylevelInfo, [])).toBeFalsy()
@@ -305,7 +313,9 @@ describe('寻路算法测试', () => {
       column: 8,
       totalOfItems: 10,
       size: 44,
-      useBoundary: true
+      useBoundary: true,
+      rearrangement: 0,
+      tips: 0
     }
     const unuseBoundarylevelInfo: LevelInfo = {
       level: Level.easy,
@@ -314,7 +324,9 @@ describe('寻路算法测试', () => {
       column: 8,
       totalOfItems: 10,
       size: 44,
-      useBoundary: false
+      useBoundary: false,
+      rearrangement: 0,
+      tips: 0
     }
 
     expect(canConnectedByTwoCorners(checkedItems1[0], checkedItems1[1], boxes1, unuseBoundarylevelInfo, [])).toBeTruthy()
