@@ -39,8 +39,9 @@ jobs:
       # 构建扫雷项目
       - name: Build Mine-sweeper
         run: pwd && cd ./packages/mine-sweeper && pnpm install && pnpm run build && mv dist ../entry/dist/games/mine-sweeper
-      - name: Ls
-        run: pwd && cd ./packages/entry/dist/games && ls
+      # 构建连连看项目
+      - name: Build Mine-sweeper
+        run: pwd && cd ./packages/link-game && pnpm install && pnpm run build && mv dist ../entry/dist/games/link-game
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
