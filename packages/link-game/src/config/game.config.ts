@@ -26,7 +26,7 @@ export enum GameStatus {
   'in-the-animation'
 }
 
-export const itemSequences = (() => Array.from({ length: 272 }, (_, i) => i + 1))()
+export const itemSequences = (() => Array.from({ length: 271 }, (_, i) => i + 1))()
 
 export const gameConfig: Record<Level, LevelInfo> = {
   [Level.easy]: {
