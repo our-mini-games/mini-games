@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>贪吃蛇</title>
+  </head>
+  <body>
+    <div id="app">
+      <div class="modal modal-paused" id="J_paused">
+        <div class="wrapper">
+          <div class="info">
+            暂停游戏中
+          </div>
+          <div class="operations">
+            <a class="btn btn-play">
+              继续
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal modal-paused" id="J_finished">
+        <div class="wrapper">
+          <div class="info">
+            游戏结束，长度：<span id="J_length">0</span>
+          </div>
+          <div class="operations">
+            <a class="btn btn-again">
+              再来一局
+            </a>
+            <a class="btn btn-back" href="/mini-games">
+              不玩了
+            </btn>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
