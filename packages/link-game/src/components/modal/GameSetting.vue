@@ -72,13 +72,15 @@
 </template>
 
 <script setup lang="ts">
-import { gameConfig, Level, LINK_GAME_LEVEL } from '../../config';
+import { gameConfig, GameStatus, Level, LINK_GAME_LEVEL } from '../../config'
+// eslint-disable-next-line @typescript-eslint/prefer-function-type
 const emit = defineEmits<{ (e: 'close'): void }>()
 
 const currentLevel = inject('currentLevel', ref(Level.easy))
+const gameStatus = inject('gameStatus', ref(GameStatus.finished))
 
-
-const handleItemClick = (level: Level) => {
+const handleItemClick = (level: Level): void => {
+  gameStatus.value = GameStatus.finished
   currentLevel.value = level
 
   try {
@@ -86,6 +88,10 @@ const handleItemClick = (level: Level) => {
   } catch {}
 
   emit('close')
+
+  Promise.resolve().then(() => {
+    gameStatus.value = GameStatus.playing
+  })
 }
 </script>
 

@@ -46,7 +46,7 @@ try {
 } catch {}
 
 const currentLevel = ref(initialLevel)
-const gameStatus = ref(GameStatus.playing)
+const gameStatus = ref(GameStatus.finished)
 
 const levelInfo = computed(() => gameConfig[currentLevel.value])
 
@@ -62,8 +62,14 @@ const handleRefresh = (): void => {
 
   boxes.value = getBoxes(levelInfo.value)
 
-  gameStatus.value = GameStatus.playing
+  Promise.resolve().then(() => {
+    gameStatus.value = GameStatus.playing
+  })
 }
+
+onMounted(() => {
+  gameStatus.value = GameStatus.playing
+})
 
 watch(gameStatus, () => {
   if (gameStatus.value === GameStatus.complete) {
