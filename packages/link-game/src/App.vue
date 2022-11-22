@@ -57,10 +57,10 @@ const scale = ref(1)
 
 const boxes = useBoxes(levelInfo, gameStatus)
 
-const handleRefresh = (): void => {
+const handleRefresh = async (): Promise<void> => {
   gameStatus.value = GameStatus.finished
 
-  boxes.value = getBoxes(levelInfo.value)
+  boxes.value = await getBoxes(levelInfo.value)
 
   Promise.resolve().then(() => {
     gameStatus.value = GameStatus.playing
