@@ -315,8 +315,8 @@ const getL2NextType = (source: Tetris): Tetris => {
         coordinates: [
           { x: fixedCoordinate.x, y: fixedCoordinate.y - 1 },
           fixedCoordinate,
-          { x: fixedCoordinate.x, y: fixedCoordinate.y + 1 },
-          { x: fixedCoordinate.x - 1, y: fixedCoordinate.y + 1 }
+          { x: fixedCoordinate.x - 1, y: fixedCoordinate.y + 1 },
+          { x: fixedCoordinate.x, y: fixedCoordinate.y + 1 }
         ]
       }
   }
@@ -591,8 +591,8 @@ const getTNextType = (source: Tetris): Tetris => {
         coordinates: [
           { x: fixedCoordinate.x, y: fixedCoordinate.y - 1 },
           fixedCoordinate,
-          { x: fixedCoordinate.x, y: fixedCoordinate.y + 1 },
-          { x: fixedCoordinate.x + 1, y: fixedCoordinate.y }
+          { x: fixedCoordinate.x + 1, y: fixedCoordinate.y },
+          { x: fixedCoordinate.x, y: fixedCoordinate.y + 1 }
         ]
       }
     case 4:
