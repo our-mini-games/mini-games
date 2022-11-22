@@ -3,7 +3,7 @@ import { Box, LevelInfo } from '../types'
 import { itemSequences } from '../config'
 import { canIRemoveThem, isEmpty } from './pathFinding'
 
-export const getBoxes = (levelInfo: LevelInfo): Box[] => {
+export const getBoxes = async (levelInfo: LevelInfo): Promise<Box[]> => {
   const { row, column, totalOfItems } = levelInfo
   const _items = shuffle([...itemSequences]).slice(0, totalOfItems)
   const max = row * column
@@ -15,7 +15,7 @@ export const getBoxes = (levelInfo: LevelInfo): Box[] => {
     repeat--
   }
 
-  const boxes = items.map((item, index) => {
+  let boxes = items.map((item, index) => {
     return <Box>{
       seq: item,
       x: index % column + 1,
@@ -28,7 +28,12 @@ export const getBoxes = (levelInfo: LevelInfo): Box[] => {
   if (!fullSolutionTest(cloneDeep(boxes), levelInfo)) {
     // eslint-disable-next-line no-console
     console.log('%c生成游戏失败', 'color: #f40')
-    return getBoxes(levelInfo)
+    // eslint-disable-return-await
+    boxes = await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(getBoxes(levelInfo))
+      })
+    })
   }
   // eslint-disable-next-line no-console
   console.log('%c生成游戏成功，%c祝你游戏愉快', 'color: #10b20a; font-size: 20px; font-weight: 700', 'color: #333')

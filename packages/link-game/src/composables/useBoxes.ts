@@ -6,9 +6,9 @@ import { Box, LevelInfo } from '../types'
 export default (levelInfo: Ref<LevelInfo>, gameStatus: Ref<GameStatus>): Ref<Box[]> => {
   const boxes = ref<Box[]>([])
 
-  watch(levelInfo, (newVal) => {
+  watch(levelInfo, async (newVal) => {
     if (newVal) {
-      boxes.value = getBoxes(newVal)
+      boxes.value = await getBoxes(newVal)
       gameStatus.value = GameStatus.playing
     } else {
       boxes.value = []
