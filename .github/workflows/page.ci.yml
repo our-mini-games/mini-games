@@ -42,6 +42,9 @@ jobs:
       # 构建连连看项目
       - name: Build Mine-sweeper
         run: pwd && cd ./packages/link-game && pnpm install && pnpm run build && mv dist ../entry/dist/games/link-game
+      # 构建贪吃蛇项目
+      - name: Build Mine-sweeper
+        run: pwd && cd ./packages/greedy-snake && pnpm install && pnpm run build && mv dist ../entry/dist/games/greedy-snake
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact

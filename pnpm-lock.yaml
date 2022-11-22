@@ -46,6 +46,14 @@ importers:
       typescript: 4.8.4
       vite: 3.2.3
 
+  packages/greedy-snake:
+    specifiers:
+      typescript: ^4.6.4
+      vite: ^3.2.0
+    devDependencies:
+      typescript: 4.8.4
+      vite: 3.2.3
+
   packages/link-game:
     specifiers:
       '@types/lodash.clonedeep': ^4.5.7

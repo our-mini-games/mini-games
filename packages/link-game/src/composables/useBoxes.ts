@@ -9,7 +9,6 @@ export default (levelInfo: Ref<LevelInfo>, gameStatus: Ref<GameStatus>): Ref<Box
   watch(levelInfo, async (newVal) => {
     if (newVal) {
       boxes.value = await getBoxes(newVal)
-      gameStatus.value = GameStatus.playing
     } else {
       boxes.value = []
       gameStatus.value = GameStatus.finished
