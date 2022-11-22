@@ -9,17 +9,15 @@ import { Tetris } from './types'
 import { GameStatus } from './config'
 
 import TetrisVue from './components/tetris/index.vue'
-import { getNextTetris } from './lib/utils'
 
 const gameStatus = ref(GameStatus.Playing)
 
 const currentTetris = ref<Tetris>()
 const nextTetris = ref<Tetris>()
 
-const startup = (): void => {
-  currentTetris.value = getNextTetris()
-  nextTetris.value = getNextTetris()
-}
+const {
+  startup
+} = useEvents(currentTetris, nextTetris, gameStatus)
 
 watch(gameStatus, (newStatus, oldStatus) => {
   switch (newStatus) {
@@ -35,6 +33,9 @@ watch(gameStatus, (newStatus, oldStatus) => {
       break
   }
 }, { immediate: true })
+
+provide('currentTetris', currentTetris)
+provide('nextTetris', nextTetris)
 </script>
 
 <style lang="scss" scoped>

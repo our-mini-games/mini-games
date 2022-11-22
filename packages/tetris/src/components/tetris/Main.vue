@@ -21,6 +21,22 @@
         </g>
       </g>
 
+      <!-- 当前元素区 -->
+      <g name="current">
+        <g
+            v-for="item of currentTetrisCoordinates"
+            :key="`${item.x}-${item.y}`"
+          >
+            <use
+              :x="item.x * itemSize"
+              :y="item.y * itemSize"
+              :fill="color.item"
+              :stroke="color.item"
+              xlink:href="#tetris-item"
+            />
+          </g>
+      </g>
+
       <!-- <use
         v-for="i in 10"
         :key="i"
@@ -35,10 +51,16 @@
 </template>
 
 <script setup lang="ts">
+import type { Ref } from 'vue'
 import { wrapperSize, itemSize, color } from '../../config'
+import { Tetris } from '../../types'
 
 const width = wrapperSize.column * itemSize
 const height = wrapperSize.row * itemSize
+
+const currentTetris = inject<Ref<Tetris | undefined>>('currentTetris')!
+
+const currentTetrisCoordinates = computed(() => currentTetris.value ? currentTetris.value.coordinates : [])
 </script>
 
 <style lang="scss" scoped>

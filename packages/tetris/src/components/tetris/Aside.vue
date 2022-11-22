@@ -24,6 +24,22 @@
             </g>
           </g>
         </g>
+
+        <!-- 下一个元素展示区 -->
+        <g name="next-tetris">
+          <g
+            v-for="item of nextTetrisCoordinates"
+            :key="`${item.x}-${item.y}`"
+          >
+            <use
+              :x="(offset.x + item.x) * itemSize"
+              :y="(offset.y + item.y) * itemSize"
+              :fill="color.item"
+              :stroke="color.item"
+              xlink:href="#tetris-item"
+            />
+          </g>
+        </g>
       </svg>
     </section>
 
@@ -45,10 +61,29 @@
 </template>
 
 <script setup lang="ts">
-import { wrapperSize, itemSize, color } from '../../config'
+import type { Ref } from 'vue'
+import { wrapperSize, itemSize, color, Tetrominos } from '../../config'
+import { Tetris } from '../../types'
 
 const asideWidth = `${wrapperSize.column / 2 * itemSize}px`
 const asideHeight = `${wrapperSize.row * itemSize}px`
+
+const nextTetris = inject<Ref<Tetris | undefined>>('nextTetris')!
+
+const nextTetrisCoordinates = computed(() => nextTetris.value ? nextTetris.value.coordinates : [])
+
+const offset = computed(() => {
+  if (!nextTetris.value) {
+    return { x: 0, y: 0 }
+  }
+
+  switch (nextTetris.value.tetrominos) {
+    case Tetrominos.I:
+      return { x: nextTetris.value.type < 2 ? 0 : 1, y: 1 }
+    default:
+      return { x: 1, y: 1 }
+  }
+})
 </script>
 
 <style lang="scss" scoped>
