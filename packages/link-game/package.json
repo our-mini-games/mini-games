@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@stan_bk/img-preload": "1.0.8",
+    "@stan_bk/img-preload": "^1.0.8",
     "lodash.clonedeep": "^4.5.0",
     "vue": "^3.2.41"
   },
