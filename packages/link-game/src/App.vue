@@ -56,11 +56,18 @@ const completeModalVisible = ref(false)
 const scale = ref(1)
 
 const boxes = useBoxes(levelInfo, gameStatus)
+const ipl = useImgPreload()
 
 const handleRefresh = async (): Promise<void> => {
   gameStatus.value = GameStatus.finished
 
+  ipl.mockRender(54)
+
   boxes.value = await getBoxes(levelInfo.value)
+
+  nextTick(() => {
+    ipl.reload()
+  })
 
   Promise.resolve().then(() => {
     gameStatus.value = GameStatus.playing
