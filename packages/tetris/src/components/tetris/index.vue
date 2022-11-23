@@ -17,5 +17,6 @@ import SVGDefs from './Defs.vue'
 <style lang="scss" scoped>
 .tetris-container {
   display: flex;
+  opacity: 0.1;
 }
 </style>

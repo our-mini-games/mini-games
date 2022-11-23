@@ -12,6 +12,22 @@ export const color = {
 
 export const defaultLevel = 1
 
+export const levelConfig = (() => {
+  return Array.from({ length: 20 }, (_, index) => {
+    return {
+      level: index + 1,
+      speed: 500 - (index * 20)
+    }
+  })
+})()
+
+export const scoreConfig = {
+  1: 10,
+  2: 30,
+  3: 60,
+  4: 100
+}
+
 // 方块元素
 export enum Tetrominos {
   // ❒❒❒❒

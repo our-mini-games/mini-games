@@ -24,17 +24,33 @@
       <!-- 当前元素区 -->
       <g name="current">
         <g
-            v-for="item of currentTetrisCoordinates"
-            :key="`${item.x}-${item.y}`"
-          >
-            <use
-              :x="item.x * itemSize"
-              :y="item.y * itemSize"
-              :fill="color.item"
-              :stroke="color.item"
-              xlink:href="#tetris-item"
-            />
-          </g>
+          v-for="item of currentTetrisCoordinates"
+          :key="`${item.x}-${item.y}`"
+        >
+          <use
+            :x="item.x * itemSize"
+            :y="item.y * itemSize"
+            :fill="color.item"
+            :stroke="color.item"
+            xlink:href="#tetris-item"
+          />
+        </g>
+      </g>
+
+      <!-- 已搭建建筑物区 -->
+      <g name="building">
+        <g
+          v-for="item of building"
+          :key="`${item.x}-${item.y}`"
+        >
+          <use
+            :x="item.x * itemSize"
+            :y="item.y * itemSize"
+            :fill="color.item"
+            :stroke="color.item"
+            xlink:href="#tetris-item"
+          />
+        </g>
       </g>
 
       <!-- <use
@@ -53,12 +69,13 @@
 <script setup lang="ts">
 import type { Ref } from 'vue'
 import { wrapperSize, itemSize, color } from '../../config'
-import { Tetris } from '../../types'
+import { Coordinate, Tetris } from '../../types'
 
 const width = wrapperSize.column * itemSize
 const height = wrapperSize.row * itemSize
 
 const currentTetris = inject<Ref<Tetris | undefined>>('currentTetris')!
+const building = inject('building', ref<Coordinate[]>([]))
 
 const currentTetrisCoordinates = computed(() => currentTetris.value ? currentTetris.value.coordinates : [])
 </script>
