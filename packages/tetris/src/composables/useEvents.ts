@@ -1,5 +1,5 @@
 import { GameStatus, Tetrominos } from '../config'
-import { getNextTetris, isReachBottom } from '../lib/utils'
+import { getNextTetris, isReachBottom, sleep } from '../lib/utils'
 import { Coordinate, Tetris } from '../types'
 import type { ComputedRef, Ref } from 'vue'
 
@@ -9,7 +9,7 @@ export default (
   gameStatus: Ref<GameStatus>,
   speed: ComputedRef<number>,
   setScore: (rows?: number) => void
-): { building: Ref<Coordinate[]>, startup: () => void } => {
+): { building: Ref<Coordinate[]>, finalTips: Ref<Coordinate[]>, startup: () => void } => {
   let startTime = Date.now()
   let requestId: number = 0
   let isToBottom = false
@@ -46,6 +46,10 @@ export default (
   } = useTransverseDisplacement(currentTetris, gameStatus, building)
 
   const getNextType = useNextType(currentTetris, gameStatus, building)
+
+  const {
+    finalTips
+  } = useFinalTips(currentTetris, buildingHighestPoints)
 
   const {
     removeAnimation
@@ -88,8 +92,8 @@ export default (
   }
 
   // 下降
-  const handleDecline = (): boolean => {
-    if (!currentTetris.value) return false
+  const handleDecline = (): void => {
+    if (!currentTetris.value) return
     const coordinates: Tetris['coordinates'] = currentTetris.value.coordinates.map(({ x, y }) => {
       return {
         x,
@@ -97,34 +101,21 @@ export default (
       }
     }) as Tetris['coordinates']
 
-    // if (coordinates.some(item => (
-    //   item.x < 0 ||
-    //   item.x > wrapperSize.column - 1 ||
-    //   item.y > wrapperSize.row - 1
-    // ))) {
-    //   return false
-    // }
-
     // 触底检测
     if (isReachBottom(coordinates, toRaw(unref(building)))) {
       // currentTetris.value.coordinates = coordinates
       stop()
       handleReachBottom()
-      return false
     }
     currentTetris.value.coordinates = coordinates
-    return true
   }
 
   // 直接下到底部
   const handleToBottomImmediate = (): void => {
-    if (isToBottom || gameStatus.value !== GameStatus.Playing) return
+    if (isToBottom || gameStatus.value !== GameStatus.Playing || !currentTetris.value) return
     isToBottom = true
     stop()
-    while (handleDecline()) {
-      // 当下降返回 true 时结束
-      // 死循环了那就代表游戏出问题了，垃圾代码
-    }
+    currentTetris.value.coordinates = finalTips.value as Tetris['coordinates']
     isToBottom = false
     run()
   }
@@ -132,12 +123,15 @@ export default (
   const handleReachBottom = async (): Promise<void> => {
     // 1. 给 building 加入当前的方块
     building.value.push(...currentTetris.value!.coordinates)
+    // building.value = [...new Set([...building.value, ...currentTetris.value!.coordinates])]
+    await nextTick()
     // 2. 进行消除检测
     const [removeLength, removeRows] = removeCheck(currentTetris.value!.coordinates)
 
     if (removeLength > 0) {
       // 3. 开始消除
       await removeAnimation(building, removeRows)
+      await nextTick()
       // 3.5 计分
       setScore(removeLength)
     } else {
@@ -149,6 +143,8 @@ export default (
         return
       }
     }
+    await sleep(50)
+    await nextTick()
 
     // 5. 开始下一轮
     changeCurrent()
@@ -156,7 +152,6 @@ export default (
 
   const run = (): void => {
     if (!currentTetris.value || gameStatus.value !== GameStatus.Playing) {
-      stop()
       return
     }
 
@@ -164,9 +159,7 @@ export default (
 
     if (Date.now() - startTime > animationDuration.value) {
       // 触底检测
-      if (isReachBottom(unref(currentTetris)!.coordinates, unref(buildingHighestPoints))) {
-        stop()
-
+      if (isReachBottom(toRaw(unref(currentTetris))!.coordinates, toRaw(unref(buildingHighestPoints)))) {
         handleReachBottom()
         return
       }
@@ -175,6 +168,7 @@ export default (
       // 重置开启时间
       startTime = currentTime
     }
+
     requestId = requestAnimationFrame(run)
   }
 
@@ -214,11 +208,20 @@ export default (
       case 'ArrowDown':
         keydownSpeed.value = 0
         break
+      case 'Enter':
+        if (gameStatus.value === GameStatus.Playing) {
+          stop()
+          gameStatus.value = GameStatus.Paused
+        } else if (gameStatus.value === GameStatus.Paused) {
+          gameStatus.value = GameStatus.Playing
+          run()
+        }
     }
   }
 
   return {
     building,
+    finalTips,
     startup
   }
 }

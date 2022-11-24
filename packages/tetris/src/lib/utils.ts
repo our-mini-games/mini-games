@@ -26,3 +26,12 @@ export const createTetris = (tetrominos: Tetrominos, type: TetrisType): Tetris =
 export const isReachBottom = (activeCoordinates: Tetris['coordinates'], building: Coordinate[]): boolean => {
   return activeCoordinates.some(item => (item.y > wrapperSize.row - 1) || building.find(b => b.x === item.x && b.y === item.y))
 }
+
+// eslint-disable-next-line @typescript-eslint/promise-function-async
+export const sleep = (delay: number): Promise<number> => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(delay)
+    }, delay)
+  })
+}

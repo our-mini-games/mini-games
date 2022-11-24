@@ -53,6 +53,22 @@
         </g>
       </g>
 
+      <!-- 最终掉落点提示 -->
+      <g name="final-tetris">
+        <g
+          v-for="item of finalTips"
+          :key="`${item.x}-${item.y}`"
+        >
+          <use
+            :x="item.x * itemSize"
+            :y="item.y * itemSize"
+            :fill="color.final"
+            :stroke="color.final"
+            xlink:href="#tetris-item"
+          />
+        </g>
+      </g>
+
       <!-- <use
         v-for="i in 10"
         :key="i"
@@ -76,6 +92,7 @@ const height = wrapperSize.row * itemSize
 
 const currentTetris = inject<Ref<Tetris | undefined>>('currentTetris')!
 const building = inject('building', ref<Coordinate[]>([]))
+const finalTips = inject('finalTips', ref<Coordinate[]>([]))
 
 const currentTetrisCoordinates = computed(() => currentTetris.value ? currentTetris.value.coordinates : [])
 </script>

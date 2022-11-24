@@ -1,4 +1,5 @@
 import { Ref } from 'vue'
+import { sleep } from '../lib/utils'
 import { Coordinate } from '../types'
 
 interface ReturnType {
@@ -6,20 +7,13 @@ interface ReturnType {
   finisedAnimation: () => void
 }
 
-// eslint-disable-next-line @typescript-eslint/promise-function-async
-function sleep<T extends number> (delay: T): Promise<T> {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(delay)
-    }, delay)
-  })
-}
-
 export default (): ReturnType => {
   const removeAnimation = async (
     building: Ref<Coordinate[]>,
     removeRows: number[]
   ): Promise<void> => {
+    await nextTick()
+
     // @todo 消除动画
     await sleep(100)
 
@@ -28,11 +22,20 @@ export default (): ReturnType => {
     // 进行消除
     for (let i = 0; i < removeRows.length; i++) {
       y = removeRows[i]
+      await nextTick()
       building.value = building.value.filter(item => item.y !== y)
 
-      // 处于当前行上方的所有广场都需要下移一格
-      building.value.filter(item => item.y < y).forEach(item => {
-        item.y++
+      // 处于当前行上方的所有方块都需要下移一格
+      await nextTick()
+      building.value = building.value.map(item => {
+        if (item.y < y) {
+          return {
+            x: item.x,
+            y: item.y + 1
+          }
+        }
+
+        return item
       })
     }
   }

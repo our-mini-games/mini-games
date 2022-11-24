@@ -20,6 +20,7 @@ export default (building: Ref<Coordinate[]>): ReturnType => {
     // 取出 building 处于 rows 中的所有数据
     const canRemoveItems = rows.reduce((prev: number[], row) => {
       const current = building.value.filter(item => item.y === row.y)
+
       if (current.length === wrapperSize.column) {
         prev.push(row.y)
       }

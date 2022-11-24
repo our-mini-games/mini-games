@@ -42,6 +42,7 @@ const {
 
 const {
   building,
+  finalTips,
   startup
 } = useEvents(currentTetris, nextTetris, gameStatus, speed, setScore)
 
@@ -68,6 +69,7 @@ provide('currentTetris', currentTetris)
 provide('nextTetris', nextTetris)
 provide('level', level)
 provide('building', building)
+provide('finalTips', finalTips)
 provide('score', score)
 provide('highScore', highScore)
 provide('statusText', statusText)

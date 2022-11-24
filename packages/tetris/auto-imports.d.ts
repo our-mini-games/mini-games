@@ -51,6 +51,7 @@ declare global {
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
   const useEvents: typeof import('./src/composables/useEvents')['default']
+  const useFinalTips: typeof import('./src/composables/useFinalTips')['default']
   const useLevel: typeof import('./src/composables/useLevel')['default']
   const useNextType: typeof import('./src/composables/useNextType')['default']
   const useScore: typeof import('./src/composables/useScore')['default']

@@ -7,7 +7,8 @@ export const itemSize = 12
 
 export const color = {
   bg: 'rgba(93, 93, 93, 0.365)',
-  item: '#333'
+  item: '#333',
+  final: 'rgba(93, 93, 93, 0.5)'
 }
 
 export const defaultLevel = 1
@@ -16,7 +17,7 @@ export const levelConfig = (() => {
   return Array.from({ length: 20 }, (_, index) => {
     return {
       level: index + 1,
-      speed: 500 - (index * 20),
+      speed: 800 - (index * 20),
       maxScore: 2000 + ((index ** 2) * 500)
     }
   })
