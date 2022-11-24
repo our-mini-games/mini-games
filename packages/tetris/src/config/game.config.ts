@@ -10,7 +10,7 @@ export const color = {
   item: '#333'
 }
 
-export const defaultLevel = 20
+export const defaultLevel = 1
 
 export const levelConfig = (() => {
   return Array.from({ length: 20 }, (_, index) => {
