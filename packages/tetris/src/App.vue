@@ -1,6 +1,16 @@
 <template>
   <div class="tetris">
-    <TetrisVue />
+    <LayoutVue>
+      <template #main>
+        <TetrisVue />
+      </template>
+      <template #operating>
+        <OperatingKeys />
+      </template>
+      <template #functional>
+        <FunctionalKeys />
+      </template>
+    </LayoutVue>
   </div>
 </template>
 
@@ -8,7 +18,10 @@
 import { Tetris } from './types'
 import { GameStatus } from './config'
 
+import LayoutVue from './components/layout/index.vue'
 import TetrisVue from './components/tetris/index.vue'
+import OperatingKeys from './components/operatingKeys/index.vue'
+import FunctionalKeys from './components/functionalKeys/index.vue'
 
 const gameStatus = ref(GameStatus.Playing)
 

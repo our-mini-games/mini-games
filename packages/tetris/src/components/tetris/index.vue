@@ -16,6 +16,8 @@ import SVGDefs from './Defs.vue'
 
 <style lang="scss" scoped>
 .tetris-container {
-  display: flex;
+  display: inline-flex;
+  border: 1px solid #333;
+  border-radius: 12px;
 }
 </style>
