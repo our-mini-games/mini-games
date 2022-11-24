@@ -7,7 +7,8 @@ export default (
   currentTetris: Ref<Tetris | undefined>,
   nextTetris: Ref<Tetris | undefined>,
   gameStatus: Ref<GameStatus>,
-  speed: ComputedRef<number>
+  speed: ComputedRef<number>,
+  setScore: (rows?: number) => void
 ): { building: Ref<Coordinate[]>, startup: () => void } => {
   let startTime = Date.now()
   let requestId: number = 0
@@ -15,13 +16,6 @@ export default (
 
   const keydownSpeed = ref(0)
   const animationDuration = computed(() => keydownSpeed.value || speed.value)
-
-  const {
-    runTurnLeft,
-    runTurnRight
-  } = useTransverseDisplacement(currentTetris, gameStatus)
-
-  const getNextType = useNextType(currentTetris, gameStatus)
 
   // 这里依然不喜欢矩阵，我不喜欢！
   const building = ref<Coordinate[]>([])
@@ -40,6 +34,22 @@ export default (
 
     return highestPoints
   })
+
+  const {
+    removeCheck,
+    finisedCheck
+  } = useCheck(building)
+
+  const {
+    runTurnLeft,
+    runTurnRight
+  } = useTransverseDisplacement(currentTetris, gameStatus)
+
+  const getNextType = useNextType(currentTetris, gameStatus, building)
+
+  const {
+    removeAnimation
+  } = useAnimation()
 
   onMounted(() => {
     document.addEventListener('keydown', handleKeydown, false)
@@ -119,11 +129,28 @@ export default (
     run()
   }
 
-  const handleReachBottom = (): void => {
+  const handleReachBottom = async (): Promise<void> => {
     // 1. 给 building 加入当前的方块
     building.value.push(...currentTetris.value!.coordinates)
     // 2. 进行消除检测
-    // 3. 开始下一轮
+    const [removeLength, removeRows] = removeCheck(currentTetris.value!.coordinates)
+
+    if (removeLength > 0) {
+      // 3. 开始消除
+      await removeAnimation(building, removeRows)
+      // 3.5 计分
+      setScore(removeLength)
+    } else {
+      // 4. 检测游戏是否已经结束
+      if (finisedCheck()) {
+        // @todo 载入结束动画
+        console.log('Game Over')
+        gameStatus.value = GameStatus.Finished
+        return
+      }
+    }
+
+    // 5. 开始下一轮
     changeCurrent()
   }
 
@@ -158,19 +185,23 @@ export default (
   const handleKeydown = (e: KeyboardEvent): void => {
     switch (e.code) {
       case 'Space':
-        getNextType()
-        break
-      case 'ArrowUp':
         if (!isToBottom) {
           handleToBottomImmediate()
         }
         break
+      case 'KeyW':
+      case 'ArrowUp':
+        getNextType()
+        break
+      case 'KeyD':
       case 'ArrowRight':
         runTurnRight()
         break
+      case 'KeyS':
       case 'ArrowDown':
         keydownSpeed.value = speed.value / 3
         break
+      case 'KeyA':
       case 'ArrowLeft':
         runTurnLeft()
         break
@@ -179,6 +210,7 @@ export default (
 
   const handleKeyup = (e: KeyboardEvent): void => {
     switch (e.code) {
+      case 'KeyS':
       case 'ArrowDown':
         keydownSpeed.value = 0
         break

@@ -1,6 +1,8 @@
 <template>
   <aside class="tetris-aside">
-    <h2 class="hello">Hello world.</h2>
+    <h2 class="hello">
+      {{ statusText }}
+    </h2>
 
     <section class="wrapper next-wrapper">
       <h3 class="title">Next</h3>
@@ -44,18 +46,30 @@
     </section>
 
     <section class="wrapper level-wrapper">
-      <h3 class="title">Level</h3>
-      <div class="value">10086</div>
+      <h3 class="title">
+        Level
+      </h3>
+      <div class="value">
+        {{ level }}
+      </div>
     </section>
 
     <section class="wrapper score-wrapper">
-      <h3 class="title">Score</h3>
-      <div class="value">1024</div>
+      <h3 class="title">
+        Score
+      </h3>
+      <div class="value">
+        {{ score }}
+      </div>
     </section>
 
     <section class="wrapper hi-score-wrapper">
-      <h3 class="title">Hi-Score</h3>
-      <div class="value">2000</div>
+      <h3 class="title">
+        Hi-Score
+      </h3>
+      <div class="value">
+        {{ highScore }}
+      </div>
     </section>
   </aside>
 </template>
@@ -69,6 +83,10 @@ const asideWidth = `${wrapperSize.column / 2 * itemSize}px`
 const asideHeight = `${wrapperSize.row * itemSize}px`
 
 const nextTetris = inject<Ref<Tetris | undefined>>('nextTetris')!
+const score = inject('score', ref(0))
+const highScore = inject('highScore', ref(0))
+const level = inject('level', ref(0))
+const statusText = inject('statusText', ref('Hello world'))
 
 const nextTetrisCoordinates = computed(() => nextTetris.value ? nextTetris.value.coordinates : [])
 
