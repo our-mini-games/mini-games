@@ -40,13 +40,13 @@ jobs:
       - name: Build Mine-sweeper
         run: pwd && cd ./packages/mine-sweeper && pnpm install && pnpm run build && mv dist ../entry/dist/games/mine-sweeper
       # 构建连连看项目
-      - name: Build Mine-sweeper
+      - name: Build Link-game
         run: pwd && cd ./packages/link-game && pnpm install && pnpm run build && mv dist ../entry/dist/games/link-game
       # 构建贪吃蛇项目
-      - name: Build Mine-sweeper
+      - name: Build Greedy-snake
         run: pwd && cd ./packages/greedy-snake && pnpm install && pnpm run build && mv dist ../entry/dist/games/greedy-snake
       # 构建俄罗斯方块项目
-      - name: Build Mine-sweeper
+      - name: Build Tetris
         run: pwd && cd ./packages/tetris && pnpm install && pnpm run build && mv dist ../entry/dist/games/tetris
       - name: Setup Pages
         uses: actions/configure-pages@v2
