@@ -112,9 +112,7 @@ const offset = computed(() => {
   width: v-bind(asideWidth);
   height: v-bind(asideHeight);
   padding: 2px;
-  border-width: 2px 2px 2px 0;
-  border-style: solid;
-  border-color: #333;
+  border-left: 1px solid #333;
   line-height: 1;
 
   .hello {

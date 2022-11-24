@@ -1,4 +1,4 @@
-import { GameStatus, Tetrominos, wrapperSize } from '../config'
+import { GameStatus, Tetrominos } from '../config'
 import { getNextTetris, isReachBottom } from '../lib/utils'
 import { Coordinate, Tetris } from '../types'
 import type { ComputedRef, Ref } from 'vue'
@@ -43,7 +43,7 @@ export default (
   const {
     runTurnLeft,
     runTurnRight
-  } = useTransverseDisplacement(currentTetris, gameStatus)
+  } = useTransverseDisplacement(currentTetris, gameStatus, building)
 
   const getNextType = useNextType(currentTetris, gameStatus, building)
 
@@ -97,17 +97,17 @@ export default (
       }
     }) as Tetris['coordinates']
 
-    if (coordinates.some(item => (
-      item.x < 0 ||
-      item.x > wrapperSize.column - 1 ||
-      item.y > wrapperSize.row - 1
-    ))) {
-      return false
-    }
+    // if (coordinates.some(item => (
+    //   item.x < 0 ||
+    //   item.x > wrapperSize.column - 1 ||
+    //   item.y > wrapperSize.row - 1
+    // ))) {
+    //   return false
+    // }
 
     // 触底检测
-    if (isReachBottom(coordinates, unref(buildingHighestPoints))) {
-      currentTetris.value.coordinates = coordinates
+    if (isReachBottom(coordinates, toRaw(unref(building)))) {
+      // currentTetris.value.coordinates = coordinates
       stop()
       handleReachBottom()
       return false
@@ -118,7 +118,7 @@ export default (
 
   // 直接下到底部
   const handleToBottomImmediate = (): void => {
-    if (isToBottom) return
+    if (isToBottom || gameStatus.value !== GameStatus.Playing) return
     isToBottom = true
     stop()
     while (handleDecline()) {
@@ -185,13 +185,13 @@ export default (
   const handleKeydown = (e: KeyboardEvent): void => {
     switch (e.code) {
       case 'Space':
-        if (!isToBottom) {
-          handleToBottomImmediate()
-        }
+        getNextType()
         break
       case 'KeyW':
       case 'ArrowUp':
-        getNextType()
+        if (!isToBottom) {
+          handleToBottomImmediate()
+        }
         break
       case 'KeyD':
       case 'ArrowRight':

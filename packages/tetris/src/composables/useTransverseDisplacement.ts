@@ -1,6 +1,6 @@
 import { Ref } from 'vue'
 import { GameStatus, wrapperSize } from '../config'
-import { Tetris } from '../types'
+import { Coordinate, Tetris } from '../types'
 
 interface ReturnType {
   runTurnLeft: () => void
@@ -9,7 +9,8 @@ interface ReturnType {
 
 export default (
   currentTetris: Ref<Tetris | undefined>,
-  gameStatus: Ref<GameStatus>
+  gameStatus: Ref<GameStatus>,
+  building: Ref<Coordinate[]>
 ): ReturnType => {
   let leftStartTime = Date.now()
   let rightStartTime = Date.now()
@@ -27,7 +28,8 @@ export default (
     if (coordinates.some(item => (
       item.x < 0 ||
       item.x > wrapperSize.column - 1 ||
-      item.y > wrapperSize.row - 1
+      item.y > wrapperSize.row - 1 ||
+      building.value.find(b => b.x === item.x && b.y === item.y)
     ))) {
       return
     }

@@ -84,6 +84,5 @@ const currentTetrisCoordinates = computed(() => currentTetris.value ? currentTet
 .game-wrapper {
   display: block;
   padding: 2px;
-  border: 2px solid #333;
 }
 </style>
