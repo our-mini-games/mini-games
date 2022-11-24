@@ -19,5 +19,10 @@ export const games: GameConfig[] = [
     path: '/mini-games/games/greedy-snake/index.html',
     name: '贪吃蛇',
     cover: ''
+  },
+  {
+    path: '/mini-games/games/tetris/index.html',
+    name: '俄罗斯方块',
+    cover: ''
   }
 ]

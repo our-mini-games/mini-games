@@ -13,4 +13,4 @@ https://humandetail.github.io/mini-games/games/
 
 - [x] 连连看
 
-- [ ] 俄罗斯方块
+- [x] 俄罗斯方块

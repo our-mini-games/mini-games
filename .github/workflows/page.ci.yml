@@ -45,6 +45,9 @@ jobs:
       # 构建贪吃蛇项目
       - name: Build Mine-sweeper
         run: pwd && cd ./packages/greedy-snake && pnpm install && pnpm run build && mv dist ../entry/dist/games/greedy-snake
+      # 构建俄罗斯方块项目
+      - name: Build Mine-sweeper
+        run: pwd && cd ./packages/tetris && pnpm install && pnpm run build && mv dist ../entry/dist/games/tetris
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
