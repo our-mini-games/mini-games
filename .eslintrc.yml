@@ -5,6 +5,11 @@ extends:
   - '@vue/eslint-config-standard-with-typescript'
   - 'plugin:vue/vue3-essential'
 
+ignorePatterns:
+  - index.html
+  - node_modules
+  - dist
+
 rules: {
   'vue/multi-word-component-names': 0,
   '@typescript-eslint/no-floating-promises': 0,
