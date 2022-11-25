@@ -15,9 +15,9 @@
 
 <script setup lang="ts">
 const keys = [
-  { label: '开关机', value: 'onOrOff' },
+  { label: '开/关机', value: 'onOrOff' },
   { label: '重新开始', value: 'reboot' },
-  { label: '暂停恢复', value: 'pause' },
+  { label: '暂停/恢复', value: 'pause' },
   { label: '模式', value: 'mode' },
   { label: '88', value: 'bye' }
 ]
@@ -25,10 +25,18 @@ const keys = [
 
 <style lang="scss" scoped>
 .functional-keys {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 16px;
+  position: absolute;
+  right: 0;
+  bottom: 32px;
+  padding: 4px 4px 2px 8px;
+  border-radius: 12px;
+  box-shadow: -2px -2px 4px var(--shadow-color-light) inset,
+    2px 2px 4px var(--shadow-color-dark) inset;
+  transform: translateX(-50%);
 
   * {
     box-sizing: border-box;
@@ -42,8 +50,13 @@ const keys = [
       display: block;
       width: 16px;
       height: 16px;
-      border: 1px solid #f1f1f1;
       border-radius: 50%;
+      background-color: var(--key-color);
+      border-bottom: 2px solid var(--key-color-dark);
+      border-right: 2px solid var(--key-color-dark);
+      box-shadow: -2px -2px 4px var(--shadow-color-light),
+        2px 2px 4px var(--shadow-color-dark);
+      box-sizing: border-box;
     }
 
     .desc {
@@ -51,7 +64,7 @@ const keys = [
       left: 50%;
       top: 100%;
       width: max-content;
-      margin-top: 4px;
+      margin-top: 10px;
       font-size: 12px;
       color: #bababa;
       transform-origin: center top;

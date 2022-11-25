@@ -1,5 +1,17 @@
 * { margin: 0; padding: 0 }
 
+:root {
+  --border-color: #f1f1f1;
+  --bg-color: #f8f8f8;
+  --shadow-color-light: #fff;
+  --shadow-color-dark: #e8e8e8;
+  --key-color: #f40;
+  --big-key-color: #0088ff;
+  --key-color-dark: rgb(209, 57, 2);
+  --big-key-color-dark: #0265bc;
+  --desc-text: #bababa;
+}
+
 html,
 body,
 #app {

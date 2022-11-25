@@ -32,6 +32,7 @@ const dirKeys = [
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 32px;
 
   * {
     box-sizing: border-box;
@@ -77,8 +78,12 @@ const dirKeys = [
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      border: 1px solid #f1f1f1;
       box-sizing: border-box;
+      background-color: var(--key-color);
+      border-bottom: 2px solid var(--key-color-dark);
+      border-right: 2px solid var(--key-color-dark);
+      box-shadow: -4px -4px 8px var(--shadow-color-light),
+        4px 4px 8px var(--shadow-color-dark);
     }
 
     .desc {
@@ -86,18 +91,23 @@ const dirKeys = [
       text-align: center;
       font-size: 12px;
       transform: scale(0.5);
-      color: #bababa;
+      color: var(--desc-text);
     }
   }
 }
 
 .big-key {
+  margin-top: -32px;
   .key {
     display: block;
     width: 72px;
     height: 72px;
-    border: 1px solid #f1f1f1;
+    border-bottom: 3px solid var(--big-key-color-dark);
+    border-right: 3px solid var(--big-key-color-dark);
     border-radius: 50%;
+    background-color: var(--big-key-color);
+    box-shadow: -4px -4px 8px var(--shadow-color-light),
+      8px 8px 16px var(--shadow-color-dark);
   }
 }
 </style>
