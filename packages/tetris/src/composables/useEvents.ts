@@ -12,7 +12,7 @@ export default (
 ): { building: Ref<Coordinate[]>, finalTips: Ref<Coordinate[]>, startup: () => void } => {
   let startTime = Date.now()
   let requestId: number = 0
-  let isToBottom = false
+  let isInAnimation = false
 
   const keydownSpeed = ref(0)
   const animationDuration = computed(() => keydownSpeed.value || speed.value)
@@ -70,7 +70,7 @@ export default (
     changeCurrent()
   }
 
-  const changeCurrent = (): void => {
+  const changeCurrent = async (): Promise<void> => {
     if (!nextTetris.value) {
       nextTetris.value = getNextTetris()
     }
@@ -88,6 +88,7 @@ export default (
     }
     nextTetris.value = getNextTetris()
 
+    await sleep(50)
     run()
   }
 
@@ -106,32 +107,35 @@ export default (
       // currentTetris.value.coordinates = coordinates
       stop()
       handleReachBottom()
+      return
     }
+
     currentTetris.value.coordinates = coordinates
   }
 
   // 直接下到底部
-  const handleToBottomImmediate = (): void => {
-    if (isToBottom || gameStatus.value !== GameStatus.Playing || !currentTetris.value) return
-    isToBottom = true
+  const handleToBottomImmediate = async (): Promise<void> => {
+    if (gameStatus.value !== GameStatus.Playing || !currentTetris.value) return
     stop()
+
     currentTetris.value.coordinates = finalTips.value as Tetris['coordinates']
-    isToBottom = false
-    run()
+    await sleep(10)
+    handleReachBottom()
   }
 
   const handleReachBottom = async (): Promise<void> => {
+    isInAnimation = true
     // 1. 给 building 加入当前的方块
     building.value.push(...currentTetris.value!.coordinates)
     // building.value = [...new Set([...building.value, ...currentTetris.value!.coordinates])]
-    await nextTick()
+    await sleep(10)
     // 2. 进行消除检测
     const [removeLength, removeRows] = removeCheck(currentTetris.value!.coordinates)
 
     if (removeLength > 0) {
       // 3. 开始消除
       await removeAnimation(building, removeRows)
-      await nextTick()
+      await sleep(10)
       // 3.5 计分
       setScore(removeLength)
     } else {
@@ -144,10 +148,10 @@ export default (
       }
     }
     await sleep(50)
-    await nextTick()
 
     // 5. 开始下一轮
     changeCurrent()
+    isInAnimation = false
   }
 
   const run = (): void => {
@@ -183,7 +187,7 @@ export default (
         break
       case 'KeyW':
       case 'ArrowUp':
-        if (!isToBottom) {
+        if (!isInAnimation) {
           handleToBottomImmediate()
         }
         break

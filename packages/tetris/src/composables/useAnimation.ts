@@ -19,6 +19,8 @@ export default (): ReturnType => {
 
     let y: number
 
+    removeRows.sort((a, b) => a < b ? -1 : 1)
+
     // 进行消除
     for (let i = 0; i < removeRows.length; i++) {
       y = removeRows[i]
@@ -26,7 +28,7 @@ export default (): ReturnType => {
       building.value = building.value.filter(item => item.y !== y)
 
       // 处于当前行上方的所有方块都需要下移一格
-      await nextTick()
+      await sleep(10)
       building.value = building.value.map(item => {
         if (item.y < y) {
           return {

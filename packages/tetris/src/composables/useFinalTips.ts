@@ -11,7 +11,7 @@ export default (
     if (!currentTetris.value) return []
 
     return currentTetris.value.coordinates.reduce((prev: Coordinate[], item) => {
-      const exists = prev.find(({ x }) => item.x === x)
+      const exists = prev.find(p => item.x === p.x)
       if (!exists) {
         prev.push(item)
       } else if (exists.y < item.y) {
@@ -22,32 +22,32 @@ export default (
     }, [])
   })
 
-  // 当前元素的最低点
-  const lowestY = computed(() => {
-    if (!currentTetris.value) return 0
+  // 找到同列最高点
+  const sameColumnItems = computed(() => buildingHighestPoints.value.filter(b => lowestCoordinates.value.find(l => b.x === l.x && b.y > l.y)))
 
-    return currentTetris.value.coordinates.reduce((prev, item) => {
-      return (item.y > prev.y) ? item : prev
-    }).y
+  // 取出最小值
+  const minDistance = computed(() => {
+    return lowestCoordinates.value.reduce((prev, item) => {
+      const sameColumnItem = sameColumnItems.value.find(l => l.x === item.x)
+
+      if (!sameColumnItem) {
+        return Math.min(wrapperSize.row - item.y, prev)
+      }
+
+      return Math.min(sameColumnItem.y - item.y, prev)
+    }, Infinity)
   })
 
   const finalTips = computed(() => {
     if (!currentTetris.value) return []
-
-    const minDistance = lowestCoordinates.value.reduce((prev, { x, y }) => {
-      const sameColumnItem = buildingHighestPoints.value.find(l => l.x === x)
-      if (!sameColumnItem) {
-        return prev
-      }
-
-      return Math.min(prev, Math.abs(sameColumnItem.y - y))
-    }, wrapperSize.row)
-
     return currentTetris.value.coordinates.map(({ x, y }) => ({
       x,
-      y: minDistance === wrapperSize.row ? (y + wrapperSize.row - lowestY.value - 1) : (y + minDistance - 1)
+      y: y + minDistance.value - 1
     }))
   })
+
+  watch(minDistance, (newVal) => {
+  }, { immediate: true })
 
   return {
     finalTips
