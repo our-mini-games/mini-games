@@ -23,5 +23,7 @@ import SVGDefs from './Defs.vue'
   border-style: solid;
   border-color: #f1f1f1 #f6f6ff;
   margin: 16px;
+  outline: 1px solid #333;
+  outline-offset: -24px;
 }
 </style>

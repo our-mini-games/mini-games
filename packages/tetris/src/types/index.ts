@@ -12,3 +12,9 @@ export interface Tetris {
 }
 
 export type TetrisType = 1 | 2 | 3 | 4
+
+export type BuildingType = boolean[][]
+
+export type Noop = () => void
+
+export type PromiseNoop = () => Promise<void>

@@ -8,8 +8,8 @@
       <h3 class="title">Next</h3>
       <svg
         class="next-svg"
-        :width="asideWidth"
-        :height="asideWidth"
+        :width="svgSize"
+        :height="svgSize"
       >
         <!-- 背景区 -->
         <g name="bg-board">
@@ -79,8 +79,10 @@ import type { Ref } from 'vue'
 import { wrapperSize, itemSize, color, Tetrominos } from '../../config'
 import { Tetris } from '../../types'
 
-const asideWidth = `${wrapperSize.column / 2 * itemSize}px`
-const asideHeight = `${wrapperSize.row * itemSize}px`
+const svgSize = itemSize * wrapperSize.column / 2
+
+const asideWidth = `${svgSize + 3}px`
+const asideHeight = `${wrapperSize.row * itemSize + 3}px`
 
 const nextTetris = inject<Ref<Tetris | undefined>>('nextTetris')!
 const score = inject('score', ref(0))
@@ -116,6 +118,10 @@ const offset = computed(() => {
   line-height: 1;
 
   .hello {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
     font-size: 12px;
     text-align: center;
   }

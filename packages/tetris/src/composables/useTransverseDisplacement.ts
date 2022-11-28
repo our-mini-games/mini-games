@@ -1,20 +1,22 @@
-import { Ref } from 'vue'
-import { GameStatus, wrapperSize } from '../config'
-import { Coordinate, Tetris } from '../types'
+import { ComputedRef, Ref } from 'vue'
+import { GameStatus } from '../config'
+import { isLegalTetris } from '../lib/utils'
+import { BuildingType, Noop, PromiseNoop, Tetris } from '../types'
+import throttle from 'lodash.throttle'
 
 interface ReturnType {
-  runTurnLeft: () => void
-  runTurnRight: () => void
+  handleTurnLeft: Noop
+  handleTurnRight: Noop
+  handleDecline: (handleReachBottom: PromiseNoop) => void
+  handleToBottomImmediate: Noop
 }
 
 export default (
-  currentTetris: Ref<Tetris | undefined>,
+  currentTetris: Ref<Tetris | null>,
   gameStatus: Ref<GameStatus>,
-  building: Ref<Coordinate[]>
+  building: Ref<BuildingType>,
+  finalTips: ComputedRef<Tetris['coordinates']>
 ): ReturnType => {
-  let leftStartTime = Date.now()
-  let rightStartTime = Date.now()
-
   // 横向位移
   const transverseDisplacement = (isLeft = true): void => {
     if (!currentTetris.value) return
@@ -25,45 +27,51 @@ export default (
       }
     }) as Tetris['coordinates']
 
-    if (coordinates.some(item => (
-      item.x < 0 ||
-      item.x > wrapperSize.column - 1 ||
-      item.y > wrapperSize.row - 1 ||
-      building.value.find(b => b.x === item.x && b.y === item.y)
-    ))) {
+    if (!isLegalTetris(coordinates, building.value)) {
       return
     }
     currentTetris.value.coordinates = coordinates
   }
 
-  const runTurnLeft = (): void => {
-    if (!currentTetris.value || gameStatus.value !== GameStatus.Playing) {
+  // 左移
+  const handleTurnLeft = throttle(() => {
+    transverseDisplacement(true)
+  }, 50)
+  // 右移
+  const handleTurnRight = throttle(() => {
+    transverseDisplacement(false)
+  }, 50)
+
+  // 下降
+  const handleDecline = (handleReachBottom: PromiseNoop): void => {
+    if (!currentTetris.value || gameStatus.value !== GameStatus.Playing) return
+    const coordinates: Tetris['coordinates'] = currentTetris.value.coordinates.map(({ x, y }) => {
+      return {
+        x,
+        y: y + 1
+      }
+    }) as Tetris['coordinates']
+
+    if (!isLegalTetris(coordinates, building.value)) {
+      // 下降元素不合法，意味着元素已经触底
+      handleReachBottom()
       return
     }
 
-    const currentTime = Date.now()
-
-    if (currentTime - leftStartTime > 50) {
-      transverseDisplacement(true)
-      leftStartTime = currentTime
-    }
+    // 元素下降合法，使用新的坐标
+    currentTetris.value.coordinates = coordinates
   }
 
-  const runTurnRight = (): void => {
-    if (!currentTetris.value || gameStatus.value !== GameStatus.Playing) {
-      return
-    }
-
-    const currentTime = Date.now()
-
-    if (currentTime - rightStartTime > 50) {
-      transverseDisplacement(false)
-      rightStartTime = currentTime
-    }
+  // 直接下到底部
+  const handleToBottomImmediate = (): void => {
+    if (gameStatus.value !== GameStatus.Playing || !currentTetris.value) return
+    currentTetris.value.coordinates = finalTips.value as Tetris['coordinates']
   }
 
   return {
-    runTurnLeft,
-    runTurnRight
+    handleTurnLeft,
+    handleTurnRight,
+    handleDecline,
+    handleToBottomImmediate
   }
 }

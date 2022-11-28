@@ -1,53 +1,74 @@
 import { ComputedRef, Ref } from 'vue'
-import { wrapperSize } from '../config'
-import { Coordinate, Tetris } from '../types'
+import { GameStatus, wrapperSize } from '../config'
+import { isLegalTetris } from '../lib/utils'
+import { BuildingType, Coordinate, Tetris } from '../types'
 
 export default (
-  currentTetris: Ref<Tetris | undefined>,
-  buildingHighestPoints: Ref<Coordinate[]>
-): { finalTips: ComputedRef<Coordinate[]> } => {
-  // 每一列的最低点
-  const lowestCoordinates = computed(() => {
-    if (!currentTetris.value) return []
+  gameStatus: Ref<GameStatus>,
+  currentTetris: Ref<Tetris | null>,
+  building: Ref<BuildingType>
+): { finalTips: ComputedRef<Tetris['coordinates']> } => {
+  const lowestTetris = computed(() => {
+    if (!currentTetris.value) return -Infinity
+    return currentTetris.value.coordinates.reduce((prev, item) => {
+      return Math.max(prev, item.y)
+    }, -Infinity)
+  })
 
-    return currentTetris.value.coordinates.reduce((prev: Coordinate[], item) => {
+  const isHighest = (coordinates: Tetris['coordinates']): boolean => {
+    // 找到他们同 x 轴最高点, y 值最小
+    const xHighest = coordinates.reduce((prev: Coordinate[], item) => {
       const exists = prev.find(p => item.x === p.x)
       if (!exists) {
         prev.push(item)
-      } else if (exists.y < item.y) {
+      } else if (exists.y > item.y) {
         return [...prev.filter(p => p !== exists), item]
       }
 
       return prev
     }, [])
-  })
 
-  // 找到同列最高点
-  const sameColumnItems = computed(() => buildingHighestPoints.value.filter(b => lowestCoordinates.value.find(l => b.x === l.x && b.y > l.y)))
+    const items = xHighest.reduce((prev: Coordinate[], { x, y }) => {
+      prev.push(...Array.from({ length: y }, (_, index) => {
+        return { x, y: index }
+      }), { x, y })
+      return prev
+    }, [])
 
-  // 取出最小值
-  const minDistance = computed(() => {
-    return lowestCoordinates.value.reduce((prev, item) => {
-      const sameColumnItem = sameColumnItems.value.find(l => l.x === item.x)
-
-      if (!sameColumnItem) {
-        return Math.min(wrapperSize.row - item.y, prev)
-      }
-
-      return Math.min(sameColumnItem.y - item.y, prev)
-    }, Infinity)
-  })
+    return items.every(({ x, y }) => !building.value?.[y]?.[x])
+  }
 
   const finalTips = computed(() => {
-    if (!currentTetris.value) return []
-    return currentTetris.value.coordinates.map(({ x, y }) => ({
-      x,
-      y: y + minDistance.value - 1
-    }))
-  })
+    if (
+      (gameStatus.value !== GameStatus.Playing && gameStatus.value !== GameStatus.Animation) ||
+      !currentTetris.value
+    ) return [] as unknown as Tetris['coordinates']
 
-  watch(minDistance, (newVal) => {
-  }, { immediate: true })
+    const highest = building.value.filter((_, index) => index > lowestTetris.value)
+
+    // 置底
+    const finalTips = currentTetris.value.coordinates.map(({ x, y }) => ({
+      x,
+      y: y + (wrapperSize.row - lowestTetris.value) - 1
+    })) as unknown as Tetris['coordinates']
+
+    for (let i = 0; i < highest.length; i++) {
+      if (
+        // 他应该是位于合法位置的元素
+        isLegalTetris(finalTips, building.value) &&
+        // 并且，他们当前坐标中的建筑物上面也没有其他元素
+        isHighest(finalTips)
+      ) {
+        break
+      }
+
+      finalTips.forEach(item => {
+        item.y--
+      })
+    }
+
+    return finalTips
+  })
 
   return {
     finalTips
