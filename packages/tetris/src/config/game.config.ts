@@ -6,9 +6,9 @@ export const wrapperSize = {
 export const itemSize = 12
 
 export const color = {
-  bg: 'rgba(93, 93, 93, 0.365)',
+  bg: 'rgba(188, 188, 188, 0.365)',
   item: '#333',
-  final: 'rgba(93, 93, 93, 0.5)'
+  final: 'rgba(188, 188, 188, 0.5)'
 }
 
 export const defaultLevel = 1
@@ -58,7 +58,17 @@ export enum Tetrominos {
 
 // 游戏状态
 export enum GameStatus {
+  PowerOff = 'PowerOff',
+  PowerOn = 'PowerOn',
   Finished = 'Finished',
   Playing = 'Playing',
-  Paused = 'Paused'
+  Paused = 'Paused',
+  Animation = 'Animation',
+  ChooseMode = 'ChooseMode'
+}
+
+// 游戏模式
+export enum GameMode {
+  Normal = 'Normal',
+  Entertain = 'Entertain'
 }
