@@ -1,5 +1,5 @@
 import { Tetrominos, tetrisCoordinates, wrapperSize } from '../config'
-import { BuildingType, Coordinate, Tetris, TetrisType } from '../types'
+import { BuildingType, Tetris, TetrisType } from '../types'
 
 const getRandomNumber = (min: number, max: number): number => Math.round(Math.random() * (max - min)) + min
 
@@ -59,15 +59,6 @@ export const createTetris = (tetrominos: Tetrominos, type: TetrisType): Tetris =
   }
 }
 
-/**
- * 元素是否触底
- * @param activeCoordinates - 当前活跃的元素
- * @param building - 已搭建好的建筑
- */
-export const isReachBottom = (activeCoordinates: Tetris['coordinates'], building: Coordinate[]): boolean => {
-  return activeCoordinates.some(item => (item.y > wrapperSize.row - 1) || building.find(b => b.x === item.x && b.y === item.y))
-}
-
 // 检测是否为方块的坐标是否合法
 export const isLegalTetris = (coordinates: Tetris['coordinates'], building: BuildingType): boolean => {
   return !coordinates.some(({ x, y }) => (
@@ -88,7 +79,7 @@ export const removeCheck = (building: BuildingType): number[] => {
   }, [])
 }
 // 元素是否无法下降，游戏结束检测
-export const finishedCheck = (tetris: Tetris): boolean => tetris.coordinates.some(({ y }) => y <= 0)
+export const finishedCheck = (tetris: Tetris): boolean => tetris.coordinates.some(({ y }) => y < 0)
 
 export const sleep = async (delay: number): Promise<number> => {
   return await new Promise(resolve => {
