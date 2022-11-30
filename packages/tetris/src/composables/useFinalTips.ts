@@ -35,7 +35,7 @@ export default (
       return prev
     }, [])
 
-    return items.every(({ x, y }) => !building.value?.[y]?.[x])
+    return items.filter(item => item.y > lowestTetris.value).every(({ x, y }) => !building.value?.[y]?.[x])
   }
 
   const finalTips = computed(() => {
