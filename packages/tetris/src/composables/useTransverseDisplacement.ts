@@ -35,11 +35,15 @@ export default (
 
   // 左移
   const handleTurnLeft = throttle(() => {
-    transverseDisplacement(true)
+    if (gameStatus.value === GameStatus.Playing) {
+      transverseDisplacement(true)
+    }
   }, 50)
   // 右移
   const handleTurnRight = throttle(() => {
-    transverseDisplacement(false)
+    if (gameStatus.value === GameStatus.Playing) {
+      transverseDisplacement(false)
+    }
   }, 50)
 
   // 下降

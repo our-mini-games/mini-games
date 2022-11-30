@@ -81,6 +81,7 @@ const {
   startup,
   run,
   stop,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   changeCurrent,
   setKeydownSpeed,
   handleReachBottom
@@ -96,7 +97,7 @@ const {
   setScore
 )
 
-useEvent(
+const { activeKeys } = useEvent(
   gameMode,
   gameStatus,
   handleTurnLeft,
@@ -106,7 +107,7 @@ useEvent(
   switchNextType,
   run,
   stop,
-  changeCurrent,
+  setGameStatus,
   setKeydownSpeed
 )
 
@@ -144,6 +145,8 @@ provide('level', level)
 provide('levelInfo', levelInfo)
 provide('maxScore', maxScore)
 provide('statusText', statusText)
+
+provide('activeKeys', activeKeys)
 </script>
 
 <style lang="scss" scoped>

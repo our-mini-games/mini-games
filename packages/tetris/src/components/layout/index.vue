@@ -71,8 +71,9 @@ import tetrisPic from '../../assets/imgs/tetris.png'
       width: 360px;
       height: 284px;
       background-color: var(--bg-color);
-      border: 3px solid var(--border-color);
-      border-right-width: 5px;
+      border-color: var(--border-color);
+      border-style: solid;
+      border-width: 3px 5px 0 3px;
       border-top-right-radius: 15px;
       box-sizing: border-box;
       clip-path: path('\
@@ -128,8 +129,8 @@ import tetrisPic from '../../assets/imgs/tetris.png'
       height: 184px;
       padding: 32px;
       margin-top: -24px;
-      border: 3px solid var(--border-color);
-      border-right-width: 4px;
+      border-color: var(--bg-color);
+      border-width: 3px 4px 3px 3px;
       clip-path: path('\
         M 0 0 \
         C 16 32, 344 32, 360 0 \

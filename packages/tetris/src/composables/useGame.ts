@@ -1,6 +1,6 @@
 import { Ref } from 'vue'
-import { GameStatus, Tetrominos } from '../config'
-import { finishedCheck, getNextTetris, isLegalTetris, removeCheck, sleep } from '../lib/utils'
+import { GameStatus, Tetrominos, wrapperSize } from '../config'
+import { createBuilding, finishedCheck, getNextTetris, isLegalTetris, removeCheck, sleep } from '../lib/utils'
 import { BuildingType, Noop, PromiseNoop, Tetris } from '../types'
 
 interface GameReturnType {
@@ -30,6 +30,8 @@ export default (
   let startTime = Date.now()
 
   const startup = (): void => {
+    currentTetris.value = null
+    building.value = createBuilding(wrapperSize.row, wrapperSize.column)
     nextTetris.value = getNextTetris()
     changeCurrent()
   }

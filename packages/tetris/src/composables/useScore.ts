@@ -1,6 +1,6 @@
 import { Ref } from 'vue'
 import { GameStatus, scoreConfig } from '../config'
-import { TETRIS_HIGH_SCORE } from '../config/constatns'
+import { TETRIS_HIGH_SCORE } from '../config/constants'
 
 let defaultHighScore = 0
 

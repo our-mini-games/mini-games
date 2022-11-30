@@ -4,6 +4,12 @@
       v-for="item of keys"
       :key="item.value"
       class="key-item"
+      :class="[
+        `${KEY_PREFIX}${item.value}`,
+        {
+          active: activeKeys.has(item.value)
+        }
+      ]"
     >
       <span class="key"></span>
       <span class="desc">
@@ -14,12 +20,15 @@
 </template>
 
 <script setup lang="ts">
+import { KEY_PREFIX } from '../../config/constants'
+
+const activeKeys = inject('activeKeys', ref(new Set<string>()))
+
 const keys = [
-  { label: '开/关机', value: 'onOrOff' },
-  { label: '重新开始', value: 'reboot' },
-  { label: '暂停/恢复', value: 'pause' },
-  { label: '模式', value: 'mode' },
-  { label: '88', value: 'bye' }
+  { label: '开/关机', value: 'OnOrOff' },
+  { label: '重新开始', value: 'Reboot' },
+  { label: '暂停/恢复', value: 'Pause' },
+  { label: '模式', value: 'Mode' }
 ]
 </script>
 
@@ -36,7 +45,7 @@ const keys = [
   border-radius: 12px;
   box-shadow: -2px -2px 4px var(--shadow-color-light) inset,
     2px 2px 4px var(--shadow-color-dark) inset;
-  transform: translateX(-50%);
+  transform: translateX(-80%);
 
   * {
     box-sizing: border-box;
@@ -52,10 +61,11 @@ const keys = [
       height: 16px;
       border-radius: 50%;
       background-color: var(--key-color);
-      border-bottom: 2px solid var(--key-color-dark);
-      border-right: 2px solid var(--key-color-dark);
-      box-shadow: -2px -2px 4px var(--shadow-color-light),
-        2px 2px 4px var(--shadow-color-dark);
+      // border-bottom: 2px solid var(--key-color-dark);
+      // border-right: 2px solid var(--key-color-dark);
+      box-shadow: 1px 1px var(--key-color-dark),
+        2px 2px var(--key-color-dark);
+      pointer-events: none;
       box-sizing: border-box;
     }
 
@@ -69,6 +79,11 @@ const keys = [
       color: #bababa;
       transform-origin: center top;
       transform: scale(0.5) translateX(-100%);
+    }
+
+    &.active .key {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px var(--key-color-dark);
     }
   }
 }
