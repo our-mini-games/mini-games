@@ -12,6 +12,8 @@
       </div>
     </div>
 
+    <VolumeArea />
+
     <div class="big-key">
       <span class="key"></span>
     </div>
@@ -19,6 +21,8 @@
 </template>
 
 <script setup lang="ts">
+import VolumeArea from './VolumeArea.vue'
+
 const dirKeys = [
   { label: '置底', value: 'ArrowUp' },
   { label: '左移', value: 'ArrowLeft' },
@@ -32,7 +36,7 @@ const dirKeys = [
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 32px;
+  gap: 16px;
 
   * {
     box-sizing: border-box;
