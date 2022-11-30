@@ -84,8 +84,9 @@ const dirKeys = [
       border-radius: 50%;
       box-sizing: border-box;
       background-color: var(--key-color);
-      border-bottom: 2px solid var(--key-color-dark);
-      border-right: 2px solid var(--key-color-dark);
+      border: 1.5px solid var(--key-color-dark);
+      border-bottom-width: 2px;
+      border-right-width: 2px;
       box-shadow: -4px -4px 8px var(--shadow-color-light),
         4px 4px 8px var(--shadow-color-dark);
     }
@@ -106,8 +107,9 @@ const dirKeys = [
     display: block;
     width: 72px;
     height: 72px;
-    border-bottom: 3px solid var(--big-key-color-dark);
-    border-right: 3px solid var(--big-key-color-dark);
+    border: 1.5px solid var(--big-key-color-dark);
+    border-bottom-width: 3px;
+    border-right-width: 3px;
     border-radius: 50%;
     background-color: var(--big-key-color);
     box-shadow: -4px -4px 8px var(--shadow-color-light),

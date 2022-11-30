@@ -71,19 +71,23 @@ import tetrisPic from '../../assets/imgs/tetris.png'
       width: 360px;
       height: 284px;
       background-color: var(--bg-color);
+      border: 3px solid var(--border-color);
+      border-right-width: 5px;
+      border-top-right-radius: 15px;
+      box-sizing: border-box;
       clip-path: path('\
         M 0 16 \
         C 0 8, 8 0, 16 0 \
         L 344 0 \
         C 352 0, 360 8, 360 16 \
         L 360 100 \
-        C 354 100, 354 116, 360 116 \
-        C 354 116, 354 132, 360 132 \
-        C 354 132, 354 148, 360 148 \
-        C 354 148, 354 164, 360 164 \
-        C 354 164, 354 180, 360 180 \
-        C 354 180, 354 196, 360 196 \
-        C 354 196, 354 212, 360 212 \
+        C 356 100, 356 116, 360 116 \
+        C 356 116, 356 132, 360 132 \
+        C 356 132, 356 148, 360 148 \
+        C 356 148, 356 164, 360 164 \
+        C 356 164, 356 180, 360 180 \
+        C 356 180, 356 196, 360 196 \
+        C 356 196, 356 212, 360 212 \
         L 360 284 \
         L 0 284 \
         L 0 212 \
@@ -124,22 +128,51 @@ import tetrisPic from '../../assets/imgs/tetris.png'
       height: 184px;
       padding: 32px;
       margin-top: -24px;
-      // border: 1px solid var(--border-color);
+      border: 3px solid var(--border-color);
+      border-right-width: 4px;
       clip-path: path('\
         M 0 0 \
         C 16 32, 344 32, 360 0 \
         L 360 10 \
-        C 344 20, 344 54, 360 64 \
+        C 355 20, 355 54, 360 64 \
         L 360 152 \
         C 344 184, 16 184, 0 152 \
         L 0 64 \
-        C 16 54, 16 20, 0 10 \
         Z \
       ');
       background-color: var(--bg-color);
       box-sizing: border-box;
       // box-shadow: -16px -16px 16px var(--shadow-color-light),
       //   8px 8px 8px var(--shadow-color-dark);
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: -16px;
+        top: 10px;
+        width: 20px;
+        height: 52px;
+        background-color: white;
+        border-radius: 50%;
+        border: 3px solid var(--border-color);
+        border-left: none;
+        border-top: none;
+        border-bottom: none;
+      }
+      &::after {
+        content: '';
+        position: absolute;
+        right: -16px;
+        top: 10px;
+        width: 19px;
+        height: 52px;
+        background-color: white;
+        border-radius: 50%;
+        border: 4px solid var(--border-color);
+        border-right: none;
+        border-top: none;
+        border-bottom: none;
+      }
     }
   }
 
@@ -150,7 +183,9 @@ import tetrisPic from '../../assets/imgs/tetris.png'
     background-color: var(--bg-color);
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
-
+    border: 3px solid var(--border-color);
+    border-bottom-width: 5px;
+    border-right-width: 4px;
     &::after {
       content: '';
       position: absolute;
