@@ -28,12 +28,12 @@ import tetrisPic from '../../assets/imgs/tetris.png'
 
 <style lang="scss" scoped>
 .layout-container {
-  width: 360px;
+  // width: 360px;
   height: 640px;
   min-width: 360px;
   max-width: 100%;
-  max-height: calc(100% - 20px);
-  margin-top: 20px;
+  // max-height: calc(100% - 20px);
+  // margin-top: 20px;
   border-radius: 16px;
   // border: 1px solid var(--border-color);
   // background-color: var(--bg-color);
@@ -56,7 +56,6 @@ import tetrisPic from '../../assets/imgs/tetris.png'
 
   .main-wrapper {
     position: relative;
-    width: 360px;
     height: 300px;
     padding-bottom: 1px;
     box-shadow: 0px 2px 4px var(--shadow-color-light);
@@ -68,7 +67,7 @@ import tetrisPic from '../../assets/imgs/tetris.png'
       position: absolute;
       left: 0;
       top: 0;
-      width: 360px;
+      width: 100%;
       height: 284px;
       background-color: var(--bg-color);
       border-color: var(--border-color);

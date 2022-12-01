@@ -34,8 +34,9 @@ const keys = [
   position: absolute;
   right: 0;
   bottom: 32px;
-  padding: 2px 4px 5px 8px;
   border: none;
+  margin: 0 2px 2px 0;
+  padding: 2px 10px 6px 8px;
   border-radius: 12px;
   box-shadow: -2px -2px 4px var(--shadow-color-light) inset,
     2px 2px 4px var(--shadow-color-dark) inset;
@@ -46,6 +47,7 @@ const keys = [
     width: 16px;
     border: none;
     background: none;
+    overflow: visible;
 
     .key {
       display: block;
@@ -57,8 +59,7 @@ const keys = [
 
       // border-bottom: 2px solid var(--key-color-dark);
       // border-right: 2px solid var(--key-color-dark);
-      box-shadow: 1px 1px var(--key-color-dark),
-        2px 2px var(--key-color-dark);
+      box-shadow: 2px 2px var(--key-color-dark);
       pointer-events: none;
     }
 
