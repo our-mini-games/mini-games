@@ -15,8 +15,9 @@ export default (
   stop: Noop,
   setGameStatus: (status: GameStatus) => void,
   setKeydownSpeed: (speed: number) => void
-): { activeKeys: Ref<Set<string>> } => {
-  const activeKeys = ref(new Set<string>())
+  // ): { activeKeys: Ref<Set<string>> } => {
+): void => {
+  // const activeKeys = ref(new Set<string>())
 
   onMounted(() => {
     document.addEventListener('keydown', handleKeydown, false)
@@ -34,7 +35,7 @@ export default (
 
   const handleKeydown = (e: KeyboardEvent): void => {
     e.preventDefault()
-    activeKeys.value.add(e.code)
+    // activeKeys.value.add(e.code)
     switch (e.code) {
       case 'Space':
         switchNextType()
@@ -61,7 +62,7 @@ export default (
 
   const handleKeyup = (e: KeyboardEvent): void => {
     e.preventDefault()
-    activeKeys.value.delete(e.code)
+    // activeKeys.value.delete(e.code)
     switch (e.code) {
       case 'KeyS':
       case 'ArrowDown':
@@ -86,33 +87,33 @@ export default (
     if (!target) return
 
     if (target.classList.contains(`${KEY_PREFIX}Space`)) {
-      activeKeys.value.add('Space')
+      // activeKeys.value.add('Space')
       switchNextType()
     }
 
     if (target.classList.contains(`${KEY_PREFIX}ArrowUp`)) {
-      activeKeys.value.add('ArrowUp')
+      // activeKeys.value.add('ArrowUp')
       handleToBottomImmediate()
       handleReachBottom()
     }
 
     if (target.classList.contains(`${KEY_PREFIX}ArrowRight`)) {
-      activeKeys.value.add('ArrowRight')
+      // activeKeys.value.add('ArrowRight')
       handleTurnRight()
     }
 
     if (target.classList.contains(`${KEY_PREFIX}ArrowDown`)) {
-      activeKeys.value.add('ArrowDown')
+      // activeKeys.value.add('ArrowDown')
       setKeydownSpeed(100)
     }
 
     if (target.classList.contains(`${KEY_PREFIX}ArrowLeft`)) {
-      activeKeys.value.add('ArrowLeft')
+      // activeKeys.value.add('ArrowLeft')
       handleTurnLeft()
     }
 
     if (target.classList.contains(`${KEY_PREFIX}OnOrOff`)) {
-      activeKeys.value.add('OnOrOff')
+      // activeKeys.value.add('OnOrOff')
 
       if (gameStatus.value !== GameStatus.PowerOff) {
         setGameStatus(GameStatus.PowerOff)
@@ -123,7 +124,7 @@ export default (
     }
 
     if (target.classList.contains(`${KEY_PREFIX}Reboot`)) {
-      activeKeys.value.add('Reboot')
+      // activeKeys.value.add('Reboot')
       setGameStatus(GameStatus.Finished)
       nextTick(() => {
         setGameStatus(GameStatus.Playing)
@@ -131,7 +132,7 @@ export default (
     }
 
     if (target.classList.contains(`${KEY_PREFIX}Pause`)) {
-      activeKeys.value.add('Pause')
+      // activeKeys.value.add('Pause')
       if (gameStatus.value === GameStatus.Paused) {
         setGameStatus(GameStatus.Playing)
       } else if (gameStatus.value === GameStatus.Playing) {
@@ -139,9 +140,9 @@ export default (
       }
     }
 
-    if (target.classList.contains(`${KEY_PREFIX}Mode`)) {
-      activeKeys.value.add('Mode')
-    }
+    // if (target.classList.contains(`${KEY_PREFIX}Mode`)) {
+    //   activeKeys.value.add('Mode')
+    // }
   }
 
   const handleMouseup = (e: MouseEvent): void => {
@@ -151,14 +152,14 @@ export default (
 
     if (!target) return
 
-    activeKeys.value.clear()
+    // activeKeys.value.clear()
 
     if (target.classList.contains(`${KEY_PREFIX}ArrowDown`)) {
       setKeydownSpeed(0)
     }
   }
 
-  return {
-    activeKeys
-  }
+  // return {
+  //   activeKeys
+  // }
 }
