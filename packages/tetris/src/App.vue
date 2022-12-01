@@ -97,7 +97,7 @@ const {
   setScore
 )
 
-const { activeKeys } = useEvent(
+/* const { activeKeys } = */ useEvent(
   gameMode,
   gameStatus,
   handleTurnLeft,
@@ -146,7 +146,7 @@ provide('levelInfo', levelInfo)
 provide('maxScore', maxScore)
 provide('statusText', statusText)
 
-provide('activeKeys', activeKeys)
+// provide('activeKeys', activeKeys)
 </script>
 
 <style lang="scss" scoped>
