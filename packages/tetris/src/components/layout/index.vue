@@ -36,7 +36,6 @@ import tetrisPic from '../../assets/imgs/tetris.png'
   border-radius: 16px;
   // border: 1px solid var(--border-color);
   // background-color: var(--bg-color);
-  box-sizing: border-box;
   // clip-path: path('\
   //   M 0 0 \
   //   L 16 0 \
@@ -75,7 +74,6 @@ import tetrisPic from '../../assets/imgs/tetris.png'
       border-style: solid;
       border-width: 3px 5px 0 3px;
       border-top-right-radius: 15px;
-      box-sizing: border-box;
       clip-path: path('\
         M 0 16 \
         C 0 8, 8 0, 16 0 \
@@ -142,7 +140,6 @@ import tetrisPic from '../../assets/imgs/tetris.png'
         Z \
       ');
       background-color: var(--bg-color);
-      box-sizing: border-box;
       // box-shadow: -16px -16px 16px var(--shadow-color-light),
       //   8px 8px 8px var(--shadow-color-dark);
 

@@ -1,44 +1,34 @@
 <template>
   <section class="operating-keys">
     <div class="dir-keys">
-      <div
+      <button
         v-for="item of dirKeys"
         :key="item.value"
         class="key-item"
         :class="[
           item.value.toLowerCase(),
-          `${KEY_PREFIX}${item.value}`,
-          {
-            active: activeKeys.has(item.value)
-          }
+          `${KEY_PREFIX}${item.value}`
         ]"
       >
         <span class="key"></span>
         <span class="desc">{{ item.label }}</span>
-      </div>
+      </button>
     </div>
 
     <VolumeArea />
 
-    <div
+    <button
       class="big-key"
-      :class="[
-        `${KEY_PREFIX}Space`,
-        {
-          active: activeKeys.has('Space')
-        }
-      ]"
+      :class="`${KEY_PREFIX}Space`"
     >
       <span class="key"></span>
-    </div>
+    </button>
   </section>
 </template>
 
 <script setup lang="ts">
 import { KEY_PREFIX } from '../../config/constants'
 import VolumeArea from './VolumeArea.vue'
-
-const activeKeys = inject('activeKeys', ref(new Set<string>()))
 
 const dirKeys = [
   { label: '置底', value: 'ArrowUp' },
@@ -54,11 +44,8 @@ const dirKeys = [
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-
-  * {
-    box-sizing: border-box;
-  }
 }
+
 .dir-keys {
   display: flex;
   flex-wrap: wrap;
@@ -67,31 +54,33 @@ const dirKeys = [
   height: 120px;
 
   .key-item {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    position: absolute;
+    // display: flex;
+    // flex-wrap: wrap;
+    // justify-content: center;
+    // position: absolute;
     width: 36px;
+    border: none;
+    background: none;
 
     &.arrowup {
-      left: 50%;
-      top: 0;
-      transform: translateX(-50%);
+      // left: 50%;
+      // top: 0;
+      // transform: translateX(-50%);
     }
     &.arrowleft {
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
+      // left: 0;
+      // top: 50%;
+      // transform: translateY(-50%);
     }
     &.arrowright {
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
+      // right: 0;
+      // top: 50%;
+      // transform: translateY(-50%);
     }
     &.arrowdown {
-      left: 50%;
-      bottom: 0;
-      transform: translateX(-50%);
+      // left: 50%;
+      // bottom: 0;
+      // transform: translateX(-50%);
     }
 
     .key {
@@ -100,21 +89,20 @@ const dirKeys = [
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      box-sizing: border-box;
       background-color: var(--key-color);
       border: 1px solid var(--key-color-dark);
       // border-bottom-width: 2px;
       // border-right-width: 2px;
       // box-shadow: -4px -4px 8px var(--shadow-color-light),
       //   4px 4px 8px var(--shadow-color-dark);
-      box-shadow: 1px 1px 2px var(--key-color-dark),
-        2px 2px 2px var(--key-color-dark);
+      box-shadow: 1px 1px 0 var(--key-color-dark),
+        2px 2px 0 var(--key-color-dark);
       pointer-events: none;
     }
 
-    &.active .key {
+    &:active .key {
       transform: translate(1px, 1px);
-      box-shadow: 1px 1px 2px var(--key-color-dark);
+      box-shadow: 1px 1px 0 var(--key-color-dark);
     }
 
     .desc {
@@ -129,6 +117,9 @@ const dirKeys = [
 
 .big-key {
   margin-top: -32px;
+  border: none;
+  background: none;
+
   .key {
     display: block;
     position: relative;
@@ -139,9 +130,9 @@ const dirKeys = [
     // border-right-width: 3px;
     border-radius: 50%;
     background-color: var(--big-key-color);
-    box-shadow: 1px 1px 2px var(--big-key-color-dark),
-      2px 2px 2px var(--big-key-color-dark),
-      3px 3px 2px var(--big-key-color-dark);
+    box-shadow: 1px 1px 0 var(--big-key-color-dark),
+      2px 2px 0 var(--big-key-color-dark),
+      3px 3px 0 var(--big-key-color-dark);
     pointer-events: none;
 
     // &::before {
@@ -170,10 +161,9 @@ const dirKeys = [
     // }
   }
 
-  &.active .key {
-    transform: translate(1px, 1px);
-    box-shadow: 1px 1px 2px var(--big-key-color-dark),
-      2px 2px 2px var(--big-key-color-dark);
+  &:active .key {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--big-key-color-dark);
   }
 }
 </style>
