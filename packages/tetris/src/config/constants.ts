@@ -1,3 +1,1 @@
 export const TETRIS_HIGH_SCORE = 'TETRIS_HIGH_SCORE'
-
-export const KEY_PREFIX = 'J_TETRIS_KEY_'

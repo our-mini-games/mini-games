@@ -1,7 +1,10 @@
 import { Ref } from 'vue'
 import { GameMode, GameStatus } from '../config'
-import { KEY_PREFIX } from '../config/constants'
 import { Noop, PromiseNoop } from '../types'
+
+type KeyboardEventKey = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight' | 'KeyA' | 'KeyD' | 'KeyS' | 'KeyW' | 'Space' | 'Enter'
+type CustomEventKey = 'OnOrOff' | 'Reboot' | 'Pause' | 'Mode'
+type EventMappings = KeyboardEventKey | CustomEventKey
 
 export default (
   gameMode: Ref<GameMode>,
@@ -34,44 +37,77 @@ export default (
     document.removeEventListener('mouseup', handleMouseup, false)
   })
 
-  // 大键按下处理
-  const handleSpace = (): void => {
-    if (gameStatus.value === GameStatus.Finished) {
-      stopFinishedAnimation()
-    } else {
-      switchNextType()
-    }
-  }
+  const boardKeyMapping = {
+    ArrowUp: () => {
+      handleToBottomImmediate()
+      handleReachBottom()
+    },
 
-  const handleKeydown = (e: KeyboardEvent): void => {
-    e.preventDefault()
-    // activeKeys.value.add(e.code)
-    switch (e.code) {
-      case 'Space':
-        handleSpace()
-        break
-      case 'KeyW':
-      case 'ArrowUp':
-        handleToBottomImmediate()
-        handleReachBottom()
-        break
-      case 'KeyD':
-      case 'ArrowRight':
-        handleTurnRight()
-        break
-      case 'KeyS':
-      case 'ArrowDown':
-        setKeydownSpeed(100)
-        break
-      case 'KeyA':
-      case 'ArrowLeft':
-        handleTurnLeft()
-        break
+    ArrowLeft: () => {
+      handleTurnLeft()
+    },
+
+    ArrowRight: () => {
+      handleTurnRight()
+    },
+
+    ArrowDown: () => {
+      setKeydownSpeed(100)
+    },
+
+    Space: () => {
+      if (gameStatus.value === GameStatus.Finished) {
+        stopFinishedAnimation()
+      } else {
+        switchNextType()
+      }
+    },
+
+    OnOrOff: () => {
+      if (gameStatus.value !== GameStatus.PowerOff) {
+        setGameStatus(GameStatus.PowerOff)
+        location.href = '/mini-games'
+      } else {
+        setGameStatus(GameStatus.ChooseMode)
+      }
+    },
+
+    Reboot: () => {
+      setGameStatus(GameStatus.PowerOff)
+      nextTick(() => {
+        setGameStatus(GameStatus.Playing)
+      })
+    },
+
+    Pause: () => {
+      if (gameStatus.value === GameStatus.Paused) {
+        setGameStatus(GameStatus.Playing)
+        run()
+      } else if (gameStatus.value === GameStatus.Playing) {
+        setGameStatus(GameStatus.Paused)
+      }
+    },
+
+    Mode: () => {
+      console.log('toggle mode')
     }
+  } as Record<EventMappings, () => void>
+
+  boardKeyMapping.KeyW = boardKeyMapping.ArrowUp
+  boardKeyMapping.KeyA = boardKeyMapping.ArrowLeft
+  boardKeyMapping.KeyS = boardKeyMapping.ArrowDown
+  boardKeyMapping.KeyD = boardKeyMapping.ArrowRight
+  boardKeyMapping.Enter = boardKeyMapping.Space
+
+  // 键盘操作
+  const handleKeydown = (e: KeyboardEvent): void => {
+    // e.preventDefault()
+    // activeKeys.value.add(e.code)
+    boardKeyMapping[e.code as EventMappings]()
   }
 
   const handleKeyup = (e: KeyboardEvent): void => {
-    e.preventDefault()
+    // e.preventDefault()
     // activeKeys.value.delete(e.code)
     switch (e.code) {
       case 'KeyS':
@@ -80,8 +116,8 @@ export default (
         break
       case 'Enter':
         if (gameStatus.value === GameStatus.Playing) {
-          stop()
           gameStatus.value = GameStatus.Paused
+          stop()
         } else if (gameStatus.value === GameStatus.Paused) {
           gameStatus.value = GameStatus.Playing
           run()
@@ -89,84 +125,26 @@ export default (
     }
   }
 
+  // 屏幕按键操作
   const handleMousedown = (e: MouseEvent): void => {
-    e.preventDefault()
+    // e.preventDefault()
 
     const target = e.target as HTMLElement
 
-    if (!target) return
+    if (!target || !target.dataset.key) return
 
-    if (target.classList.contains(`${KEY_PREFIX}Space`)) {
-      // activeKeys.value.add('Space')
-      handleSpace()
-    }
-
-    if (target.classList.contains(`${KEY_PREFIX}ArrowUp`)) {
-      // activeKeys.value.add('ArrowUp')
-      handleToBottomImmediate()
-      handleReachBottom()
-    }
-
-    if (target.classList.contains(`${KEY_PREFIX}ArrowRight`)) {
-      // activeKeys.value.add('ArrowRight')
-      handleTurnRight()
-    }
-
-    if (target.classList.contains(`${KEY_PREFIX}ArrowDown`)) {
-      // activeKeys.value.add('ArrowDown')
-      setKeydownSpeed(100)
-    }
-
-    if (target.classList.contains(`${KEY_PREFIX}ArrowLeft`)) {
-      // activeKeys.value.add('ArrowLeft')
-      handleTurnLeft()
-    }
-
-    if (target.classList.contains(`${KEY_PREFIX}OnOrOff`)) {
-      // activeKeys.value.add('OnOrOff')
-
-      if (gameStatus.value !== GameStatus.PowerOff) {
-        setGameStatus(GameStatus.PowerOff)
-        location.href = '/mini-games'
-      } else {
-        setGameStatus(GameStatus.ChooseMode)
-      }
-    }
-
-    if (target.classList.contains(`${KEY_PREFIX}Reboot`)) {
-      // activeKeys.value.add('Reboot')
-      setGameStatus(GameStatus.PowerOff)
-      nextTick(() => {
-        setGameStatus(GameStatus.Playing)
-      })
-    }
-
-    if (target.classList.contains(`${KEY_PREFIX}Pause`)) {
-      // activeKeys.value.add('Pause')
-      if (gameStatus.value === GameStatus.Paused) {
-        setGameStatus(GameStatus.Playing)
-      } else if (gameStatus.value === GameStatus.Playing) {
-        setGameStatus(GameStatus.Paused)
-      }
-    }
-
-    // if (target.classList.contains(`${KEY_PREFIX}Mode`)) {
-    //   activeKeys.value.add('Mode')
-    // }
+    boardKeyMapping[target.dataset.key as EventMappings]()
   }
 
   const handleMouseup = (e: MouseEvent): void => {
-    e.preventDefault()
+    // e.preventDefault()
 
     const target = e.target as HTMLElement
 
-    if (!target) return
+    if (!target || !target.dataset.key || target.dataset.key !== 'ArrowDown') return
 
-    // activeKeys.value.clear()
-
-    if (target.classList.contains(`${KEY_PREFIX}ArrowDown`)) {
-      setKeydownSpeed(0)
-    }
+    // 重置方块下落速度
+    setKeydownSpeed(0)
   }
 
   // return {

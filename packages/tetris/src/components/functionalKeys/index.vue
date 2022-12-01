@@ -4,7 +4,7 @@
       v-for="item of keys"
       :key="item.value"
       class="key-item"
-      :class="`${KEY_PREFIX}${item.value}`"
+      :data-key="item.value"
     >
       <span class="key"></span>
       <span class="desc">
@@ -15,8 +15,6 @@
 </template>
 
 <script setup lang="ts">
-import { KEY_PREFIX } from '../../config/constants'
-
 const keys = [
   { label: '开/关机', value: 'OnOrOff' },
   { label: '重新开始', value: 'Reboot' },

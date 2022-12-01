@@ -106,6 +106,7 @@ const ornamentalTetrisList: Coordinate[][] = [
   border-style: solid;
   border-color: #f1f1f1 #fff #f3f3f3 #eaeaea;
   margin: 16px 0;
+  padding-right: 3px;
   outline: 1px solid #333;
   outline-offset: -16px;
 

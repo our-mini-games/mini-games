@@ -6,10 +6,8 @@
         :key="item.value"
         class="keydown-shadow key-item "
         :data-label="item.label"
-        :class="[
-          item.value.toLowerCase(),
-          `${KEY_PREFIX}${item.value}`
-        ]"
+        :data-key="item.value"
+        :class="item.value.toLowerCase()"
       >
         <span class="key"></span>
       </button>
@@ -18,8 +16,8 @@
     <VolumeArea />
 
     <button
+      data-key="Space"
       class="keydown-shadow big-key"
-      :class="`${KEY_PREFIX}Space`"
     >
       <span class="key"></span>
     </button>
@@ -27,7 +25,6 @@
 </template>
 
 <script setup lang="ts">
-import { KEY_PREFIX } from '../../config/constants'
 import VolumeArea from './VolumeArea.vue'
 
 const dirKeys = [
