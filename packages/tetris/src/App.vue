@@ -40,6 +40,7 @@ const {
 } = useScore(gameStatus)
 
 const {
+  initialLevel,
   level,
   levelInfo,
   speed,
@@ -100,6 +101,7 @@ const {
 )
 
 /* const { activeKeys } = */ useEvent(
+  initialLevel,
   gameMode,
   gameStatus,
   handleTurnLeft,
@@ -123,6 +125,7 @@ watch(gameStatus, (newStatus, oldStatus) => {
       break
     case GameStatus.Playing:
       if (oldStatus !== GameStatus.Paused && oldStatus !== GameStatus.Animation) {
+        level.value = initialLevel.value // 重置等级
         setScore() // 重置计分
         startup()
       }
@@ -148,6 +151,7 @@ provide('finalTips', finalTips)
 provide('score', score)
 provide('highScore', highScore)
 
+provide('initialLevel', initialLevel)
 provide('level', level)
 provide('levelInfo', levelInfo)
 provide('maxScore', maxScore)

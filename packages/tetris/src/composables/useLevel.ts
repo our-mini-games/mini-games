@@ -2,6 +2,7 @@ import { ComputedRef, Ref } from 'vue'
 import { defaultLevel, levelConfig } from '../config'
 
 interface ReturnType {
+  initialLevel: Ref<number>
   level: Ref<number>
   levelInfo: ComputedRef<{
     level: number
@@ -12,7 +13,8 @@ interface ReturnType {
 }
 
 export default (score: Ref<number>): ReturnType => {
-  const level = ref(defaultLevel)
+  const initialLevel = ref(defaultLevel)
+  const level = ref(initialLevel)
 
   const levelInfo = computed(() => {
     return levelConfig.find(item => item.level === level.value)!
@@ -29,6 +31,7 @@ export default (score: Ref<number>): ReturnType => {
   }, { immediate: true })
 
   return {
+    initialLevel,
     level,
     levelInfo,
     speed,

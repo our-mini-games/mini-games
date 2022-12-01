@@ -7,6 +7,7 @@ type CustomEventKey = 'OnOrOff' | 'Reboot' | 'Pause' | 'Mode'
 type EventMappings = KeyboardEventKey | CustomEventKey
 
 export default (
+  initialLevel: Ref<number>,
   gameMode: Ref<GameMode>,
   gameStatus: Ref<GameStatus>,
   handleTurnLeft: Noop,
@@ -36,8 +37,12 @@ export default (
 
   const boardKeyMapping = {
     ArrowUp: () => {
-      handleToBottomImmediate()
-      handleReachBottom()
+      if (gameStatus.value === GameStatus.ChooseMode) {
+        initialLevel.value = Math.min(20, initialLevel.value + 1)
+      } else {
+        handleToBottomImmediate()
+        handleReachBottom()
+      }
     },
 
     ArrowLeft: () => {
@@ -49,7 +54,11 @@ export default (
     },
 
     ArrowDown: () => {
-      setKeydownSpeed(100)
+      if (gameStatus.value === GameStatus.ChooseMode) {
+        initialLevel.value = Math.max(1, initialLevel.value - 1)
+      } else {
+        setKeydownSpeed(100)
+      }
     },
 
     Space: () => {
