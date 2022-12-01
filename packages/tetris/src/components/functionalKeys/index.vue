@@ -30,10 +30,9 @@ const keys = [
   justify-content: center;
   gap: 16px;
   position: absolute;
-  right: 0;
-  bottom: 32px;
+  right: -10px;
+  bottom: 20px;
   border: none;
-  margin: 0 2px 2px 0;
   padding: 2px 10px 6px 8px;
   border-radius: 12px;
   box-shadow: -2px -2px 4px var(--shadow-color-light) inset,

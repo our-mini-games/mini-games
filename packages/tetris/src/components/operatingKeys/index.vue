@@ -49,8 +49,6 @@ const dirKeys = [
 }
 
 .dir-keys {
-  // display: flex;
-  // flex-wrap: wrap;
   position: relative;
   width: 105px;
   min-width: 105px;
@@ -107,7 +105,6 @@ const dirKeys = [
 }
 
 .big-key {
-  margin-top: -25px;
   border: none;
   background: none;
 
