@@ -98,12 +98,12 @@ export default (
 
   // 键盘操作
   const handleKeydown = (e: KeyboardEvent): void => {
-    // e.preventDefault()
+    e.preventDefault()
     boardKeyMapping[e.code as EventMappings]?.()
   }
 
   const handleKeyup = (e: KeyboardEvent): void => {
-    // e.preventDefault()
+    e.preventDefault()
     switch (e.code) {
       case 'KeyS':
       case 'ArrowDown':
@@ -122,7 +122,7 @@ export default (
 
   // 屏幕按键操作
   const handleMousedown = (e: MouseEvent): void => {
-    // e.preventDefault()
+    e.preventDefault()
 
     const target = e.target as HTMLElement
 
@@ -132,7 +132,7 @@ export default (
   }
 
   const handleMouseup = (e: MouseEvent): void => {
-    // e.preventDefault()
+    e.preventDefault()
 
     const target = e.target as HTMLElement
 
