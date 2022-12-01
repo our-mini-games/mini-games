@@ -30,6 +30,7 @@ import tetrisPic from '../../assets/imgs/tetris.png'
 .layout-container {
   width: 360px;
   height: 640px;
+  min-width: 360px;
   max-width: 100%;
   max-height: calc(100% - 20px);
   margin-top: 20px;
@@ -125,7 +126,7 @@ import tetrisPic from '../../assets/imgs/tetris.png'
       position: relative;
       z-index: 1;
       height: 184px;
-      padding: 32px;
+      padding: 32px 28px;
       margin-top: -24px;
       border-color: var(--bg-color);
       border-width: 3px 4px 3px 3px;
@@ -143,16 +144,20 @@ import tetrisPic from '../../assets/imgs/tetris.png'
       // box-shadow: -16px -16px 16px var(--shadow-color-light),
       //   8px 8px 8px var(--shadow-color-dark);
 
-      &::before {
+      &::before,
+      &::after {
         content: '';
         position: absolute;
-        left: -16px;
-        top: 10px;
         width: 20px;
         height: 52px;
         background-color: white;
         border-radius: 50%;
-        border: 3px solid var(--border-color);
+        border: 4px solid var(--border-color);
+      }
+
+      &::before {
+        left: -12px;
+        top: 10px;
         border-left: none;
         border-top: none;
         border-bottom: none;
@@ -160,13 +165,8 @@ import tetrisPic from '../../assets/imgs/tetris.png'
       &::after {
         content: '';
         position: absolute;
-        right: -16px;
+        right: -12px;
         top: 10px;
-        width: 19px;
-        height: 52px;
-        background-color: white;
-        border-radius: 50%;
-        border: 4px solid var(--border-color);
         border-right: none;
         border-top: none;
         border-bottom: none;

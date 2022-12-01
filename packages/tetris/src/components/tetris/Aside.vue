@@ -135,6 +135,7 @@ const offset = computed(() => {
     }
 
     .title {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       font-size: 12px;
       color: #888;
     }

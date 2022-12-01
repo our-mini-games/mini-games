@@ -4,21 +4,21 @@
       <button
         v-for="item of dirKeys"
         :key="item.value"
-        class="key-item"
+        class="keydown-shadow key-item "
+        :data-label="item.label"
         :class="[
           item.value.toLowerCase(),
           `${KEY_PREFIX}${item.value}`
         ]"
       >
         <span class="key"></span>
-        <span class="desc">{{ item.label }}</span>
       </button>
     </div>
 
     <VolumeArea />
 
     <button
-      class="big-key"
+      class="keydown-shadow big-key"
       :class="`${KEY_PREFIX}Space`"
     >
       <span class="key"></span>
@@ -44,47 +44,48 @@ const dirKeys = [
   justify-content: space-between;
   align-items: center;
   gap: 16px;
+
+  .keydown-shadow:active .key {
+    transform: translate(2px, 2px);
+    box-shadow: none
+  }
 }
 
 .dir-keys {
-  display: flex;
-  flex-wrap: wrap;
+  // display: flex;
+  // flex-wrap: wrap;
   position: relative;
-  width: 100px;
+  width: 105px;
+  min-width: 105px;
   height: 120px;
 
   .key-item {
-    // display: flex;
-    // flex-wrap: wrap;
-    // justify-content: center;
-    // position: absolute;
     width: 36px;
+    height: 36px;
     border: none;
     background: none;
+    color: var(--desc-text);
 
-    &.arrowup {
-      // left: 50%;
-      // top: 0;
-      // transform: translateX(-50%);
-    }
-    &.arrowleft {
-      // left: 0;
-      // top: 50%;
-      // transform: translateY(-50%);
-    }
-    &.arrowright {
-      // right: 0;
-      // top: 50%;
-      // transform: translateY(-50%);
-    }
+    &.arrowup,
     &.arrowdown {
-      // left: 50%;
-      // bottom: 0;
-      // transform: translateX(-50%);
+      display: block;
+      margin: 0 auto;
+    }
+
+    &.arrowright {
+      float: left;
+    }
+
+    &.arrowright {
+      float: right;
+    }
+
+    &.arrowdown {
+      margin-top: -4px
     }
 
     .key {
-      display: block;
+      display: inline-block;
       position: relative;
       width: 36px;
       height: 36px;
@@ -95,28 +96,21 @@ const dirKeys = [
       // border-right-width: 2px;
       // box-shadow: -4px -4px 8px var(--shadow-color-light),
       //   4px 4px 8px var(--shadow-color-dark);
-      box-shadow: 1px 1px 0 var(--key-color-dark),
-        2px 2px 0 var(--key-color-dark);
+      box-shadow: 2px 2px 0 var(--key-color-dark);
       pointer-events: none;
     }
 
-    &:active .key {
-      transform: translate(1px, 1px);
-      box-shadow: 1px 1px 0 var(--key-color-dark);
-    }
-
-    .desc {
-      width: 100%;
-      text-align: center;
+    &::after {
+      content: attr(data-label);
+      display: block;
+      transform: scale(.7) translate(2px, -2px);
       font-size: 12px;
-      transform: scale(0.5);
-      color: var(--desc-text);
     }
   }
 }
 
 .big-key {
-  margin-top: -32px;
+  margin-top: -25px;
   border: none;
   background: none;
 
@@ -130,9 +124,7 @@ const dirKeys = [
     // border-right-width: 3px;
     border-radius: 50%;
     background-color: var(--big-key-color);
-    box-shadow: 1px 1px 0 var(--big-key-color-dark),
-      2px 2px 0 var(--big-key-color-dark),
-      3px 3px 0 var(--big-key-color-dark);
+    box-shadow: 2px 2px 0 var(--big-key-color-dark);
     pointer-events: none;
 
     // &::before {
@@ -159,11 +151,6 @@ const dirKeys = [
     //   transform-origin: center;
     //   transform: rotate(-15deg);
     // }
-  }
-
-  &:active .key {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 var(--big-key-color-dark);
   }
 }
 </style>
