@@ -135,6 +135,7 @@ export default (
       // activeKeys.value.add('Pause')
       if (gameStatus.value === GameStatus.Paused) {
         setGameStatus(GameStatus.Playing)
+        run()
       } else if (gameStatus.value === GameStatus.Playing) {
         setGameStatus(GameStatus.Paused)
       }
