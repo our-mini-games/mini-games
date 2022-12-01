@@ -17,8 +17,8 @@ export const levelConfig = (() => {
   return Array.from({ length: 20 }, (_, index) => {
     return {
       level: index + 1,
-      speed: 800 - (index * 20),
-      maxScore: 2000 + ((index ** 2) * 500)
+      speed: 800 - (index * 35),
+      maxScore: 2000 + ((index ** 2) * 300)
     }
   })
 })()

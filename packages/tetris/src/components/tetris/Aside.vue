@@ -50,7 +50,7 @@
         Level
       </h3>
       <div class="value">
-        {{ level }}
+        {{ theLevel }}
       </div>
     </section>
 
@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 import type { Ref } from 'vue'
-import { wrapperSize, itemSize, color, Tetrominos } from '../../config'
+import { wrapperSize, itemSize, color, Tetrominos, GameStatus } from '../../config'
 import { Tetris } from '../../types'
 
 const svgSize = itemSize * wrapperSize.column / 2
@@ -87,10 +87,18 @@ const asideHeight = `${wrapperSize.row * itemSize + 3}px`
 const nextTetris = inject<Ref<Tetris | undefined>>('nextTetris')!
 const score = inject('score', ref(0))
 const highScore = inject('highScore', ref(0))
+const initialLevel = inject('initialLevel', ref(0))
 const level = inject('level', ref(0))
+const gameStatus = inject('gameStatus', ref(GameStatus.PowerOff))
 const statusText = inject('statusText', ref('Hello world'))
 
 const nextTetrisCoordinates = computed(() => nextTetris.value ? nextTetris.value.coordinates : [])
+
+const theLevel = computed(() => {
+  return gameStatus.value === GameStatus.ChooseMode
+    ? initialLevel.value
+    : level.value
+})
 
 const offset = computed(() => {
   if (!nextTetris.value) {
