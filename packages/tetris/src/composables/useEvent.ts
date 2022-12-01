@@ -19,10 +19,7 @@ export default (
   setGameStatus: (status: GameStatus) => void,
   setKeydownSpeed: (speed: number) => void,
   stopFinishedAnimation: Noop
-  // ): { activeKeys: Ref<Set<string>> } => {
 ): void => {
-  // const activeKeys = ref(new Set<string>())
-
   onMounted(() => {
     document.addEventListener('keydown', handleKeydown, false)
     document.addEventListener('keyup', handleKeyup, false)
@@ -102,13 +99,11 @@ export default (
   // 键盘操作
   const handleKeydown = (e: KeyboardEvent): void => {
     // e.preventDefault()
-    // activeKeys.value.add(e.code)
-    boardKeyMapping[e.code as EventMappings]()
+    boardKeyMapping[e.code as EventMappings]?.()
   }
 
   const handleKeyup = (e: KeyboardEvent): void => {
     // e.preventDefault()
-    // activeKeys.value.delete(e.code)
     switch (e.code) {
       case 'KeyS':
       case 'ArrowDown':
@@ -146,8 +141,4 @@ export default (
     // 重置方块下落速度
     setKeydownSpeed(0)
   }
-
-  // return {
-  //   activeKeys
-  // }
 }
