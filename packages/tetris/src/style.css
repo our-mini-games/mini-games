@@ -1,6 +1,6 @@
 *,*::before,*::after { box-sizing: border-box }
 
-* { margin: 0; padding: 0 }
+* { margin: 0; padding: 0; outline: none; }
 
 :root {
   --border-color: #f1f1f1;
