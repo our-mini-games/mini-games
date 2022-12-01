@@ -14,7 +14,8 @@ export default (
   run: Noop,
   stop: Noop,
   setGameStatus: (status: GameStatus) => void,
-  setKeydownSpeed: (speed: number) => void
+  setKeydownSpeed: (speed: number) => void,
+  stopFinishedAnimation: Noop
   // ): { activeKeys: Ref<Set<string>> } => {
 ): void => {
   // const activeKeys = ref(new Set<string>())
@@ -33,12 +34,21 @@ export default (
     document.removeEventListener('mouseup', handleMouseup, false)
   })
 
+  // 大键按下处理
+  const handleSpace = (): void => {
+    if (gameStatus.value === GameStatus.Finished) {
+      stopFinishedAnimation()
+    } else {
+      switchNextType()
+    }
+  }
+
   const handleKeydown = (e: KeyboardEvent): void => {
     e.preventDefault()
     // activeKeys.value.add(e.code)
     switch (e.code) {
       case 'Space':
-        switchNextType()
+        handleSpace()
         break
       case 'KeyW':
       case 'ArrowUp':
@@ -88,7 +98,7 @@ export default (
 
     if (target.classList.contains(`${KEY_PREFIX}Space`)) {
       // activeKeys.value.add('Space')
-      switchNextType()
+      handleSpace()
     }
 
     if (target.classList.contains(`${KEY_PREFIX}ArrowUp`)) {
@@ -125,7 +135,7 @@ export default (
 
     if (target.classList.contains(`${KEY_PREFIX}Reboot`)) {
       // activeKeys.value.add('Reboot')
-      setGameStatus(GameStatus.Finished)
+      setGameStatus(GameStatus.PowerOff)
       nextTick(() => {
         setGameStatus(GameStatus.Playing)
       })

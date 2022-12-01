@@ -48,9 +48,7 @@ export default (
     setGameStatus(GameStatus.Animation)
     // 1. 检测当前游戏是否已经结束
     if (finishedCheck(currentTetris.value!)) {
-      // @todo 载入结束动画
       setGameStatus(GameStatus.Finished)
-      console.log('Game over')
       return
     }
     // 2. 给 building 加入当前的方块

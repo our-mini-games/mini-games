@@ -74,7 +74,9 @@ const {
 )
 
 const {
-  removeAnimation
+  removeAnimation,
+  finisedAnimation,
+  stopFinishedAnimation
 } = useAnimation(building, setGameStatus)
 
 const {
@@ -108,7 +110,8 @@ const {
   run,
   stop,
   setGameStatus,
-  setKeydownSpeed
+  setKeydownSpeed,
+  stopFinishedAnimation
 )
 
 watch(gameStatus, (newStatus, oldStatus) => {
@@ -116,6 +119,7 @@ watch(gameStatus, (newStatus, oldStatus) => {
     case GameStatus.Finished:
       console.log('Game Over.')
       statusText.value = 'Game Over'
+      finisedAnimation(() => { currentTetris.value = null })
       break
     case GameStatus.Playing:
       if (oldStatus !== GameStatus.Paused && oldStatus !== GameStatus.Animation) {
@@ -126,6 +130,9 @@ watch(gameStatus, (newStatus, oldStatus) => {
       break
     case GameStatus.Paused:
       statusText.value = 'Paused'
+      break
+    case GameStatus.ChooseMode:
+      statusText.value = 'Choose Mode'
       break
   }
 }, { immediate: true })
