@@ -629,10 +629,12 @@ export const getTetrisRandomType = (source: Tetris): Tetris => {
     source.coordinates[0].y - newTetris.coordinates[0].y
   ]
 
-  newTetris.coordinates.forEach(item => {
-    item.x += dx
-    item.y += dy
-  })
+  newTetris.coordinates = newTetris.coordinates.map(({ x, y }) => {
+    return {
+      x: x + dx,
+      y: y + dy
+    }
+  }) as Tetris['coordinates']
 
   return newTetris
 }

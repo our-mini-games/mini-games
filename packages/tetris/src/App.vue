@@ -92,6 +92,7 @@ const {
   setKeydownSpeed,
   handleReachBottom
 } = useGame(
+  gameMode,
   gameStatus,
   currentTetris,
   nextTetris,
