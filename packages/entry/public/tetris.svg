@@ -1,0 +1,38 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60" height="60">
+  <defs><g id="tetris-item"><rect width="12" height="12" x="0" y="0" rx="1" ry="1" fill="transparent" stroke="inherit" class="tetris-item-outline" name="outline"></rect><rect width="9" height="9" x="1.5" y="1.5" rx="1" ry="1" fill="inherit" stroke="transparent" class="tetris-item-inner" name="inner"></rect></g></defs>
+  <g>
+    <use x="0" y="0" fill="rgba(188, 188, 188, 0.365)" stroke="rgba(188, 188, 188, 0.365)" xlink:href="#tetris-item"/>
+    <use x="12" y="0" fill="#0088ff" stroke="#0088ff" xlink:href="#tetris-item"/>
+    <use x="24" y="0" fill="#0088ff" stroke="#0088ff" xlink:href="#tetris-item"/>
+    <use x="36" y="0" fill="#0088ff" stroke="#0088ff" xlink:href="#tetris-item"/>
+    <use x="48" y="0" fill="rgba(188, 188, 188, 0.365)" stroke="rgba(188, 188, 188, 0.365)" xlink:href="#tetris-item"/>
+  </g>
+  <g transform="translate(0, 12)">
+    <use x="0" y="0" fill="rgba(188, 188, 188, 0.365)" stroke="rgba(188, 188, 188, 0.365)" xlink:href="#tetris-item"/>
+    <use x="12" y="0" fill="rgba(188, 188, 188, 0.365)" stroke="rgba(188, 188, 188, 0.365)" xlink:href="#tetris-item"/>
+    <use x="24" y="0" fill="#0088ff" stroke="#0088ff" xlink:href="#tetris-item"/>
+    <use x="36" y="0" fill="rgba(188, 188, 188, 0.365)" stroke="rgba(188, 188, 188, 0.365)" xlink:href="#tetris-item"/>
+    <use x="48" y="0" fill="rgba(188, 188, 188, 0.365)" stroke="rgba(188, 188, 188, 0.365)" xlink:href="#tetris-item"/>
+  </g>
+  <g transform="translate(0, 24)">
+    <use x="0" y="0" fill="#10b20a" stroke="#10b20a" xlink:href="#tetris-item"/>
+    <use x="12" y="0" fill="rgba(188, 188, 188, 0.365)" stroke="rgba(188, 188, 188, 0.365)" xlink:href="#tetris-item"/>
+    <use x="24" y="0" fill="rgba(188, 188, 188, 0.365)" stroke="rgba(188, 188, 188, 0.365)" xlink:href="#tetris-item"/>
+    <use x="36" y="0" fill="rgba(188, 188, 188, 0.365)" stroke="rgba(188, 188, 188, 0.365)" xlink:href="#tetris-item"/>
+    <use x="48" y="0" fill="#0088ff" stroke="#0088ff" xlink:href="#tetris-item"/>
+  </g>
+  <g transform="translate(0, 36)">
+    <use x="0" y="0" fill="#10b20a" stroke="#10b20a" xlink:href="#tetris-item"/>
+    <use x="12" y="0" fill="#f40" stroke="#f40" xlink:href="#tetris-item"/>
+    <use x="24" y="0" fill="rgba(188, 188, 188, 0.365)" stroke="rgba(188, 188, 188, 0.365)" xlink:href="#tetris-item"/>
+    <use x="36" y="0" fill="#0088ff" stroke="#0088ff" xlink:href="#tetris-item"/>
+    <use x="48" y="0" fill="#0088ff" stroke="#0088ff" xlink:href="#tetris-item"/>
+  </g>
+  <g transform="translate(0, 48)">
+    <use x="0" y="0" fill="#10b20a" stroke="#10b20a" xlink:href="#tetris-item"/>
+    <use x="12" y="0" fill="#f40" stroke="#f40" xlink:href="#tetris-item"/>
+    <use x="24" y="0" fill="#f40" stroke="#f40" xlink:href="#tetris-item"/>
+    <use x="36" y="0" fill="#f40" stroke="#f40" xlink:href="#tetris-item"/>
+    <use x="48" y="0" fill="#0088ff" stroke="#0088ff" xlink:href="#tetris-item"/>
+  </g>
+</svg>
