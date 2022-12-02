@@ -30,20 +30,21 @@ export default (
     if (!isLegalTetris(coordinates, building.value)) {
       return
     }
+
     currentTetris.value.coordinates = coordinates
   }
 
   // 左移
   const handleTurnLeft = throttle(() => {
-    if (gameStatus.value === GameStatus.Playing) {
-      transverseDisplacement(true)
-    }
+    if (gameStatus.value !== GameStatus.Playing) return
+
+    transverseDisplacement(true)
   }, 50)
   // 右移
   const handleTurnRight = throttle(() => {
-    if (gameStatus.value === GameStatus.Playing) {
-      transverseDisplacement(false)
-    }
+    if (gameStatus.value !== GameStatus.Playing) return
+
+    transverseDisplacement(false)
   }, 50)
 
   // 下降

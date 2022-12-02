@@ -1,5 +1,5 @@
 <template>
-  <div class="tetris">
+  <div class="tetris" @contextmenu.prevent>
     <LayoutVue>
       <template #main>
         <TetrisVue />
