@@ -3,7 +3,7 @@
 A collection of small games.
 
 ## Playground
-https://humandetail.github.io/mini-games/games/
+https://our-mini-games.github.io/mini-games/games/
 
 ## Games
 

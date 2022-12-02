@@ -28,10 +28,10 @@ const keys = [
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 18px;
   position: absolute;
   right: -10px;
-  bottom: 20px;
+  bottom: 25px;
   border: none;
   padding: 2px 10px 6px 8px;
   border-radius: 12px;
@@ -68,8 +68,9 @@ const keys = [
       margin-top: 10px;
       font-size: 12px;
       color: #bababa;
+      text-align: center;
       transform-origin: center top;
-      transform: scale(0.5) translateX(-100%);
+      transform: scale(0.66) translateX(-75%);
     }
 
     &:active .key {

@@ -1,6 +1,7 @@
 import { Ref } from 'vue'
 import { GameMode, GameStatus } from '../config'
 import { Noop, PromiseNoop } from '../types'
+import { isMobile } from '../lib/utils'
 
 type KeyboardEventKey = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight' | 'KeyA' | 'KeyD' | 'KeyS' | 'KeyW' | 'Space' | 'Enter'
 type CustomEventKey = 'OnOrOff' | 'Reboot' | 'Pause' | 'Mode'
@@ -22,18 +23,24 @@ export default (
   stopFinishedAnimation: Noop,
   stopModeAnimation: Noop
 ): void => {
+  const mouseEventType = isMobile()
+    ? { up: 'touchend', down: 'touchstart' } as const
+    : { up: 'mouseup', down: 'mousedown' } as const
+
   onMounted(() => {
     document.addEventListener('keydown', handleKeydown, false)
     document.addEventListener('keyup', handleKeyup, false)
-    document.addEventListener('mousedown', handleMousedown, false)
-    document.addEventListener('mouseup', handleMouseup, false)
+
+    document.addEventListener(mouseEventType.down, handleMousedown, { capture: false, passive: false })
+    document.addEventListener(mouseEventType.up, handleMouseup, { capture: false, passive: false })
   })
 
   onBeforeUnmount(() => {
     document.removeEventListener('keydown', handleKeydown, false)
     document.removeEventListener('keyup', handleKeyup, false)
-    document.removeEventListener('mousedown', handleMousedown, false)
-    document.removeEventListener('mouseup', handleMouseup, false)
+
+    document.removeEventListener(mouseEventType.down, handleMousedown)
+    document.removeEventListener(mouseEventType.up, handleMouseup)
   })
 
   const boardKeyMapping = {
@@ -70,7 +77,7 @@ export default (
       if (gameStatus.value === GameStatus.ChooseMode) {
         initialLevel.value = Math.max(1, initialLevel.value - 1)
       } else {
-        setKeydownSpeed(100)
+        setKeydownSpeed(80)
       }
     },
 
@@ -108,6 +115,7 @@ export default (
         run()
       } else if (gameStatus.value === GameStatus.Playing) {
         setGameStatus(GameStatus.Paused)
+        stop()
       }
     },
 
@@ -116,55 +124,69 @@ export default (
     }
   } as Record<EventMappings, () => void>
 
+  boardKeyMapping.Enter = boardKeyMapping.Pause
   boardKeyMapping.KeyW = boardKeyMapping.ArrowUp
   boardKeyMapping.KeyA = boardKeyMapping.ArrowLeft
   boardKeyMapping.KeyS = boardKeyMapping.ArrowDown
   boardKeyMapping.KeyD = boardKeyMapping.ArrowRight
-  boardKeyMapping.Enter = boardKeyMapping.Space
 
   // 键盘操作
   const handleKeydown = (e: KeyboardEvent): void => {
-    // e.preventDefault()
+    e.preventDefault()
     boardKeyMapping[e.code as EventMappings]?.()
   }
 
   const handleKeyup = (e: KeyboardEvent): void => {
-    // e.preventDefault()
+    e.preventDefault()
     switch (e.code) {
       case 'KeyS':
       case 'ArrowDown':
         setKeydownSpeed(0)
         break
-      case 'Enter':
-        if (gameStatus.value === GameStatus.Playing) {
-          gameStatus.value = GameStatus.Paused
-          stop()
-        } else if (gameStatus.value === GameStatus.Paused) {
-          gameStatus.value = GameStatus.Playing
-          run()
-        }
+      // case 'Enter':
+      //   if (gameStatus.value === GameStatus.Playing) {
+      //     gameStatus.value = GameStatus.Paused
+      //     stop()
+      //   } else if (gameStatus.value === GameStatus.Paused) {
+      //     gameStatus.value = GameStatus.Playing
+      //     run()
+      //   }
     }
   }
 
+  let repeatExecFn: number = 0
+
   // 屏幕按键操作
-  const handleMousedown = (e: MouseEvent): void => {
-    // e.preventDefault()
+  const handleMousedown = (e: MouseEvent | TouchEvent): void => {
+    e.preventDefault()
 
     const target = e.target as HTMLElement
+    const key = target.dataset.key as EventMappings
 
-    if (!target || !target.dataset.key) return
+    if (!target || !key || !boardKeyMapping[key]) return
 
-    boardKeyMapping[target.dataset.key as EventMappings]()
+    boardKeyMapping[key]()
+
+    // 如果按的是左/右/空格则需要持续触发，其他的按键在按下一次则最多只执行一次
+    if (!['ArrowLeft', 'ArrowRight', 'Space'].includes(key)) return
+    repeatExecFn = requestAnimationFrame(() => handleMousedown(e))
   }
 
-  const handleMouseup = (e: MouseEvent): void => {
-    // e.preventDefault()
+  const handleMouseup = (e: MouseEvent | TouchEvent): void => {
+    e.preventDefault()
 
     const target = e.target as HTMLElement
+    const key = target.dataset.key as EventMappings
 
-    if (!target || !target.dataset.key || target.dataset.key !== 'ArrowDown') return
+    if (!target || !key) return
 
-    // 重置方块下落速度
-    setKeydownSpeed(0)
+    if (key === 'ArrowDown') {
+      // 重置方块下落速度
+      setKeydownSpeed(0)
+      //
+    } else if (['ArrowLeft', 'ArrowRight', 'Space'].includes(key)) {
+      // 松开屏幕上的按键后就停止触发
+      cancelAnimationFrame(repeatExecFn)
+    }
   }
 }
