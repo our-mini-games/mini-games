@@ -37,7 +37,7 @@ const {
   score,
   highScore,
   setScore
-} = useScore(gameStatus)
+} = useScore(gameStatus, gameMode)
 
 const {
   initialLevel,
@@ -50,6 +50,7 @@ const {
 const switchNextType = useNextType(
   currentTetris,
   gameStatus,
+  gameMode,
   building
 )
 

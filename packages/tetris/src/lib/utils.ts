@@ -1,9 +1,9 @@
 import { Tetrominos, tetrisCoordinates, wrapperSize } from '../config'
 import { BuildingType, Tetris, TetrisType } from '../types'
 
-const getRandomNumber = (min: number, max: number): number => Math.round(Math.random() * (max - min)) + min
+export const getRandomNumber = (min: number, max: number): number => Math.round(Math.random() * (max - min)) + min
 
-const getRandomTetromino = (): Tetrominos => {
+export const getRandomTetromino = (): Tetrominos => {
   const arr = [Tetrominos.I, Tetrominos.L1, Tetrominos.L2, Tetrominos.O, Tetrominos.S, Tetrominos.T, Tetrominos.Z]
   return shuffle(arr)[0]
 }
@@ -12,7 +12,7 @@ const getRandomTetromino = (): Tetrominos => {
  * 数组随机排序
  * @param input 需要排序的数组
  */
-function shuffle <T extends any[] = []> (input: T): T {
+export function shuffle <T extends any[] = []> (input: T): T {
   const len = input.length
 
   if (len === 0) return input
@@ -91,4 +91,12 @@ export const sleep = async (delay: number): Promise<number> => {
 
 export function isMobile (): boolean {
   return /mobile/iu.test(navigator.userAgent)
+}
+
+export const getShuffleBuildingRow = (): BuildingType[0] => {
+  const length = getRandomNumber(1, wrapperSize.column - 1)
+  return shuffle([
+    ...Array.from({ length }, () => true),
+    ...Array.from({ length: wrapperSize.column - length }, () => false)
+  ])
 }

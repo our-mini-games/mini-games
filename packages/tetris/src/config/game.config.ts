@@ -126,3 +126,6 @@ export enum GameMode {
    */
   Entertain = 'Entertain'
 }
+
+// 娱乐模式每取 30 个元素就给建筑底下加一层
+export const calleniaLimit = 10

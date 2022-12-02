@@ -1,5 +1,6 @@
 import { Tetrominos } from '../config'
 import { Coordinate, Tetris } from '../types'
+import { createTetris, getRandomTetromino, shuffle } from './utils'
 
 /**
  * 获取当前元素的下一形态
@@ -611,4 +612,27 @@ const getTNextType = (source: Tetris): Tetris => {
         ]
       }
   }
+}
+
+/**
+ * 随机获取元素的下一形态
+ * @param source 原元素
+ */
+export const getTetrisRandomType = (source: Tetris): Tetris => {
+  const tetromino = getRandomTetromino()
+  const type = shuffle(tetromino === source.tetrominos ? [1, 2, 3, 4].filter(item => item !== source.type) : [1, 2, 3, 4])[0]
+
+  const newTetris = createTetris(tetromino, type as Tetris['type'])
+
+  const [dx, dy] = [
+    source.coordinates[0].x - newTetris.coordinates[0].x,
+    source.coordinates[0].y - newTetris.coordinates[0].y
+  ]
+
+  newTetris.coordinates.forEach(item => {
+    item.x += dx
+    item.y += dy
+  })
+
+  return newTetris
 }
