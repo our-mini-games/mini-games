@@ -22,7 +22,13 @@ export default (score: Ref<number>): ReturnType => {
 
   const speed = computed(() => levelInfo.value.speed)
 
-  const maxScore = computed(() => levelInfo.value.maxScore)
+  const maxScore = computed(() => {
+    if (initialLevel.value === 1) {
+      return levelInfo.value.maxScore
+    }
+
+    return levelInfo.value.maxScore - levelConfig.find(item => item.level === initialLevel.value - 1)!.maxScore
+  })
 
   watch(score, (newScore) => {
     if (newScore > maxScore.value) {

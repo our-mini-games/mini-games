@@ -1,6 +1,6 @@
 import { Ref } from 'vue'
-import { GameStatus, Tetrominos, wrapperSize } from '../config'
-import { createBuilding, finishedCheck, getNextTetris, isLegalTetris, removeCheck, sleep } from '../lib/utils'
+import { calleniaLimit, GameMode, GameStatus, Tetrominos, wrapperSize } from '../config'
+import { createBuilding, finishedCheck, getNextTetris, getShuffleBuildingRow, isLegalTetris, removeCheck, sleep } from '../lib/utils'
 import { BuildingType, Noop, PromiseNoop, Tetris } from '../types'
 
 interface GameReturnType {
@@ -13,6 +13,7 @@ interface GameReturnType {
 }
 
 export default (
+  gameMode: Ref<GameMode>,
   gameStatus: Ref<GameStatus>,
   currentTetris: Ref<Tetris | null>,
   nextTetris: Ref<Tetris | null>,
@@ -26,6 +27,9 @@ export default (
   const keydownSpeed = ref(0)
   const animationDuration = computed(() => keydownSpeed.value || speed.value)
 
+  // 娱乐模式加层计数器
+  const calleniaCount = ref(0)
+
   let requestId = 0
   let startTime = Date.now()
 
@@ -33,6 +37,7 @@ export default (
     currentTetris.value = null
     building.value = createBuilding(wrapperSize.row, wrapperSize.column)
     nextTetris.value = getNextTetris()
+    calleniaCount.value = 0
     changeCurrent()
   }
 
@@ -42,6 +47,18 @@ export default (
     currentTetris.value.coordinates.forEach(({ x, y }) => {
       building.value[y][x] = true
     })
+  }
+
+  const setCalleniaToBuilding = async (): Promise<void> => {
+    const firstRow = building.value[0]
+
+    building.value.shift()
+    building.value.push(getShuffleBuildingRow())
+
+    // 如果当前 building 第一层有内容，游戏判定结束
+    if (firstRow.some(Boolean)) {
+      setGameStatus(GameStatus.Finished)
+    }
   }
 
   const handleReachBottom = async (): Promise<void> => {
@@ -89,6 +106,15 @@ export default (
       }) as Tetris['coordinates']
     }
     nextTetris.value = getNextTetris()
+
+    calleniaCount.value++
+
+    if (gameMode.value === GameMode.Entertain && calleniaCount.value > calleniaLimit) {
+      // 重新计数
+      calleniaCount.value = 0
+      // 给 building 底下加一层
+      await setCalleniaToBuilding()
+    }
 
     await sleep(50)
     run()
