@@ -88,3 +88,7 @@ export const sleep = async (delay: number): Promise<number> => {
     }, delay)
   })
 }
+
+export function isMobile (): boolean {
+  return /mobile/iu.test(navigator.userAgent)
+}

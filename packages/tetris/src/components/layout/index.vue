@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-container">
+  <div class="layout-container" @contextmenu.prevent>
     <main class="main-wrapper">
       <div class="wrapper">
         <slot name="main" />
