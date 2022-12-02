@@ -93,12 +93,12 @@ export default (
     },
 
     Pause: () => {
-      console.log(111, gameStatus.value)
       if (gameStatus.value === GameStatus.Paused) {
         setGameStatus(GameStatus.Playing)
         run()
       } else if (gameStatus.value === GameStatus.Playing) {
         setGameStatus(GameStatus.Paused)
+        stop()
       }
     },
 
@@ -107,11 +107,11 @@ export default (
     }
   } as Record<EventMappings, () => void>
 
+  boardKeyMapping.Enter = boardKeyMapping.Pause
   boardKeyMapping.KeyW = boardKeyMapping.ArrowUp
   boardKeyMapping.KeyA = boardKeyMapping.ArrowLeft
   boardKeyMapping.KeyS = boardKeyMapping.ArrowDown
   boardKeyMapping.KeyD = boardKeyMapping.ArrowRight
-  boardKeyMapping.Enter = boardKeyMapping.Pause
 
   // 键盘操作
   const handleKeydown = (e: KeyboardEvent): void => {
@@ -126,14 +126,14 @@ export default (
       case 'ArrowDown':
         setKeydownSpeed(0)
         break
-      case 'Enter':
-        if (gameStatus.value === GameStatus.Playing) {
-          gameStatus.value = GameStatus.Paused
-          stop()
-        } else if (gameStatus.value === GameStatus.Paused) {
-          gameStatus.value = GameStatus.Playing
-          run()
-        }
+      // case 'Enter':
+      //   if (gameStatus.value === GameStatus.Playing) {
+      //     gameStatus.value = GameStatus.Paused
+      //     stop()
+      //   } else if (gameStatus.value === GameStatus.Paused) {
+      //     gameStatus.value = GameStatus.Playing
+      //     run()
+      //   }
     }
   }
 
