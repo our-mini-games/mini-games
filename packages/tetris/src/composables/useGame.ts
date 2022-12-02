@@ -104,7 +104,6 @@ export default (
     if (Date.now() - startTime > animationDuration.value) {
       // 触底检测
       if (!isLegalTetris(currentTetris.value.coordinates, building.value)) {
-        console.log('这就触底了？')
         handleReachBottom()
         return
       }
