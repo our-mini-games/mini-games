@@ -157,6 +157,7 @@ export default (
 
   const handleMouseup = (e: MouseEvent | TouchEvent): void => {
     e.preventDefault()
+    clearTimeout(repeatExecFn)
 
     const target = e.target as HTMLElement
     const key = target.dataset.key as EventMappings
@@ -166,10 +167,6 @@ export default (
     if (key === 'ArrowDown') {
       // 重置方块下落速度
       setKeydownSpeed(0)
-      //
-    } else if (['ArrowLeft', 'ArrowRight', 'Space'].includes(key)) {
-      // 松开屏幕上的按键后就停止触发
-      window.clearTimeout(repeatExecFn)
     }
   }
 }
