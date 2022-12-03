@@ -20,7 +20,9 @@ export default (
   stop: Noop,
   setGameStatus: (status: GameStatus) => void,
   setKeydownSpeed: (speed: number) => void,
-  stopFinishedAnimation: Noop
+  stopFinishedAnimation: Noop,
+  stopModeAnimation: Noop,
+  stopPowerOnAnimation: Noop
 ): void => {
   const mouseEventType = isMobile()
     ? { up: 'touchend', down: 'touchstart' } as const
@@ -53,11 +55,23 @@ export default (
     },
 
     ArrowLeft: () => {
-      handleTurnLeft()
+      if (gameStatus.value === GameStatus.ChooseMode) {
+        gameMode.value = gameMode.value === GameMode.Normal
+          ? GameMode.Entertain
+          : GameMode.Normal
+      } else {
+        handleTurnLeft()
+      }
     },
 
     ArrowRight: () => {
-      handleTurnRight()
+      if (gameStatus.value === GameStatus.ChooseMode) {
+        gameMode.value = gameMode.value === GameMode.Normal
+          ? GameMode.Entertain
+          : GameMode.Normal
+      } else {
+        handleTurnRight()
+      }
     },
 
     ArrowDown: () => {
@@ -69,10 +83,21 @@ export default (
     },
 
     Space: () => {
-      if (gameStatus.value === GameStatus.Finished) {
-        stopFinishedAnimation()
-      } else {
-        switchNextType()
+      switch (gameStatus.value) {
+        case GameStatus.Finished:
+          stopFinishedAnimation()
+          break
+        case GameStatus.ChooseMode:
+          stopModeAnimation()
+          // 重新开始游戏
+          setGameStatus(GameStatus.Playing)
+          break
+        case GameStatus.PowerOn:
+          stopPowerOnAnimation()
+          break
+        default:
+          switchNextType()
+          break
       }
     },
 
@@ -81,7 +106,7 @@ export default (
         setGameStatus(GameStatus.PowerOff)
         location.href = '/mini-games'
       } else {
-        setGameStatus(GameStatus.ChooseMode)
+        setGameStatus(GameStatus.PowerOn)
       }
     },
 
@@ -103,7 +128,7 @@ export default (
     },
 
     Mode: () => {
-      console.log('toggle mode')
+      gameStatus.value = GameStatus.ChooseMode
     }
   } as Record<EventMappings, () => void>
 

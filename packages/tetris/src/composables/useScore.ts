@@ -1,5 +1,5 @@
 import { Ref } from 'vue'
-import { GameStatus, scoreConfig } from '../config'
+import { GameMode, GameStatus, scoreConfig } from '../config'
 import { TETRIS_HIGH_SCORE } from '../config/constants'
 
 let defaultHighScore = 0
@@ -8,7 +8,7 @@ try {
   defaultHighScore = JSON.parse(localStorage.getItem(TETRIS_HIGH_SCORE) ?? '0')
 } catch {}
 
-export default (gameStatus: Ref<GameStatus>): {
+export default (gameStatus: Ref<GameStatus>, gameMode: Ref<GameMode>): {
   score: Ref<number>
   highScore: Ref<number>
   setScore: (rows?: number) => void
@@ -26,7 +26,8 @@ export default (gameStatus: Ref<GameStatus>): {
   }
 
   watch(gameStatus, (newStatus, _oldStatus) => {
-    if (newStatus === GameStatus.Finished) {
+    // 标准模式才保存最高分
+    if (newStatus === GameStatus.Finished && gameMode.value === GameMode.Normal) {
       if (highScore.value < score.value) {
         highScore.value = score.value
         try {

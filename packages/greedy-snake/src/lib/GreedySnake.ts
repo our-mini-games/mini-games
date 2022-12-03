@@ -4,7 +4,7 @@ import { Coordinate } from '../types'
 import EventEmitter from './EventEmitter'
 import type GameCanvas from './GameCanvas'
 import { rangeRandom } from './utils'
-
+import throttle from 'lodash.throttle'
 export interface Snake extends Coordinate {
   part: 'HEAD' | 'BODY' | 'TAIL'
 }
@@ -61,7 +61,7 @@ export default class GreedySnake extends EventEmitter {
   }
 
   initEvent (): void {
-    this.handleKeyDown = this.handleKeyDown.bind(this)
+    this.handleKeyDown = throttle(this.handleKeyDown.bind(this), this.speed)
     document.addEventListener('keydown', this.handleKeyDown, false)
   }
 

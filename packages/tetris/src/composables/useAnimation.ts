@@ -1,16 +1,21 @@
 import { Ref } from 'vue'
-import { GameStatus, wrapperSize } from '../config'
+import { GameMode, GameStatus, modeAnimationsConfig, modeTextConfig, wrapperSize } from '../config'
 import { createBuilding, createBuildingRowItems, sleep } from '../lib/utils'
 import { BuildingType, Noop } from '../types'
 
 interface ReturnType {
   removeAnimation: (removeRows: number[]) => Promise<void>
   finisedAnimation: (cb?: Noop) => void
-  stopFinishedAnimation: Noop
+  stopFinishedAnimation: (isPowerOff?: boolean) => void
+  modeAnimation: Noop
+  stopModeAnimation: (isPowerOff?: boolean) => void
+  powerOnAnimation: Noop
+  stopPowerOnAnimation: Noop
 }
 
 export default (
   building: Ref<BuildingType>,
+  gameMode: Ref<GameMode>,
   setGameStatus: (status: GameStatus) => void
 ): ReturnType => {
   const removeAnimation = async (removeRows: number[]): Promise<void> => {
@@ -64,10 +69,12 @@ export default (
       requestId = requestAnimationFrame(runFinishedAnimation)
     }
 
-    const stopFinishedAnimation = (): void => {
+    const stopFinishedAnimation = (isPowerOff = false): void => {
       cancelAnimationFrame(requestId)
       building.value = createBuilding(wrapperSize.row, wrapperSize.column)
-      setGameStatus(GameStatus.ChooseMode)
+      if (!isPowerOff) {
+        setGameStatus(GameStatus.ChooseMode)
+      }
     }
 
     const finisedAnimation = (cb?: Noop): void => {
@@ -85,9 +92,165 @@ export default (
     }
   })()
 
+  const modeText = computed(() => modeTextConfig[gameMode.value])
+
+  const {
+    modeAnimation,
+    stopModeAnimation
+  } = (() => {
+    let requestId = 0
+    let startTime = Date.now()
+
+    let it = modeAnimationsConfig[gameMode.value][Symbol.iterator]()
+
+    const setDefaultConfig = (): void => {
+      it = modeAnimationsConfig[gameMode.value][Symbol.iterator]()
+    }
+
+    const setBuilding = (template: number[][]): void => {
+      for (let y = 0; y < template.length; y++) {
+        for (let x = 0; x < template[y].length; x++) {
+          building.value[y][x] = !!template[y][x]
+        }
+      }
+    }
+
+    const setModeText = (): void => {
+      const template = modeText.value
+      for (let y = 0; y < template.length; y++) {
+        for (let x = 0; x < template[y].length; x++) {
+          building.value[10 + y][x] = !!template[y][x]
+        }
+      }
+    }
+
+    const runModeAnimation = (): void => {
+      const currentTime = Date.now()
+
+      if (currentTime - startTime > 300) {
+        const next = it.next()
+
+        if (next.done) {
+          setDefaultConfig()
+        } else {
+          setBuilding(next.value)
+        }
+
+        startTime = currentTime
+      }
+
+      requestId = requestAnimationFrame(runModeAnimation)
+    }
+
+    const stopModeAnimation = (isPowerOff = false): void => {
+      cancelAnimationFrame(requestId)
+      building.value = createBuilding(wrapperSize.row, wrapperSize.column)
+    }
+
+    const modeAnimation = (): void => {
+      stopModeAnimation()
+      setDefaultConfig()
+      setModeText()
+      runModeAnimation()
+    }
+
+    return {
+      modeAnimation,
+      stopModeAnimation
+    }
+  })()
+
+  watch(gameMode, () => {
+    modeAnimation()
+  })
+
+  const {
+    powerOnAnimation,
+    stopPowerOnAnimation
+  } = (() => {
+    const { row, column } = wrapperSize
+    let x = 0
+    let y = 0
+    let count = 0
+    let requestId = 0
+    let startTime = Date.now()
+
+    let dir = 'Down'
+
+    const runPowerOnAnimation = (): void => {
+      const currentTime = Date.now()
+
+      if (count >= 5) {
+        stopPowerOnAnimation()
+        return
+      }
+
+      if (currentTime - startTime > 15) {
+        switch (dir) {
+          case 'Down':
+            building.value[y++][x] = true
+            if (y >= row - count) {
+              y--
+              dir = 'Right'
+            }
+            break
+          case 'Right':
+            building.value[y][x++] = true
+            if (x >= column - count) {
+              x--
+              dir = 'Up'
+            }
+            break
+          case 'Up':
+            building.value[y--][x] = true
+            if (y < count) {
+              y++
+              dir = 'Left'
+            }
+            break
+          case 'Left':
+            building.value[y][x--] = true
+            if (x < count) {
+              x = x + 2
+              count++
+              console.log(count)
+              dir = 'Down'
+            }
+            break
+        }
+
+        startTime = currentTime
+      }
+
+      requestId = requestAnimationFrame(runPowerOnAnimation)
+    }
+
+    const stopPowerOnAnimation = (): void => {
+      cancelAnimationFrame(requestId)
+      building.value = createBuilding(row, column)
+      setGameStatus(GameStatus.ChooseMode)
+    }
+
+    const powerOnAnimation = (): void => {
+      building.value = createBuilding(row, column)
+      runPowerOnAnimation()
+    }
+
+    return {
+      powerOnAnimation,
+      stopPowerOnAnimation
+    }
+  })()
+
   return {
     removeAnimation,
     finisedAnimation,
-    stopFinishedAnimation
+    stopFinishedAnimation,
+
+    modeAnimation,
+    stopModeAnimation,
+
+    powerOnAnimation,
+    stopPowerOnAnimation
   }
 }
