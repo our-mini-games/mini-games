@@ -14,7 +14,7 @@ interface ReturnType {
 
 export default (score: Ref<number>): ReturnType => {
   const initialLevel = ref(defaultLevel)
-  const level = ref(initialLevel)
+  const level = ref(initialLevel.value)
 
   const levelInfo = computed(() => {
     return levelConfig.find(item => item.level === level.value)!
@@ -23,6 +23,7 @@ export default (score: Ref<number>): ReturnType => {
   const speed = computed(() => levelInfo.value.speed)
 
   const maxScore = computed(() => {
+    console.log(initialLevel.value)
     if (initialLevel.value === 1) {
       return levelInfo.value.maxScore
     }
