@@ -80,7 +80,9 @@ const {
   finisedAnimation,
   stopFinishedAnimation,
   modeAnimation,
-  stopModeAnimation
+  stopModeAnimation,
+  powerOnAnimation,
+  stopPowerOnAnimation
 } = useAnimation(building, gameMode, setGameStatus)
 
 const {
@@ -118,7 +120,8 @@ const {
   setGameStatus,
   setKeydownSpeed,
   stopFinishedAnimation,
-  stopModeAnimation
+  stopModeAnimation,
+  stopPowerOnAnimation
 )
 
 watch(gameStatus, (newStatus, oldStatus) => {
@@ -147,6 +150,9 @@ watch(gameStatus, (newStatus, oldStatus) => {
       stopFinishedAnimation(true)
       stopModeAnimation(true)
       currentTetris.value = null
+      break
+    case GameStatus.PowerOn:
+      powerOnAnimation()
       break
   }
 }, { immediate: true })
