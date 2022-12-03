@@ -54,6 +54,10 @@ import tetrisPic from '../../assets/imgs/tetris.png'
   // ');
   user-select: none;
 
+  @media screen and (max-width: 400px) {
+    transform: scale(0.8);
+  }
+
   .main-wrapper {
     position: relative;
     height: 300px;
