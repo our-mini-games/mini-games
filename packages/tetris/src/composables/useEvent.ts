@@ -177,11 +177,12 @@ export default (
 
     // 如果按的是左/右/空格则需要持续触发，其他的按键在按下一次则最多只执行一次
     if (!['ArrowLeft', 'ArrowRight', 'Space'].includes(key)) return
-    repeatExecFn = requestAnimationFrame(() => handleMousedown(e))
+    repeatExecFn = window.setTimeout(handleMousedown, 120, e)
   }
 
   const handleMouseup = (e: MouseEvent | TouchEvent): void => {
     e.preventDefault()
+    clearTimeout(repeatExecFn)
 
     const target = e.target as HTMLElement
     const key = target.dataset.key as EventMappings
@@ -191,10 +192,6 @@ export default (
     if (key === 'ArrowDown') {
       // 重置方块下落速度
       setKeydownSpeed(0)
-      //
-    } else if (['ArrowLeft', 'ArrowRight', 'Space'].includes(key)) {
-      // 松开屏幕上的按键后就停止触发
-      cancelAnimationFrame(repeatExecFn)
     }
   }
 }
