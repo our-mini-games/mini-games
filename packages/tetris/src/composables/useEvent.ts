@@ -152,7 +152,7 @@ export default (
 
     // 如果按的是左/右/空格则需要持续触发，其他的按键在按下一次则最多只执行一次
     if (!['ArrowLeft', 'ArrowRight', 'Space'].includes(key)) return
-    repeatExecFn = requestAnimationFrame(() => handleMousedown(e))
+    repeatExecFn = window.setTimeout(handleMousedown, 150, e)
   }
 
   const handleMouseup = (e: MouseEvent | TouchEvent): void => {
@@ -169,7 +169,7 @@ export default (
       //
     } else if (['ArrowLeft', 'ArrowRight', 'Space'].includes(key)) {
       // 松开屏幕上的按键后就停止触发
-      cancelAnimationFrame(repeatExecFn)
+      window.clearTimeout(repeatExecFn)
     }
   }
 }
