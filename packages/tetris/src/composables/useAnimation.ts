@@ -9,6 +9,8 @@ interface ReturnType {
   stopFinishedAnimation: (isPowerOff?: boolean) => void
   modeAnimation: Noop
   stopModeAnimation: (isPowerOff?: boolean) => void
+  powerOnAnimation: Noop
+  stopPowerOnAnimation: Noop
 }
 
 export default (
@@ -162,12 +164,93 @@ export default (
     modeAnimation()
   })
 
+  const {
+    powerOnAnimation,
+    stopPowerOnAnimation
+  } = (() => {
+    const { row, column } = wrapperSize
+    let x = 0
+    let y = 0
+    let count = 0
+    let requestId = 0
+    let startTime = Date.now()
+
+    let dir = 'Down'
+
+    const runPowerOnAnimation = (): void => {
+      const currentTime = Date.now()
+
+      if (count >= 5) {
+        stopPowerOnAnimation()
+        return
+      }
+
+      if (currentTime - startTime > 15) {
+        switch (dir) {
+          case 'Down':
+            building.value[y++][x] = true
+            if (y >= row - count) {
+              y--
+              dir = 'Right'
+            }
+            break
+          case 'Right':
+            building.value[y][x++] = true
+            if (x >= column - count) {
+              x--
+              dir = 'Up'
+            }
+            break
+          case 'Up':
+            building.value[y--][x] = true
+            if (y < count) {
+              y++
+              dir = 'Left'
+            }
+            break
+          case 'Left':
+            building.value[y][x--] = true
+            if (x < count) {
+              x = x + 2
+              count++
+              console.log(count)
+              dir = 'Down'
+            }
+            break
+        }
+
+        startTime = currentTime
+      }
+
+      requestId = requestAnimationFrame(runPowerOnAnimation)
+    }
+
+    const stopPowerOnAnimation = (): void => {
+      cancelAnimationFrame(requestId)
+      building.value = createBuilding(row, column)
+      setGameStatus(GameStatus.ChooseMode)
+    }
+
+    const powerOnAnimation = (): void => {
+      building.value = createBuilding(row, column)
+      runPowerOnAnimation()
+    }
+
+    return {
+      powerOnAnimation,
+      stopPowerOnAnimation
+    }
+  })()
+
   return {
     removeAnimation,
     finisedAnimation,
     stopFinishedAnimation,
 
     modeAnimation,
-    stopModeAnimation
+    stopModeAnimation,
+
+    powerOnAnimation,
+    stopPowerOnAnimation
   }
 }

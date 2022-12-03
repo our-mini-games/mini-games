@@ -23,7 +23,7 @@
       />
     </div>
 
-    <TetrisMain />
+    <TetrisMain v-if="(gameStatus !== GameStatus.PowerOff)" />
 
     <div class="ornamental ornamental-right">
       <svg
@@ -52,7 +52,7 @@
       </svg>
     </div>
 
-    <TetrisAside />
+    <TetrisAside v-if="(gameStatus !== GameStatus.PowerOff)" />
   </section>
 </template>
 
@@ -61,8 +61,10 @@ import TetrisMain from './Main.vue'
 import TetrisAside from './Aside.vue'
 import SVGDefs from './Defs.vue'
 
-import { color, itemSize } from '../../config'
+import { color, GameStatus, itemSize } from '../../config'
 import { Coordinate } from '../../types'
+
+const gameStatus = inject('gameStatus', ref(GameStatus.PowerOff))
 
 const ornamentalTetrisList: Coordinate[][] = [
   [
@@ -107,6 +109,8 @@ const ornamentalTetrisList: Coordinate[][] = [
   border-color: #f1f1f1 #fff #f3f3f3 #eaeaea;
   margin: 16px 0;
   padding-right: 3px;
+  width: 222px;
+  height: 276px;
   outline: 1px solid #333;
   outline-offset: -16px;
 

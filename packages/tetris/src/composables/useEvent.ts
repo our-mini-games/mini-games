@@ -21,7 +21,8 @@ export default (
   setGameStatus: (status: GameStatus) => void,
   setKeydownSpeed: (speed: number) => void,
   stopFinishedAnimation: Noop,
-  stopModeAnimation: Noop
+  stopModeAnimation: Noop,
+  stopPowerOnAnimation: Noop
 ): void => {
   const mouseEventType = isMobile()
     ? { up: 'touchend', down: 'touchstart' } as const
@@ -82,14 +83,21 @@ export default (
     },
 
     Space: () => {
-      if (gameStatus.value === GameStatus.Finished) {
-        stopFinishedAnimation()
-      } else if (gameStatus.value === GameStatus.ChooseMode) {
-        stopModeAnimation()
-        // 重新开始游戏
-        setGameStatus(GameStatus.Playing)
-      } else {
-        switchNextType()
+      switch (gameStatus.value) {
+        case GameStatus.Finished:
+          stopFinishedAnimation()
+          break
+        case GameStatus.ChooseMode:
+          stopModeAnimation()
+          // 重新开始游戏
+          setGameStatus(GameStatus.Playing)
+          break
+        case GameStatus.PowerOn:
+          stopPowerOnAnimation()
+          break
+        default:
+          switchNextType()
+          break
       }
     },
 
@@ -98,7 +106,7 @@ export default (
         setGameStatus(GameStatus.PowerOff)
         location.href = '/mini-games'
       } else {
-        setGameStatus(GameStatus.ChooseMode)
+        setGameStatus(GameStatus.PowerOn)
       }
     },
 

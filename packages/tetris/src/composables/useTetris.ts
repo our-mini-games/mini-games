@@ -14,7 +14,7 @@ interface TetrisReturnType {
 
 export default (): TetrisReturnType => {
   // 游戏状态
-  const gameStatus = ref(GameStatus.Playing)
+  const gameStatus = ref(GameStatus.PowerOff)
   // 模式
   const gameMode = ref(GameMode.Normal)
 
