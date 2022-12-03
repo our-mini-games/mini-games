@@ -152,7 +152,7 @@ export default (
 
     // 如果按的是左/右/空格则需要持续触发，其他的按键在按下一次则最多只执行一次
     if (!['ArrowLeft', 'ArrowRight', 'Space'].includes(key)) return
-    repeatExecFn = window.setTimeout(handleMousedown, 150, e)
+    repeatExecFn = window.setTimeout(handleMousedown, 120, e)
   }
 
   const handleMouseup = (e: MouseEvent | TouchEvent): void => {
