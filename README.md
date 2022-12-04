@@ -14,3 +14,5 @@ https://our-mini-games.github.io/mini-games/games/
 - [x] 连连看
 
 - [x] 俄罗斯方块
+
+- [ ] 2048
