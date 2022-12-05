@@ -160,9 +160,17 @@ export default class GreedySnake extends EventEmitter {
 
     if (
       nextHead.x < 0 || nextHead.x >= width ||
-      nextHead.y < 0 || nextHead.y >= height ||
-      this.snake.some(item => item.x === nextHead.x && item.y === nextHead.y)
+      nextHead.y < 0 || nextHead.y >= height
     ) {
+      switch (this.#direction) {
+        case Directions.left: nextHead.x = width - 1; break
+        case Directions.right: nextHead.x = 0; break
+        case Directions.up: nextHead.y = height - 1; break
+        case Directions.down: nextHead.y = 0; break
+      }
+    }
+
+    if (this.snake.some(item => item.x === nextHead.x && item.y === nextHead.y)) {
       this.setStatus(GameStatus.finished, GameStatus.playing)
       return
     }
