@@ -1,7 +1,7 @@
 export interface GameConfig {
   path: string
   name: string
-  cover: string
+  cover?: string
 }
 
 export const games: GameConfig[] = [
@@ -24,5 +24,9 @@ export const games: GameConfig[] = [
     path: '/mini-games/games/tetris/index.html',
     name: '俄罗斯方块',
     cover: 'tetris.svg'
+  },
+  {
+    path: 'https://github.com/our-mini-games/mini-games/discussions',
+    name: '没有想要？'
   }
 ]
