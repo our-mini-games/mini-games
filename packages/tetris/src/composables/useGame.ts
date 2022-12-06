@@ -62,6 +62,7 @@ export default (
   }
 
   const handleReachBottom = async (): Promise<void> => {
+    if (gameStatus.value === GameStatus.Paused) return
     setGameStatus(GameStatus.Animation)
     // 1. 检测当前游戏是否已经结束
     if (finishedCheck(currentTetris.value!)) {
