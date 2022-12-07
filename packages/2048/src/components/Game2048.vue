@@ -35,7 +35,7 @@
               class="grid-text"
               text-anchor="middle"
               dominant-baseline="central"
-              :font-size="size / 2"
+              :font-size="item.value > 1000 ? (size / 3) : (size / 2)"
               :transform="`translate(${size / 2}, ${size / 2})`"
             >
               {{ item.value }}

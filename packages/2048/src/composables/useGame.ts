@@ -17,10 +17,15 @@ export default (): void => {
   }
 
   const afterSwipe = (): void => {
+    const flat = gameGrids.value.flat()
+    // 检测游戏是否成功
+    if (flat.some(item => item.value === 2048)) {
+      setGameStatus(GameStatus.Complete)
+      return
+    }
+
     // 检测是否存在空白位
-    const zeros = gameGrids.value.reduce((prev, item) => {
-      return [...prev, ...item]
-    }).filter(item => item.value === 0)
+    const zeros = flat.filter(item => item.value === 0)
 
     if (zeros.length === 0) {
       // Game Over
