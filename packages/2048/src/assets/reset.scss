@@ -1,0 +1,27 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --grid-color-0: rgb(250, 229, 184);
+  --grid-color-2: rgb(249, 225, 173);
+  --grid-color-4: rgb(252, 223, 160);
+  --grid-color-8: rgb(247, 186, 121);
+  --grid-color-16: rgb(248, 163, 73);
+  --grid-color-32: rgb(249, 138, 19);
+  --grid-color-64: rgb(249, 107, 19);
+  --grid-color-128: rgb(249, 84, 19);
+  --grid-color-256: rgb(241, 205, 73);
+  --grid-color-512: rgb(240, 197, 55);
+  --grid-color-1024: rgb(248, 196, 25);
+  --grid-color-2048: rgb(255, 196, 3);
+
+  --bg-color: rgb(252, 249, 223);
+}
+
+html {
+  font-family: SanFrancisco, Helvetica Neue, sans-serif;
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+}
