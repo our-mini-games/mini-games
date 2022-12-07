@@ -48,6 +48,9 @@ jobs:
       # 构建俄罗斯方块项目
       - name: Build Tetris
         run: pwd && cd ./packages/tetris && pnpm install && pnpm run build && mv dist ../entry/dist/games/tetris
+      # 构建2048项目
+      - name: Build 2048
+        run: pwd && cd ./packages/2048 && pnpm install && pnpm run build && mv dist ../entry/dist/games/2048
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
