@@ -98,7 +98,7 @@ useSwipe('.game-container .svg', handleSwipe)
   }
 
   @for $i from 1 through 11 {
-    .grid-item-#{$i} {
+    .grid-item-#{pow(2, $i)} {
       fill: var(--grid-color-#{pow(2, $i)})
     }
   }
