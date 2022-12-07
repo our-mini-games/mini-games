@@ -26,6 +26,11 @@ export const games: GameConfig[] = [
     cover: 'tetris.svg'
   },
   {
+    path: '/mini-games/games/2048/index.html',
+    name: '2048',
+    cover: 'org.svg'
+  },
+  {
     path: 'https://github.com/our-mini-games/mini-games/discussions',
     name: '没有想要的？',
     cover: 'org.svg'
