@@ -28,7 +28,7 @@ export const games: GameConfig[] = [
   {
     path: '/mini-games/games/2048/index.html',
     name: '2048',
-    cover: 'org.svg'
+    cover: '2048.svg'
   },
   {
     path: 'https://github.com/our-mini-games/mini-games/discussions',
