@@ -7,7 +7,9 @@ export const createDefaultGrids = (row: number, column: number): GameItem[][] =>
   for (let y = 0; y < row; y++) {
     grids[y] = []
     for (let x = 0; x < column; x++) {
-      grids[y].push((x === 0 && y === 0) || (x === column - 1 && y === row - 1) ? createGridValue() : 0)
+      grids[y].push({
+        value: (x === 0 && y === 0) || (x === column - 1 && y === row - 1) ? createGridValue() : 0
+      })
     }
   }
 
@@ -39,4 +41,26 @@ export const matrixRotate = <T extends unknown[][] = []>(matrix: T, isCounterclo
     }
   }
   return matrix
+}
+
+/**
+ * 数组随机排序
+ * @param input 需要排序的数组
+ */
+export function shuffle <T extends any[] = []> (input: T): T {
+  const len = input.length
+
+  if (len === 0) return input
+
+  let randomIndex: number
+  let itemAtIndex
+
+  for (let i = len - 1; i >= 0; i--) {
+    randomIndex = Math.floor(Math.random() * (i + 1))
+    itemAtIndex = input[randomIndex]
+    input[randomIndex] = input[i]
+    input[i] = itemAtIndex
+  }
+
+  return input
 }

@@ -15,3 +15,10 @@ export enum Direction {
   Down = 'Down',
   Left = 'Left'
 }
+
+export enum GameStatus {
+  Playing = 'Playing',
+  Defeat = 'Defeat',
+  Complete = 'Complete',
+  Finished = 'Finished'
+}

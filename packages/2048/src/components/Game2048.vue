@@ -1,7 +1,6 @@
 <template>
   <main class="game-container">
     <svg
-      v-if="false"
       :width="width"
       :height="height"
       :viewBox="`0 0 ${width} ${height}`"
@@ -16,7 +15,7 @@
           :key="`row-${y}`"
         >
           <g
-            v-for="(value, x) of columns"
+            v-for="(item, x) of columns"
             :key="`column-${x}`"
             :transform="`translate(${(size + gap) * x}, ${(size + gap) * y})`"
           >
@@ -29,17 +28,17 @@
               :height="size"
               stroke="transparent"
               class="grid-item"
-              :class="`grid-item-${value}`"
+              :class="`grid-item-${item.value}`"
             />
             <text
-              v-if="(value !== 0)"
+              v-if="(item.value !== 0)"
               class="grid-text"
               text-anchor="middle"
               dominant-baseline="central"
               :font-size="size / 2"
               :transform="`translate(${size / 2}, ${size / 2})`"
             >
-              {{ value }}
+              {{ item.value }}
             </text>
           </g>
         </g>
@@ -49,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { sizeConfig, Direction } from '../config'
+import { sizeConfig, Direction, GameStatus } from '../config'
 import { GameItem } from '../types'
 
 const { row, column, size, gap } = sizeConfig
@@ -58,27 +57,17 @@ const width = row * size + (row + 1) * gap
 const height = column * size + (column + 1) * gap
 
 const gameGrids = inject('gameGrids', ref<GameItem[][]>([]))
+const gameStatus = inject('gameStatus', ref(GameStatus.Finished))
+const afterSwipe = inject('afterSwipe', () => {})
 
 const {
   horizotalMerge,
-  verticalMerge,
-  merge
+  verticalMerge
 } = useMerge(gameGrids)
 
-const count1 = merge([
-  // [2, 2, 4, 4],
-  // [2, 4, 0, 0],
-  // [0, 2, 0, 2],
-  // [0, 0, 2, 2]
-  [2, 4, 0, 0],
-  [2, 4, 0, 0],
-  [2, 4, 0, 0],
-  [2, 4, 0, 0]
-])
-console.log({ count1 })
-
 const handleSwipe = (dir: Direction, e: HammerInput): void => {
-  console.log(dir, e)
+  if (gameStatus.value !== GameStatus.Playing) return
+
   switch (dir) {
     case Direction.Up:
     case Direction.Down:
@@ -86,9 +75,11 @@ const handleSwipe = (dir: Direction, e: HammerInput): void => {
       break
     case Direction.Right:
     case Direction.Left:
-      horizotalMerge(dir === Direction.Left)
+      horizotalMerge(dir === Direction.Right)
       break
   }
+
+  afterSwipe()
 }
 
 useSwipe('.game-container .svg', handleSwipe)
@@ -99,6 +90,8 @@ useSwipe('.game-container .svg', handleSwipe)
 .game-container {
   .svg {
     background-color: var(--bg-color);
+    border-radius: 4px;
+    user-select: none;
   }
   .grid-item-0 {
     fill: var(--grid-color-0);

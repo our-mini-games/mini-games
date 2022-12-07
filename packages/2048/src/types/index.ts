@@ -3,4 +3,6 @@ export interface Coordinate {
   y: number
 }
 
-export type GameItem = number
+export interface GameItem {
+  value: number
+}

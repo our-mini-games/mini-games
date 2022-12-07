@@ -48,6 +48,7 @@ declare global {
   const useAttrs: typeof import('vue')['useAttrs']
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
+  const useGame: typeof import('./src/composables/useGame')['default']
   const useMerge: typeof import('./src/composables/useMerge')['default']
   const useSlots: typeof import('vue')['useSlots']
   const useSwipe: typeof import('./src/composables/useSwipe')['default']

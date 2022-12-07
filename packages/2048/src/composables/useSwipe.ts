@@ -20,6 +20,10 @@ export default (
       ]
     })
 
+    mc.value.get('swipe').set({
+      threshold: 5
+    })
+
     mc.value.on('swipeup', (e: HammerInput) => {
       handleSwipe(Direction.Up, e)
     })
