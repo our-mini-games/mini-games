@@ -15,4 +15,4 @@ https://our-mini-games.github.io/mini-games/games/
 
 - [x] 俄罗斯方块
 
-- [ ] 2048
+- [x] 2048
