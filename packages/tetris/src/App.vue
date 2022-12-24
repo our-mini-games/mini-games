@@ -23,6 +23,8 @@ import { GameStatus } from './config'
 
 const statusText = ref('Hello world')
 
+const audio = useAudio()
+
 const {
   gameStatus,
   gameMode,
@@ -103,7 +105,8 @@ const {
   handleDecline,
   setGameStatus,
   removeAnimation,
-  setScore
+  setScore,
+  audio
 )
 
 /* const { activeKeys } = */ useEvent(
@@ -121,7 +124,8 @@ const {
   setKeydownSpeed,
   stopFinishedAnimation,
   stopModeAnimation,
-  stopPowerOnAnimation
+  stopPowerOnAnimation,
+  audio
 )
 
 watch(gameStatus, (newStatus, oldStatus) => {

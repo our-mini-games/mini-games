@@ -2,6 +2,7 @@ import { Ref } from 'vue'
 import { calleniaLimit, GameMode, GameStatus, Tetrominos, wrapperSize } from '../config'
 import { createBuilding, finishedCheck, getNextTetris, getShuffleBuildingRow, isLegalTetris, removeCheck, sleep } from '../lib/utils'
 import { BuildingType, Noop, PromiseNoop, Tetris } from '../types'
+import { AudioReturnType } from './useAudio'
 
 interface GameReturnType {
   startup: Noop
@@ -22,7 +23,8 @@ export default (
   handleDecline: (handleReachBottom: PromiseNoop) => void,
   setGameStatus: (status: GameStatus) => void,
   removeAnimation: (removeRows: number[]) => Promise<void>,
-  setScore: (rows?: number | undefined) => void
+  setScore: (rows?: number | undefined) => void,
+  audio: AudioReturnType
 ): GameReturnType => {
   const keydownSpeed = ref(0)
   const animationDuration = computed(() => keydownSpeed.value || speed.value)
@@ -67,6 +69,7 @@ export default (
     // 1. 检测当前游戏是否已经结束
     if (finishedCheck(currentTetris.value!)) {
       setGameStatus(GameStatus.Finished)
+      audio.gameover.value()
       return
     }
     // 2. 给 building 加入当前的方块
@@ -78,6 +81,7 @@ export default (
 
     if (removeRows.length > 0) {
       // 开始消除
+      audio.clear.value()
       await removeAnimation(removeRows)
       // 计分
       setScore(removeRows.length)
