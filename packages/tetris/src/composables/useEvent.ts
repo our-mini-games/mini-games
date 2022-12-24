@@ -2,6 +2,7 @@ import { Ref } from 'vue'
 import { GameMode, GameStatus } from '../config'
 import { Noop, PromiseNoop } from '../types'
 import { isMobile } from '../lib/utils'
+import { AudioReturnType } from './useAudio'
 
 type KeyboardEventKey = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight' | 'KeyA' | 'KeyD' | 'KeyS' | 'KeyW' | 'Space' | 'Enter'
 type CustomEventKey = 'OnOrOff' | 'Reboot' | 'Pause' | 'Mode'
@@ -22,7 +23,8 @@ export default (
   setKeydownSpeed: (speed: number) => void,
   stopFinishedAnimation: Noop,
   stopModeAnimation: Noop,
-  stopPowerOnAnimation: Noop
+  stopPowerOnAnimation: Noop,
+  audio: AudioReturnType
 ): void => {
   const mouseEventType = isMobile()
     ? { up: 'touchend', down: 'touchstart' } as const
@@ -46,11 +48,13 @@ export default (
 
   const boardKeyMapping = {
     ArrowUp: () => {
+      audio.move.value()
       if (gameStatus.value === GameStatus.ChooseMode) {
         initialLevel.value = Math.min(20, initialLevel.value + 1)
-      } else {
+      } else if (gameStatus.value === GameStatus.Playing) {
         handleToBottomImmediate()
         handleReachBottom()
+        audio.fall.value()
       }
     },
 
@@ -61,6 +65,7 @@ export default (
           : GameMode.Normal
       } else {
         handleTurnLeft()
+        audio.move.value()
       }
     },
 
@@ -71,6 +76,7 @@ export default (
           : GameMode.Normal
       } else {
         handleTurnRight()
+        audio.move.value()
       }
     },
 
@@ -79,24 +85,30 @@ export default (
         initialLevel.value = Math.max(1, initialLevel.value - 1)
       } else {
         setKeydownSpeed(80)
+        audio.move.value()
       }
     },
 
     Space: () => {
+      audio.move.value()
       switch (gameStatus.value) {
         case GameStatus.Finished:
           stopFinishedAnimation()
+          audio.stop.value()
           break
         case GameStatus.ChooseMode:
           stopModeAnimation()
           // 重新开始游戏
           setGameStatus(GameStatus.Playing)
+          audio.stop.value()
           break
         case GameStatus.PowerOn:
           stopPowerOnAnimation()
+          audio.stop.value()
           break
         default:
           switchNextType()
+          audio.rotate.value()
           break
       }
     },
@@ -107,10 +119,15 @@ export default (
         location.href = '/mini-games'
       } else {
         setGameStatus(GameStatus.PowerOn)
+        audio.start.value()
       }
     },
 
     Reboot: () => {
+      audio.move.value()
+      console.log('here', gameStatus.value)
+
+      if (gameStatus.value === GameStatus.PowerOff) return
       setGameStatus(GameStatus.PowerOff)
       nextTick(() => {
         setGameStatus(GameStatus.Playing)
@@ -118,16 +135,25 @@ export default (
     },
 
     Pause: () => {
+      audio.move.value()
+
+      if (gameStatus.value === GameStatus.PowerOff) return
+
       if (gameStatus.value === GameStatus.Paused) {
         setGameStatus(GameStatus.Playing)
         run()
+        audio.move.value()
       } else if (gameStatus.value === GameStatus.Playing) {
         setGameStatus(GameStatus.Paused)
         stop()
+        audio.move.value()
       }
     },
 
     Mode: () => {
+      audio.move.value()
+
+      if (gameStatus.value === GameStatus.PowerOff) return
       gameStatus.value = GameStatus.ChooseMode
     }
   } as Record<EventMappings, () => void>

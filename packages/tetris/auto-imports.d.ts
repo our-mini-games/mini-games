@@ -47,6 +47,7 @@ declare global {
   const unref: typeof import('vue')['unref']
   const useAnimation: typeof import('./src/composables/useAnimation')['default']
   const useAttrs: typeof import('vue')['useAttrs']
+  const useAudio: typeof import('./src/composables/useAudio')['default']
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
   const useEvent: typeof import('./src/composables/useEvent')['default']
