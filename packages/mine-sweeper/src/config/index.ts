@@ -43,7 +43,7 @@ export const levels: LevelInfo[] = [
  */
 export const areaSize = 32
 
-export const gap = 4
+export const gap = 0
 
 export const numberColors = [
   'transparent',
