@@ -4,7 +4,7 @@
       ref="svgRef"
       :width="viewBoxSize.width"
       :height="viewBoxSize.height"
-      :view-box="`0 0 ${viewBoxSize.width} ${viewBoxSize.height}`"
+      :viewBox="`0 0 ${viewBoxSize.width} ${viewBoxSize.height}`"
       :style="{
         transform: `scale(${scale})`
       }"
@@ -18,15 +18,33 @@
           @mousedown="(e: any) => handleMousedown(item, e)"
           @mouseup="(e: any) => handleMouseup(item, e)"
         >
-          <rect
+          <!-- <rect
             x="0"
             y="0"
             :width="areaSize"
             :height="areaSize"
             :fill="getRectFillColor(item, gameStatus)"
-            stroke="blue"
+            stroke="transparent"
             rx="1"
             ry="1"
+          /> -->
+          <image
+            v-if="item.status !== 'open'"
+            data-name="bg"
+            x="0"
+            y="0"
+            :width="areaSize"
+            :height="areaSize"
+            :xlink:href="bgPic"
+          />
+          <image
+            v-if="item.status === 'open'"
+            data-name="bg-open"
+            x="0"
+            y="0"
+            :width="areaSize"
+            :height="areaSize"
+            :xlink:href="bgOpenPic"
           />
           <image
             v-if="item.type === 'mine' && item.status === 'open'"
@@ -128,7 +146,7 @@
 <script setup lang="ts">
 import { ref, computed, inject, watch, Ref, defineAsyncComponent } from 'vue'
 import { areaSize, gap, numberColors } from '../config'
-import { getRectFillColor, checkGameStatus } from '../lib/utils'
+import { /* getRectFillColor,  */checkGameStatus } from '../lib/utils'
 import useEvent from '../composables/event'
 
 import { LevelInfo, Box, GameStatus } from '../types'
@@ -138,6 +156,9 @@ import Statistics from '../components/statistics/index.vue'
 import minePic from '../assets/img/mine.png'
 import bugPic from '../assets/img/bug.png'
 import doubtfulPic from '../assets/img/doubtful.png'
+
+import bgPic from '../assets/img/bg.png'
+import bgOpenPic from '../assets/img/open-bg.png'
 
 const Enhancements = defineAsyncComponent(async () => await import('../components/enhancements/index.vue'))
 
