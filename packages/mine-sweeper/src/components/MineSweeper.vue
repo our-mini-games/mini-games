@@ -36,6 +36,9 @@
             :width="areaSize"
             :height="areaSize"
             :xlink:href="bgPic"
+            :style="{
+              filter: item.status === 'active' ? 'brightness(.8)' : 'unset'
+            }"
           />
           <image
             v-if="item.status === 'open'"

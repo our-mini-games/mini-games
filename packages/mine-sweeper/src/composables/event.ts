@@ -124,7 +124,6 @@ export default (
 
     // 只有左键单击才会设置成 active 动画状态
     if (e.button === 0 && item.status === 'default') {
-      (e.target as HTMLElement).style.cssText = 'filter:brightness(0.5)'
       item.status = 'active'
     }
   }
