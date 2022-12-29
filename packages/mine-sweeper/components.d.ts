@@ -7,15 +7,6 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    AButton: typeof import('ant-design-vue/es')['Button']
-    AForm: typeof import('ant-design-vue/es')['Form']
-    AFormItem: typeof import('ant-design-vue/es')['FormItem']
-    AInputNumber: typeof import('ant-design-vue/es')['InputNumber']
-    AModal: typeof import('ant-design-vue/es')['Modal']
-    ARadio: typeof import('ant-design-vue/es')['Radio']
-    ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']
-    ASpace: typeof import('ant-design-vue/es')['Space']
-    ASwitch: typeof import('ant-design-vue/es')['Switch']
     ClockCircleOutlined: typeof import('@ant-design/icons-vue')['ClockCircleOutlined']
     Enhancements: typeof import('./src/components/enhancements/index.vue')['default']
     Finished: typeof import('./src/components/modal/Finished.vue')['default']
