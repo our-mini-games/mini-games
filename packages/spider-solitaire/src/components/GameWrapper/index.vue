@@ -1,7 +1,9 @@
-<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <template>
   <GraphDefs />
   <svg
+    ref="svgRef"
+    width="800"
+    height="600"
     viewBox="0 0 800 600"
     class="game-wrapper"
   >
@@ -40,6 +42,14 @@
               v-else
               :xlink:href="`#${solitaire.suit}-${solitaire.number}`"
               :y="getOpenedSolitaireTop(item, sIndex)"
+              @mousedown="(e: MouseEvent) => handleMousedown(e, item, sIndex)"
+            />
+
+            <use
+              v-if="isDraging"
+              xlink:href="#empty-solitaire"
+              fill="blue"
+              :y="getOpenedSolitaireTop(item, item.length)"
             />
           </template>
         </g>
@@ -86,11 +96,18 @@ import { SolitaireGroupItem } from '../../types'
 
 import GraphDefs from './GraphDefs.vue'
 
+const svgRef = ref<SVGAElement>()
+
 const activeGroup = inject('activeGroup', ref<SolitaireGroup>([]))
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const deactiveGroup = inject('deactiveGroup', ref<SolitaireGroup>([]))
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const collectedGroup = inject('collectedGroup', ref<SolitaireGroup>([]))
+
+const {
+  isDraging,
+  handleMousedown
+} = useEvent(svgRef)
 
 const getOpenedSolitaireTop = (group: SolitaireGroupItem[], index: number): number => {
   const unopenedLength = group.filter(item => !item.isOpen).length

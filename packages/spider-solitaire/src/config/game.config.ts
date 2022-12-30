@@ -34,7 +34,7 @@ export enum GameMode {
 export const gap = {
   group: 14, // 牌组间隙
   unopened: 6, // 未开启的牌叠加间隙
-  opened: 24 // 已开启的牌叠加间隙
+  opened: 20 // 已开启的牌叠加间隙
 }
 export const solitaireSize = {
   width: 64,
