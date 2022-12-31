@@ -49,6 +49,7 @@ declare global {
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
   const useEvent: typeof import('./src/composables/useEvent')['default']
+  const useImgPreload: typeof import('./src/composables/useImgPreload')['default']
   const useSlots: typeof import('vue')['useSlots']
   const useSolitaire: typeof import('./src/composables/useSolitaire')['default']
   const watch: typeof import('vue')['watch']

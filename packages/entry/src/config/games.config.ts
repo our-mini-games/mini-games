@@ -32,7 +32,7 @@ export const games: GameConfig[] = [
   },
   {
     path: '/mini-games/games/spider-solitaire/index.html',
-    name: 'spider-solitaire',
+    name: '蜘蛛纸牌',
     cover: 'spider-solitaire.svg'
   },
   {
