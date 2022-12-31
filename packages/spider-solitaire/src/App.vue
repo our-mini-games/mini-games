@@ -13,3 +13,5 @@ import GameWrapper from './components/GameWrapper/index.vue'
 // provide('collectedGroup', collectedGroup)
 // provide('dropIt', dropIt)
 </script>
+
+<style src="./assets/reset.scss"></style>

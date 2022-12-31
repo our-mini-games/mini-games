@@ -49,7 +49,17 @@ export default (): SolitaireReturnType => {
     deactiveGroup.value = data.deactiveGroup
 
     collectedGroup.value = []
+    movingGroup.value = {
+      index: -1,
+      sIndex: -1,
+      source: [],
+      solitaires: []
+    }
   }
+
+  watch(mode, () => {
+    init()
+  })
 
   /**
    * 放置牌
@@ -72,6 +82,7 @@ export default (): SolitaireReturnType => {
   /**
    * 收集牌
    * @todo 收集动画
+   * @todo 完成动画
    */
   const collectIt = (index: number): void => {
     // 收集
@@ -83,7 +94,9 @@ export default (): SolitaireReturnType => {
     }
 
     if (collectedGroup.value.length === 8) {
-      console.log('游戏完成')
+      setTimeout(() => {
+        alert('游戏完成')
+      })
     }
   }
 

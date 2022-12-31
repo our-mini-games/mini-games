@@ -27,11 +27,6 @@ export const canSolitairesMove = (solitaires: SolitaireGroupItem[], index: numbe
   const target = solitaires[index]
   const afterSolitaires = solitaires.filter((_, i) => i > index)
 
-  console.log({
-    target,
-    afterSolitaires
-  })
-
   if (afterSolitaires.some(solitaire => solitaire.suit !== target.suit)) {
     return false
   }

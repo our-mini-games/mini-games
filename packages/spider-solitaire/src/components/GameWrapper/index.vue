@@ -104,22 +104,65 @@
         />
       </g>
     </g>
+
+    <g
+      name="control-wrapper"
+      transform="translate(320, 510)"
+    >
+      <g
+        v-for="(button, index) of buttons"
+        :key="button"
+        :transform="`translate(0, ${index * 36})`"
+        @click="handleButtonClick(button)"
+      >
+        <rect
+          x="0"
+          y="0"
+          width="100"
+          height="30"
+          stroke="#333"
+          fill="none"
+          rx="8"
+          ry="8"
+        />
+        <text
+          dominant-baseline="middle"
+          text-anchor="middle"
+          font-size="16"
+          font-weight="bold"
+          font-family="Gill Sans, serif"
+          x="50"
+          y="18"
+        >
+          {{ button }}
+        </text>
+      </g>
+    </g>
   </svg>
+
+  <ChooseModeModal
+    v-if="chooseModeModalVisible"
+    @close="chooseModeModalVisible = false"
+  />
 </template>
 
 <script setup lang="ts">
-// import type { SolitaireGroup } from '../../composables/useSolitaire'
-
 import { gap, solitaireSize } from '../../config'
 import { SolitaireGroupItem } from '../../types'
 
 import GraphDefs from './GraphDefs.vue'
 
+// eslint-disable-next-line @typescript-eslint/promise-function-async
+const ChooseModeModal = defineAsyncComponent(() => import('../modal/ChooseMode.vue'))
+const chooseModeModalVisible = ref(false)
+
 const svgRef = ref<SVGAElement>()
 const movingSolitaireRef = ref<SVGAElement[]>([])
 
+const buttons = ['重新开始', '选择难度']
+
 const {
-  // mode,
+  mode,
   activeGroup,
   deactiveGroup,
   collectedGroup,
@@ -132,17 +175,20 @@ const {
 
 onMounted(() => {
   init()
-
-  console.log(activeGroup.value, deactiveGroup.value)
 })
 
-// const activeGroup = inject('activeGroup', ref<SolitaireGroup>([]))
-// // eslint-disable-next-line @typescript-eslint/no-unused-vars
-// const deactiveGroup = inject('deactiveGroup', ref<SolitaireGroup>([]))
-// // eslint-disable-next-line @typescript-eslint/no-unused-vars
-// const collectedGroup = inject('collectedGroup', ref<SolitaireGroup>([]))
-
-// const dropIt = inject('dropIt', (targetGroupIdx: number, sourceIdx: number, targetIdx: number) => {})
+const handleButtonClick = (button: string): void => {
+  switch (button) {
+    case '重新开始':
+      init()
+      break
+    case '选择难度':
+      chooseModeModalVisible.value = true
+      break
+    default:
+      break
+  }
+}
 
 const {
   isDraging,
@@ -161,6 +207,8 @@ const getOpenedSolitaireTop = (group: SolitaireGroupItem[], index: number): numb
   const unopenedLength = group.filter(item => !item.isOpen).length
   return (unopenedLength) * gap.unopened + (index - unopenedLength) * gap.opened
 }
+
+provide('mode', mode)
 </script>
 
 <style lang="scss" scoped>

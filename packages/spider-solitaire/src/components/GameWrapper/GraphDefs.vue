@@ -7,8 +7,8 @@
         y="0"
         :width="solitaireSize.width"
         :height="solitaireSize.height"
-        rx="2"
-        ry="2"
+        rx="4"
+        ry="4"
         stroke="#0088ff"
         fill="none"
       />
@@ -19,8 +19,8 @@
         y="0"
         :width="solitaireSize.width"
         :height="solitaireSize.height"
-        rx="2"
-        ry="2"
+        rx="4"
+        ry="4"
         stroke="none"
         fill="rgba(200, 50, 50, .1)"
       />
@@ -32,8 +32,8 @@
         y="0"
         :width="solitaireSize.width"
         :height="solitaireSize.height"
-        rx="2"
-        ry="2"
+        rx="4"
+        ry="4"
         fill="#0088ff"
         stroke="#333"
       />
@@ -45,8 +45,8 @@
         y="0"
         :width="solitaireSize.width"
         :height="solitaireSize.height"
-        rx="2"
-        ry="2"
+        rx="4"
+        ry="4"
         fill="#fff"
         stroke="#333"
       />
