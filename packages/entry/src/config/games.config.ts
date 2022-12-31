@@ -31,6 +31,11 @@ export const games: GameConfig[] = [
     cover: '2048.svg'
   },
   {
+    path: '/mini-games/games/spider-solitaire/index.html',
+    name: 'spider-solitaire',
+    cover: 'spider-solitaire.svg'
+  },
+  {
     path: 'https://github.com/our-mini-games/mini-games/discussions',
     name: '没有想要的？',
     cover: 'org.svg'

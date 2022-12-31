@@ -1,0 +1,7 @@
+extends:
+  -  '../../.eslintrc.yml'
+  - './.eslintrc-auto-import.json'
+rules: {
+  'no-unused-vars': 0,
+  '@typescript-eslint/no-misused-promises': 0
+}
