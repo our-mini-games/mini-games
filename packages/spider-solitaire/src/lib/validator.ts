@@ -27,15 +27,21 @@ export const canSolitairesMove = (solitaires: SolitaireGroupItem[], index: numbe
   const target = solitaires[index]
   const afterSolitaires = solitaires.filter((_, i) => i > index)
 
+  console.log({
+    target,
+    afterSolitaires
+  })
+
   if (afterSolitaires.some(solitaire => solitaire.suit !== target.suit)) {
     return false
   }
 
   const currentSuitIndex = reverseSolitaireNumbers.indexOf(target.number)
+
   if (currentSuitIndex === -1) {
     return false
   }
-  const numbers = reverseSolitaireNumbers.slice(currentSuitIndex, currentSuitIndex + afterSolitaires.length)
+  const numbers = reverseSolitaireNumbers.slice(currentSuitIndex + 1)
 
   if (afterSolitaires.some((solitaire, i) => solitaire.number !== numbers[i])) {
     return false
@@ -44,6 +50,38 @@ export const canSolitairesMove = (solitaires: SolitaireGroupItem[], index: numbe
   return true
 }
 
-export const canIDropIt = (): boolean => {
-  return false
+export const canIDropIt = (solitaires: SolitaireGroupItem[], target: SolitaireGroupItem): boolean => {
+  if (solitaires.length === 0) {
+    return true
+  }
+
+  const idx = reverseSolitaireNumbers.indexOf(solitaires.at(-1)!.number)
+
+  if (idx === -1) {
+    return false
+  }
+
+  if (reverseSolitaireNumbers[idx + 1] !== target.number) {
+    return false
+  }
+
+  return true
+}
+
+export const canICollectIt = (solitaires: SolitaireGroupItem[]): boolean => {
+  const openedSolitaires = solitaires.filter(s => s.isOpen)
+  if (openedSolitaires.length < 13) {
+    return false
+  }
+
+  // 取最后 13 张牌
+  const last = openedSolitaires.slice(-13)
+
+  const suit = last[0].suit
+
+  if (last.some(i => i.suit !== suit)) {
+    return false
+  }
+
+  return last.every((item, index) => item.number === reverseSolitaireNumbers[index])
 }

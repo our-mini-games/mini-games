@@ -44,14 +44,15 @@
               :y="getOpenedSolitaireTop(item, sIndex)"
               @mousedown="(e: MouseEvent) => handleMousedown(e, item, sIndex)"
             />
-
-            <use
-              v-if="isDraging"
-              xlink:href="#empty-solitaire"
-              fill="blue"
-              :y="getOpenedSolitaireTop(item, item.length)"
-            />
           </template>
+
+          <use
+            v-if="isDraging"
+            class="drop-target"
+            xlink:href="#drop-target"
+            fill="blue"
+            :y="getOpenedSolitaireTop(item, item.length)"
+          />
         </g>
       </g>
     </g>
@@ -63,7 +64,8 @@
       <g
         v-for="(item, index) of deactiveGroup"
         :key="index"
-        :transform="`translate(${(solitaireSize.width + gap.unopened) * index})`"
+        :transform="`translate(${(solitaireSize.width + gap.unopened) * (4 - index)})`"
+        @click="dealCards"
       >
         <use
           xlink:href="#unopened-solitaire"
@@ -81,7 +83,24 @@
         :transform="`translate(${(gap.opened) * index})`"
       >
         <use
-          :xlink:href="`#${item[0].suit}-${SolitaireNumber.king}`"
+          :xlink:href="`#${item[0].suit}-${item[0].number}`"
+        />
+      </g>
+    </g>
+
+    <g
+      name="moving-group"
+      transform="translate(17, 20)"
+    >
+      <g
+        v-for="(item, index) of movingGroup.solitaires"
+        :key="index"
+        :transform="`translate(${movingGroup.index * (gap.group + solitaireSize.width)}, 0)`"
+      >
+        <use
+          ref="movingSolitaireRef"
+          :xlink:href="`#${item.suit}-${item.number}`"
+          :y="getOpenedSolitaireTop(movingGroup.source, movingGroup.sIndex + index)"
         />
       </g>
     </g>
@@ -89,34 +108,64 @@
 </template>
 
 <script setup lang="ts">
-import type { SolitaireGroup } from '../../composables/useSolitaire'
+// import type { SolitaireGroup } from '../../composables/useSolitaire'
 
-import { gap, SolitaireNumber, solitaireSize } from '../../config'
+import { gap, solitaireSize } from '../../config'
 import { SolitaireGroupItem } from '../../types'
 
 import GraphDefs from './GraphDefs.vue'
 
 const svgRef = ref<SVGAElement>()
+const movingSolitaireRef = ref<SVGAElement[]>([])
 
-const activeGroup = inject('activeGroup', ref<SolitaireGroup>([]))
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const deactiveGroup = inject('deactiveGroup', ref<SolitaireGroup>([]))
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const collectedGroup = inject('collectedGroup', ref<SolitaireGroup>([]))
+const {
+  // mode,
+  activeGroup,
+  deactiveGroup,
+  collectedGroup,
+  movingGroup,
+  init,
+  dropIt,
+  collectIt,
+  dealCards
+} = useSolitaire()
+
+onMounted(() => {
+  init()
+
+  console.log(activeGroup.value, deactiveGroup.value)
+})
+
+// const activeGroup = inject('activeGroup', ref<SolitaireGroup>([]))
+// // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// const deactiveGroup = inject('deactiveGroup', ref<SolitaireGroup>([]))
+// // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// const collectedGroup = inject('collectedGroup', ref<SolitaireGroup>([]))
+
+// const dropIt = inject('dropIt', (targetGroupIdx: number, sourceIdx: number, targetIdx: number) => {})
 
 const {
   isDraging,
   handleMousedown
-} = useEvent(svgRef)
+} = useEvent(
+  'drop-target',
+  svgRef,
+  movingSolitaireRef,
+  activeGroup,
+  movingGroup,
+  dropIt,
+  collectIt
+)
 
 const getOpenedSolitaireTop = (group: SolitaireGroupItem[], index: number): number => {
   const unopenedLength = group.filter(item => !item.isOpen).length
-  return (unopenedLength - 1) * gap.unopened + (index - unopenedLength) * gap.opened
+  return (unopenedLength) * gap.unopened + (index - unopenedLength) * gap.opened
 }
 </script>
 
 <style lang="scss" scoped>
 .game-wrapper {
   box-shadow: 0 0 2px #888;
+  user-select: none;
 }
 </style>

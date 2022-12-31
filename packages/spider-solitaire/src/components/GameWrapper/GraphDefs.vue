@@ -13,6 +13,18 @@
         fill="none"
       />
 
+      <rect
+        id="drop-target"
+        x="0"
+        y="0"
+        :width="solitaireSize.width"
+        :height="solitaireSize.height"
+        rx="2"
+        ry="2"
+        stroke="none"
+        fill="rgba(200, 50, 50, .1)"
+      />
+
       <!-- 未开启牌面 -->
       <rect
         id="unopened-solitaire"
@@ -93,12 +105,19 @@
             >
               {{ number }}
             </text>
-            <use
+            <!-- <use
               :xlink:href="`#suit-${suit}`"
-              x="5"
+              x="4"
               y="16"
               width="10"
               height="10"
+            /> -->
+            <use
+              :xlink:href="`#suit-${suit}`"
+              :x="solitaireSize.width - 4 - 14"
+              :y="4"
+              width="14"
+              height="14"
             />
           </g>
         </g>

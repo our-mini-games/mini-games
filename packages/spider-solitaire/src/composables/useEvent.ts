@@ -1,6 +1,8 @@
 import { Ref } from 'vue'
-import { canSolitairesMove } from '../lib/validator'
+import { canICollectIt, canIDropIt, canSolitairesMove } from '../lib/validator'
 import { SolitaireGroupItem } from '../types'
+import { solitaireSize } from '../config'
+import { MovingGroupRecord, SolitaireGroup, SolitaireReturnType } from './useSolitaire'
 
 export interface UseEventReturnType {
   isDraging: Ref<boolean>
@@ -8,16 +10,25 @@ export interface UseEventReturnType {
 }
 
 export default (
-  svgRef: Ref<SVGAElement | undefined>
+  dropTargetClassName: string,
+  svgRef: Ref<SVGAElement | undefined>,
+  movingSolitaireRef: Ref<SVGAElement[]>,
+  activeGroup: Ref<SolitaireGroup>,
+  movingGroup: Ref<MovingGroupRecord>,
+  dropIt: SolitaireReturnType['dropIt'],
+  collectIt: SolitaireReturnType['collectIt']
 ): UseEventReturnType => {
   const startPosition = {
     left: 0,
     top: 0
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // 当前选中的牌
   let targetSolitaire: SolitaireGroupItem | null = null
-  let targets: SVGAElement[] = []
+
+  // 被移动牌组处于 activateGroup 中的索引位置
+  let sourceIdx = -1
+  let targetIdx = -1
 
   const isDraging = ref(false)
 
@@ -27,9 +38,19 @@ export default (
       startPosition.left = e.clientX
       startPosition.top = e.clientY
 
-      const target = e.target as Element
-      targets = Array.prototype.slice.call(target.parentElement!.children, index) as SVGAElement[]
       targetSolitaire = solitaires[index]
+
+      movingGroup.value = {
+        index: activeGroup.value.indexOf(solitaires),
+        sIndex: index,
+        source: solitaires,
+        solitaires: solitaires.slice(index)
+      }
+      // 暂时移除当前牌组中被移动的元素
+      solitaires.splice(index)
+
+      targetIdx = index
+      sourceIdx = activeGroup.value.indexOf(solitaires)
 
       isDraging.value = true
 
@@ -48,22 +69,71 @@ export default (
       clientY
     } = e
 
-    const { left, top } = svgRef.value.getBoundingClientRect()
+    // const { left, top } = svgRef.value.getBoundingClientRect()
 
-    console.log('left', clientX, left)
-    console.log('top', clientY, top)
+    // console.log('left', clientX, left)
+    // console.log('top', clientY, top)
 
-    targets.forEach(target => {
+    console.log('moving', movingSolitaireRef.value)
+
+    movingSolitaireRef.value.forEach(target => {
       target.style.transform = `translate(${clientX - startPosition.left}px, ${clientY - startPosition.top}px)`
     })
+
+    // targets.forEach(target => {
+    //   target.style.transform = `translate(${clientX - startPosition.left}px, ${clientY - startPosition.top}px)`
+    // })
   }
 
   const handleMouseup = (e: MouseEvent): void => {
     // 获取鼠标最后所在位置是否在牌组区域（每组牌最后一张的位置）
-    // const {
-    //   clientX,
-    //   clientY
-    // } = e
+    const {
+      clientX,
+      clientY
+    } = e
+
+    const { width, height } = solitaireSize
+
+    const dropTargets = document.querySelectorAll<SVGAElement>(`.${dropTargetClassName}`)
+
+    let isDrop = false
+    let collectableIndex = -1
+
+    for (let i = 0; i < dropTargets.length; i++) {
+      const { left, top } = dropTargets[i].getBoundingClientRect()
+
+      if (
+        clientX >= left && clientX <= (left + width) &&
+        clientY >= top && clientY <= (top + height) &&
+        canIDropIt(activeGroup.value[i], targetSolitaire!)
+      ) {
+        console.log('OK', i, sourceIdx, targetIdx)
+        dropIt(i, sourceIdx, movingGroup.value.solitaires)
+        isDrop = true
+
+        if (canICollectIt(activeGroup.value[i])) {
+          collectableIndex = i
+        }
+        break
+      }
+    }
+
+    isDraging.value = false
+
+    if (!isDrop) {
+      // 没有放置成功，需要把临时被移动的数据都还原回去
+      movingGroup.value.source.push(...movingGroup.value.solitaires)
+    }
+
+    movingGroup.value.source = []
+    movingGroup.value.solitaires = []
+
+    // 被放置的那组牌可以被收集了
+    if (collectableIndex !== -1) {
+      collectIt(collectableIndex)
+    }
+
+    console.log(dropTargets)
 
     window.removeEventListener('mousemove', handleMousemove, false)
     window.removeEventListener('mouseup', handleMouseup, false)
