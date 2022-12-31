@@ -25,8 +25,10 @@ export interface SolitaireReturnType {
   dealCards: () => void
 }
 
+const defaultMode = JSON.parse(localStorage.getItem('SPIDER_SOLITAIRE_MODE') ?? '0') as GameMode
+
 export default (): SolitaireReturnType => {
-  const mode = ref(GameMode.easy)
+  const mode = ref(defaultMode)
 
   // 游戏中的牌组
   const activeGroup = ref<SolitaireGroup>([])
@@ -58,6 +60,7 @@ export default (): SolitaireReturnType => {
   }
 
   watch(mode, () => {
+    localStorage.setItem('SPIDER_SOLITAIRE_MODE', `${mode.value}`)
     init()
   })
 
