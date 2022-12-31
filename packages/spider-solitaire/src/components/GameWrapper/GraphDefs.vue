@@ -81,13 +81,360 @@
           <use
             xlink:href="#opened-solitaire"
           />
-          <use
+          <!-- <use
             :xlink:href="`#suit-${suit}`"
             width="32"
             height="32"
             :x="(solitaireSize.width - 32) / 2"
             :y="(solitaireSize.height - 32) / 2"
-          />
+          /> -->
+          <g name="suits">
+            <!-- Ace -->
+            <g v-if="number === SolitaireNumber.ace">
+              <use
+                :xlink:href="`#suit-${suit}`"
+                width="32"
+                height="32"
+                :x="(solitaireSize.width - 32) / 2"
+                :y="(solitaireSize.height - 32) / 2"
+              />
+            </g>
+            <!-- 2 -->
+            <g v-else-if="number === SolitaireNumber.two">
+              <use
+                v-for="n in 2"
+                :key="n"
+                :xlink:href="`#suit-${suit}`"
+                width="16"
+                height="16"
+                :x="(solitaireSize.width - 16) / 2"
+                :y="8"
+                :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+              />
+            </g>
+            <!-- 3 -->
+            <g v-else-if="number === SolitaireNumber.three">
+              <use
+                v-for="n in 2"
+                :key="n"
+                :xlink:href="`#suit-${suit}`"
+                width="16"
+                height="16"
+                :x="(solitaireSize.width - 16) / 2"
+                :y="8"
+                :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+              />
+              <use
+                :xlink:href="`#suit-${suit}`"
+                width="16"
+                height="16"
+                :x="(solitaireSize.width - 16) / 2"
+                :y="(solitaireSize.height - 16) / 2"
+              />
+            </g>
+            <!-- 4 -->
+            <g v-else-if="number === SolitaireNumber.four">
+              <template
+                v-for="n in 2"
+                :key="n"
+              >
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="12"
+                  :y="8"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="solitaireSize.width - 12 - 16"
+                  :y="8"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+              </template>
+            </g>
+            <!-- 5 -->
+            <g v-else-if="number === SolitaireNumber.five">
+              <template
+                v-for="n in 2"
+                :key="n"
+              >
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="12"
+                  :y="8"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="solitaireSize.width - 12 - 16"
+                  :y="8"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+              </template>
+              <use
+                :xlink:href="`#suit-${suit}`"
+                width="16"
+                height="16"
+                :x="(solitaireSize.width - 16) / 2"
+                :y="(solitaireSize.height - 16) / 2"
+              />
+            </g>
+            <!-- 6 -->
+            <g v-else-if="number === SolitaireNumber.six">
+              <template
+                v-for="n in 2"
+                :key="n"
+              >
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="12"
+                  :y="8"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="solitaireSize.width - 12 - 16"
+                  :y="8"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+              </template>
+              <use
+                :xlink:href="`#suit-${suit}`"
+                width="16"
+                height="16"
+                :x="12"
+                :y="(solitaireSize.height - 16) / 2"
+              />
+              <use
+                :xlink:href="`#suit-${suit}`"
+                width="16"
+                height="16"
+                :x="solitaireSize.width - 16 - 12"
+                :y="(solitaireSize.height - 16) / 2"
+              />
+            </g>
+            <!-- 7 -->
+            <g v-else-if="number === SolitaireNumber.seven">
+              <template
+                v-for="n in 2"
+                :key="n"
+              >
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="12"
+                  :y="8"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="solitaireSize.width - 12 - 16"
+                  :y="8"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+              </template>
+              <use
+                :xlink:href="`#suit-${suit}`"
+                width="16"
+                height="16"
+                :x="(solitaireSize.width - 16) / 2"
+                :y="(solitaireSize.height - 16) / 2 - 14"
+              />
+              <use
+                :xlink:href="`#suit-${suit}`"
+                width="16"
+                height="16"
+                :x="12"
+                :y="(solitaireSize.height - 16) / 2"
+              />
+              <use
+                :xlink:href="`#suit-${suit}`"
+                width="16"
+                height="16"
+                :x="solitaireSize.width - 16 - 12"
+                :y="(solitaireSize.height - 16) / 2"
+              />
+            </g>
+            <!-- 8 -->
+            <g v-else-if="number === SolitaireNumber.eight">
+              <template
+                v-for="n in 2"
+                :key="n"
+              >
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="12"
+                  :y="8"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="solitaireSize.width - 12 - 16"
+                  :y="8"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+              </template>
+              <use
+                v-for="n in 2"
+                :key="n"
+                :xlink:href="`#suit-${suit}`"
+                width="16"
+                height="16"
+                :x="(solitaireSize.width - 16) / 2"
+                :y="(solitaireSize.height - 16) / 2 - 14"
+                :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+              />
+              <use
+                :xlink:href="`#suit-${suit}`"
+                width="16"
+                height="16"
+                :x="12"
+                :y="(solitaireSize.height - 16) / 2"
+              />
+              <use
+                :xlink:href="`#suit-${suit}`"
+                width="16"
+                height="16"
+                :x="solitaireSize.width - 16 - 12"
+                :y="(solitaireSize.height - 16) / 2"
+              />
+            </g>
+            <!-- 9 -->
+            <g v-else-if="number === SolitaireNumber.nine">
+              <template
+                v-for="n in 2"
+                :key="n"
+              >
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="12"
+                  :y="8"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="solitaireSize.width - 12 - 16"
+                  :y="8"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+              </template>
+              <template
+                v-for="n in 2"
+                :key="n"
+              >
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="12"
+                  :y="26"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="solitaireSize.width - 12 - 16"
+                  :y="26"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+              </template>
+              <use
+                :xlink:href="`#suit-${suit}`"
+                width="16"
+                height="16"
+                :x="(solitaireSize.width - 16) / 2"
+                :y="(solitaireSize.height - 16) / 2"
+              />
+            </g>
+            <!-- 10 -->
+            <g v-else-if="number === SolitaireNumber.ten">
+              <template
+                v-for="n in 2"
+                :key="n"
+              >
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="12"
+                  :y="8"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="solitaireSize.width - 12 - 16"
+                  :y="8"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+              </template>
+              <template
+                v-for="n in 2"
+                :key="n"
+              >
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="12"
+                  :y="27"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  width="16"
+                  height="16"
+                  :x="solitaireSize.width - 12 - 16"
+                  :y="27"
+                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                />
+              </template>
+              <use
+                v-for="n in 2"
+                :key="n"
+                :xlink:href="`#suit-${suit}`"
+                width="16"
+                height="16"
+                :x="(solitaireSize.width - 16) / 2"
+                :y="(solitaireSize.height - 16) / 2 - 18"
+                :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+              />
+            </g>
+            <g v-else>
+              <image
+                :xlink:href="`/${suit}-${number}.png`"
+                x="11"
+                y="8"
+                width="41"
+                height="72"
+              />
+            </g>
+          </g>
 
           <g
             v-for="index in 2"
@@ -99,25 +446,18 @@
               y="4"
               dominant-baseline="hanging"
               text-anchor="auto"
-              font-size="14"
+              :font-size="number === SolitaireNumber.ten ? 9 : 12"
               font-weight="bold"
-              font-family="Gill Sans, serif"
+              font-family="Card Characters, Gill Sans, serif"
             >
               {{ number }}
             </text>
-            <!-- <use
-              :xlink:href="`#suit-${suit}`"
-              x="4"
-              y="16"
-              width="10"
-              height="10"
-            /> -->
             <use
               :xlink:href="`#suit-${suit}`"
-              :x="solitaireSize.width - 4 - 14"
-              :y="4"
-              width="14"
-              height="14"
+              x="4"
+              y="14"
+              :width="suit === SolitaireSuits.diamond ? 10 : 8"
+              :height="suit === SolitaireSuits.diamond ? 10 : 8"
             />
           </g>
         </g>
