@@ -7,11 +7,11 @@
 <script setup lang="ts">
 import GameWrapper from './components/GameWrapper/index.vue'
 
-// provide('mode', mode)
-// provide('activeGroup', activeGroup)
-// provide('deactiveGroup', deactiveGroup)
-// provide('collectedGroup', collectedGroup)
-// provide('dropIt', dropIt)
+const ipl = useImgPreload()
+ipl.mockRender(50)
+nextTick(() => {
+  ipl.reload()
+})
 </script>
 
 <style src="./assets/reset.scss"></style>
