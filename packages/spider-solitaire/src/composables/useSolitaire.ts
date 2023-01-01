@@ -2,6 +2,7 @@
 import { Ref } from 'vue'
 import { GameMode } from '../config'
 import { initializeTheGame } from '../lib/helper'
+import { canICollectIt } from '../lib/validator'
 import type { SolitaireGroupItem } from '../types'
 
 export type SolitaireGroup = SolitaireGroupItem[][]
@@ -122,6 +123,13 @@ export default (): SolitaireReturnType => {
           isOpen: true
         })
       }
+
+      // 检测牌组是否可被收集
+      activeGroup.value.forEach((solitaires, index) => {
+        if (canICollectIt(solitaires)) {
+          collectIt(index)
+        }
+      })
     }
   }
 

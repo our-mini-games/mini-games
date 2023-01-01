@@ -112,6 +112,7 @@
       <g
         v-for="(button, index) of buttons"
         :key="button"
+        class="btn"
         :transform="`translate(0, ${index * 36})`"
         @click="handleButtonClick(button)"
       >
@@ -121,7 +122,7 @@
           width="100"
           height="30"
           stroke="#333"
-          fill="none"
+          fill="transparent"
           rx="8"
           ry="8"
         />
@@ -178,6 +179,7 @@ onMounted(() => {
 })
 
 const handleButtonClick = (button: string): void => {
+  console.log('button click')
   switch (button) {
     case '重新开始':
       init()
@@ -215,5 +217,11 @@ provide('mode', mode)
 .game-wrapper {
   box-shadow: 0 0 2px #888;
   user-select: none;
+
+  // .btn {
+  //   * {
+  //     pointer-events: none;
+  //   }
+  // }
 }
 </style>
