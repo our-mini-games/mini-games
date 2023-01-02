@@ -15,6 +15,7 @@ export default (
   movingSolitaireRef: Ref<SVGAElement[]>,
   activeGroup: Ref<SolitaireGroup>,
   movingGroup: Ref<MovingGroupRecord>,
+  inAnimation: Ref<boolean>,
   dropIt: SolitaireReturnType['dropIt'],
   collectIt: SolitaireReturnType['collectIt']
 ): UseEventReturnType => {
@@ -32,7 +33,7 @@ export default (
   const isDraging = ref(false)
 
   const handleMousedown = (e: MouseEvent, solitaires: SolitaireGroupItem[], index: number): void => {
-    if (canSolitairesMove(solitaires, index)) {
+    if (!inAnimation.value && canSolitairesMove(solitaires, index)) {
       startPosition.left = e.clientX
       startPosition.top = e.clientY
 

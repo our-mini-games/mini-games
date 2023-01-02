@@ -83,7 +83,7 @@
         :transform="`translate(${(gap.opened) * index})`"
       >
         <use
-          :xlink:href="`#${item[0].suit}-${item[0].number}`"
+          :xlink:href="`#${item.at(-1)!.suit}-${item.at(-1)!.number}`"
         />
       </g>
     </g>
@@ -105,6 +105,7 @@
       </g>
     </g>
 
+    <!-- 控制台 -->
     <g
       name="control-wrapper"
       transform="translate(320, 510)"
@@ -139,6 +140,17 @@
         </text>
       </g>
     </g>
+
+    <!-- 动画中的牌 -->
+    <g
+      v-if="animationSolitaire.visible"
+      name="animation-solitaire"
+      :transform="`translate(${animationSolitaire.x}, ${animationSolitaire.y})`"
+    >
+      <use
+        :xlink:href="`#${animationSolitaire.suit}-${animationSolitaire.number}`"
+      />
+    </g>
   </svg>
 
   <ChooseModeModal
@@ -149,7 +161,7 @@
 
 <script setup lang="ts">
 import { gap, solitaireSize } from '../../config'
-import { SolitaireGroupItem } from '../../types'
+import { getOpenedSolitaireTop } from '../../lib/helper'
 
 import GraphDefs from './GraphDefs.vue'
 
@@ -168,6 +180,8 @@ const {
   deactiveGroup,
   collectedGroup,
   movingGroup,
+  animationSolitaire,
+  inAnimation,
   init,
   dropIt,
   collectIt,
@@ -179,7 +193,9 @@ onMounted(() => {
 })
 
 const handleButtonClick = (button: string): void => {
-  console.log('button click')
+  if (inAnimation.value) {
+    return
+  }
   switch (button) {
     case '重新开始':
       init()
@@ -201,14 +217,10 @@ const {
   movingSolitaireRef,
   activeGroup,
   movingGroup,
+  inAnimation,
   dropIt,
   collectIt
 )
-
-const getOpenedSolitaireTop = (group: SolitaireGroupItem[], index: number): number => {
-  const unopenedLength = group.filter(item => !item.isOpen).length
-  return (unopenedLength) * gap.unopened + (index - unopenedLength) * gap.opened
-}
 
 provide('mode', mode)
 </script>

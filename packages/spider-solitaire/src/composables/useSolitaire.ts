@@ -4,6 +4,7 @@ import { GameMode } from '../config'
 import { initializeTheGame } from '../lib/helper'
 import { canICollectIt } from '../lib/validator'
 import type { SolitaireGroupItem } from '../types'
+import useAnimations, { AnimationSolitaire } from './useAnimations'
 
 export type SolitaireGroup = SolitaireGroupItem[][]
 
@@ -20,10 +21,12 @@ export interface SolitaireReturnType {
   deactiveGroup: Ref<SolitaireGroup>
   collectedGroup: Ref<SolitaireGroup>
   movingGroup: Ref<MovingGroupRecord>
+  animationSolitaire: Ref<AnimationSolitaire>
+  inAnimation: Ref<boolean>
   init: () => void
   dropIt: (targetGroupIdx: number, sourceIdx: number, movingSolitaires: SolitaireGroupItem[]) => void
   collectIt: (index: number) => void
-  dealCards: () => void
+  dealCards: () => Promise<void>
 }
 
 const defaultMode = JSON.parse(localStorage.getItem('SPIDER_SOLITAIRE_MODE') ?? '0') as GameMode
@@ -44,6 +47,13 @@ export default (): SolitaireReturnType => {
     source: [],
     solitaires: []
   })
+
+  const {
+    animationSolitaire,
+    inAnimation,
+    runDealAnimation,
+    runCollectAnimation
+  } = useAnimations(activeGroup, deactiveGroup, collectedGroup)
 
   const init = (): void => {
     const data = initializeTheGame(mode.value)
@@ -88,9 +98,10 @@ export default (): SolitaireReturnType => {
    * @todo 收集动画
    * @todo 完成动画
    */
-  const collectIt = (index: number): void => {
+  const collectIt = async (index: number): Promise<void> => {
     // 收集
-    collectedGroup.value.push(activeGroup.value[index].splice(-13, 13))
+    await runCollectAnimation(index)
+    // collectedGroup.value.push(activeGroup.value[index].splice(-13, 13))
     // 打开被收集牌组最后一张牌
     const last = activeGroup.value[index].at(-1)
     if (last) {
@@ -106,30 +117,32 @@ export default (): SolitaireReturnType => {
 
   /**
    * 派牌
-   * @todo 派牌动画
    */
-  const dealCards = (): void => {
-    if (deactiveGroup.value.length === 0) {
+  const dealCards = async (): Promise<void> => {
+    if (inAnimation.value || deactiveGroup.value.length === 0) {
       return
     }
 
     // 所有牌组中都得有牌
     if (activeGroup.value.every(item => item.length > 0)) {
-      const solitaires = deactiveGroup.value.pop()!
+      const solitaires = deactiveGroup.value.at(-1)!
 
       for (let i = 0; i < solitaires.length; i++) {
+        await runDealAnimation(i)
         activeGroup.value[i].push({
           ...solitaires[i],
           isOpen: true
         })
       }
+      // 删除最后一项
+      deactiveGroup.value.pop()
 
       // 检测牌组是否可被收集
-      activeGroup.value.forEach((solitaires, index) => {
-        if (canICollectIt(solitaires)) {
-          collectIt(index)
+      for (let j = 0; j < activeGroup.value.length; j++) {
+        if (canICollectIt(activeGroup.value[j])) {
+          await collectIt(j)
         }
-      })
+      }
     }
   }
 
@@ -139,6 +152,8 @@ export default (): SolitaireReturnType => {
     deactiveGroup,
     collectedGroup,
     movingGroup,
+    animationSolitaire,
+    inAnimation,
     init,
     dropIt,
     collectIt,
