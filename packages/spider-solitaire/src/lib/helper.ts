@@ -1,4 +1,4 @@
-import { GameMode, SolitaireNumber, SolitaireSuits } from '../config'
+import { GameMode, gap, SolitaireNumber, SolitaireSuits } from '../config'
 import { SolitaireGroupItem } from '../types'
 
 /**
@@ -116,4 +116,9 @@ const arrayRepeat = <T = unknown>(arr: T[], times: number): T[] => {
     times--
   }
   return newArr
+}
+
+export const getOpenedSolitaireTop = (group: SolitaireGroupItem[], index: number): number => {
+  const unopenedLength = group.filter(item => !item.isOpen).length
+  return (unopenedLength) * gap.unopened + (index - unopenedLength) * gap.opened
 }
