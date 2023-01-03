@@ -172,6 +172,7 @@ const chooseModeModalVisible = ref(false)
 const svgRef = ref<SVGAElement>()
 const movingSolitaireRef = ref<SVGAElement[]>([])
 
+const ipl = useImgPreload()
 const buttons = ['重新开始', '选择难度']
 
 const {
@@ -198,6 +199,8 @@ const handleButtonClick = (button: string): void => {
   }
   switch (button) {
     case '重新开始':
+      ipl.mockRender(0)
+      ipl.reload()
       init()
       break
     case '选择难度':
