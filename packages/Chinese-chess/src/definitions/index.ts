@@ -45,3 +45,10 @@ export const chessPieceMapper: Record<ChessPieceValue, ChessPieceMapItem> = {
   26: { camp: Camp.BLACK, name: '士', coords: [[4, 1], [6, 1]] },
   27: { camp: Camp.BLACK, name: '卒', coords: [[1, 4], [3, 4], [5, 4], [7, 4], [9, 4]] }
 }
+
+export enum GameStatus {
+  Init,
+  Playing,
+  Paused,
+  Finished
+}

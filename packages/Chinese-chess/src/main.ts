@@ -1,8 +1,9 @@
-import { createGameInterface } from './libs/GameInterface'
+import { createController } from './libs/Controller'
 
-const { canvas } = createGameInterface()
+const oMain = document.querySelector('#main')!
 
-const oApp = document.querySelector('#app')!
-canvas.id = 'canvas'
+const ctrl = createController()
 
-oApp.appendChild(canvas)
+ctrl.initGame(oMain)
+
+ctrl.run()

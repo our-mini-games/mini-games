@@ -6,7 +6,8 @@ export interface ChessPiece {
   camp: Camp
   coord: Point
   isActive: boolean
-  readonly scale: number
+  scale: number
+  setScale: (scale: number) => void
   move: (point: Point) => void
 }
 
@@ -19,26 +20,14 @@ export const createChessPiece = (value: ChessPieceValue, coordIndex = 0): ChessP
 
   const coord = new Point(...coords[coordIndex])
 
-  let lastTime = Date.now()
-  let flicker = false
-
   return {
     name,
     camp,
     coord,
     isActive: false,
-    get scale () {
-      if (!this.isActive) {
-        return 1
-      }
-
-      const currentTime = Date.now()
-      if (currentTime - lastTime > 500) {
-        flicker = !flicker
-        lastTime = currentTime
-      }
-
-      return flicker ? 1 : 0.9
+    scale: 1,
+    setScale (scale: number) {
+      this.scale = scale
     },
     move ({ x, y }) {
       this.coord.x = x

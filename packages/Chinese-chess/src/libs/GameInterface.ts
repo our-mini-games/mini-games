@@ -1,9 +1,9 @@
 import { createCanvas } from './Canvas'
 import { Camp, colorMapper } from '../definitions'
 import { Point } from './Point'
-import { ChessPiece, createChessPiece } from './ChessPiece'
+import { ChessPiece } from './ChessPiece'
 
-interface SizeOptions {
+export interface SizeOptions {
   width: number
   height: number
   innerWidth: number
@@ -11,6 +11,22 @@ interface SizeOptions {
   padding: number
   baseSize: number
   fixedOrigin: () => void
+}
+
+export interface GameInterface {
+  mainCanvas: HTMLCanvasElement
+  checkerBoardCanvas: HTMLCanvasElement
+  readonly sizeOptions: SizeOptions
+  mount: (node: Element) => void
+  destroy: (node: Element) => void
+  getPointer: (e: MouseEvent) => Point
+
+  clearMain: () => void
+  drawChessPieces: (chessPieces: ChessPiece[]) => void
+  drawLastStop: (point: Point) => void
+  drawMovePath: (points: Point[]) => void
+  drawAllowPoints: (points: Point[]) => void
+  drawCurrentStop: (point: Point, counter?: number) => void
 }
 
 type AnchorType = 'left' | 'middle' | 'right'
@@ -298,11 +314,12 @@ function drawChessPiece (
   ctx.restore()
 }
 
-function drawLastStop (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }: SizeOptions, { x, y }: Point): void {
-  ctx.save()
+function drawLastStop (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }: SizeOptions, point: Point): void {
+  const { x, y } = Point.toActualPoint(point)
 
+  ctx.save()
   fixedOrigin()
-  ctx.translate(x * baseSize, y * baseSize)
+  ctx.translate(x, y)
   const lineWidth = baseSize / 32
 
   ;[baseSize / 16, baseSize / 8].forEach((radius, index) => {
@@ -321,13 +338,15 @@ function drawLastStop (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }:
   ctx.restore()
 }
 
-function drawCurrentStop (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }: SizeOptions, counter: number, { x, y }: Point): void {
+function drawCurrentStop (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }: SizeOptions, counter: number, point: Point): void {
+  const { x, y } = Point.toActualPoint(point)
+
   ctx.save()
   fixedOrigin()
   ctx.strokeStyle = colorMapper.white
   ctx.fillStyle = colorMapper.success
   ctx.lineWidth = baseSize * 0.05
-  ctx.translate(x * baseSize, y * baseSize)
+  ctx.translate(x, y)
   const displacement = baseSize / 32
   ctx.translate(-displacement, -displacement)
 
@@ -362,10 +381,8 @@ function drawMovePath (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }:
   const { length } = points
 
   points.reduce((prev, curr, index) => {
-    const x1 = prev.x * baseSize
-    const y1 = prev.y * baseSize
-    const x2 = curr.x * baseSize
-    const y2 = curr.y * baseSize
+    const { x: x1, y: y1 } = Point.toActualPoint(prev, baseSize)
+    const { x: x2, y: y2 } = Point.toActualPoint(curr, baseSize)
 
     const side = Math.sqrt(((x1 - x2) ** 2 + (y1 - y2) ** 2))
 
@@ -425,10 +442,11 @@ function drawMovePath (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }:
 }
 
 function drawAllowPoints (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }: SizeOptions, points: Point[]): void {
-  points.forEach(({ x, y }) => {
+  points.forEach(point => {
+    const { x, y } = Point.toActualPoint(point, baseSize)
     ctx.save()
     fixedOrigin()
-    ctx.translate(x * baseSize, y * baseSize)
+    ctx.translate(x, y)
 
     ctx.beginPath()
     ctx.arc(0, 0, baseSize / 16, 0, Math.PI * 2)
@@ -442,8 +460,9 @@ function drawAllowPoints (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin
   })
 }
 
-export const createGameInterface = (baseSize = 128): any => {
-  const padding = baseSize * 1.5
+export const createGameInterface = (baseSize = 128): GameInterface => {
+  const padding = baseSize * 1.25
+  let ratio = 1
 
   const [innerWidth, innerHeight] = [
     baseSize * 8,
@@ -454,8 +473,8 @@ export const createGameInterface = (baseSize = 128): any => {
     innerHeight + padding
   ]
 
-  const canvas = createCanvas(width, height)
-  const ctx = canvas.getContext('2d')!
+  const mainCanvas = createCanvas(width, height)
+  const ctx = mainCanvas.getContext('2d')!
 
   const sizeOptions: SizeOptions = {
     width,
@@ -467,61 +486,75 @@ export const createGameInterface = (baseSize = 128): any => {
     fixedOrigin: () => ctx.translate(width / 2 - innerWidth / 2, height / 2 - innerHeight / 2)
   }
 
-  // const groups = [
-  //   [{ x: 2, y: 4 }, { x: 2, y: 3 }, { x: 1, y: 2 }],
-  //   // [{ x: 3, y: 4 }, { x: 3, y: 3 }, { x: 4, y: 2 }],
-  //   // [{ x: 7, y: 2 }, { x: 7, y: 3 }, { x: 6, y: 4 }],
-  //   // [{ x: 8, y: 2 }, { x: 8, y: 3 }, { x: 9, y: 4 }],
+  const checkerBoardCanvas = createCanvas(width, height)
 
-  //   // [{ x: 1, y: 7 }, { x: 2, y: 7 }, { x: 3, y: 6 }],
-  //   // [{ x: 1, y: 8 }, { x: 2, y: 8 }, { x: 3, y: 9 }],
-  //   // [{ x: 9, y: 7 }, { x: 8, y: 7 }, { x: 7, y: 6 }],
-  //   // [{ x: 9, y: 8 }, { x: 8, y: 8 }, { x: 7, y: 9 }],
+  const mount = (parentNode: Element): void => {
+    const rect = parentNode.getBoundingClientRect()
+    console.log(rect, parseInt(mainCanvas.style.height))
+    ratio = rect.height / parseInt(mainCanvas.style.height)
+    console.log(ratio)
 
-  //   [{ x: 1, y: 1 }, { x: 5, y: 5 }]
-  // ]
+    drawCheckerboard(checkerBoardCanvas.getContext('2d')!, sizeOptions)
 
-  // groups.forEach(group => {
-  //   // group.forEach(point => {
-  //   //   drawLastStop(ctx, sizeOptions, point)
-  //   // })
+    const oInterface = document.createElement('div')
+    oInterface.style.cssText = 'position: absolute;' +
+      'left: 50%;' +
+      'top: 50%;' +
+      'transform-origin: center center;' +
+      `transform: translate(-50%, -50%) scale(${ratio})`
 
-  //   drawMovePath(ctx, sizeOptions, group)
-  // })
+    checkerBoardCanvas.style.position = mainCanvas.style.position = 'absolute'
+    checkerBoardCanvas.style.left = mainCanvas.style.left = '0'
+    checkerBoardCanvas.style.top = mainCanvas.style.top = '0'
 
-  // drawAllowPoints(ctx, sizeOptions, [{ x: 9, y: 8 }, { x: 8, y: 8 }, { x: 7, y: 9 }])
+    mainCanvas.style.zIndex = '2'
 
-  let counter = 0
-  function run (): void {
-    requestAnimationFrame(run)
-    counter += 2 * Math.PI / 360
-    if (counter >= 2 * Math.PI) {
-      counter = 0
-    }
-    ctx.clearRect(0, 0, width, height)
-    drawCheckerboard(ctx, sizeOptions)
-    drawCurrentStop(ctx, sizeOptions, counter, { x: 4, y: 9 })
+    oInterface.appendChild(checkerBoardCanvas)
+    oInterface.appendChild(mainCanvas)
 
-    ctx.save()
-    sizeOptions.fixedOrigin()
-    drawChessPiece(ctx, sizeOptions.baseSize, createChessPiece(11, 0))
-    ctx.restore()
+    oInterface.style.width = checkerBoardCanvas.style.width
+    oInterface.style.height = checkerBoardCanvas.style.height
 
-    drawLastStop(ctx, sizeOptions, { x: 5, y: 9 })
-    drawMovePath(ctx, sizeOptions, [{ x: 5, y: 9 }, { x: 4, y: 9 }])
+    parentNode.appendChild(oInterface)
   }
-  // drawCurrentStop(ctx, sizeOptions, counter, { x: 4, y: 9 })
-  run()
-  return {
-    canvas,
-    ctx,
-    sizeOptions,
 
-    drawCheckerboard: () => drawCheckerboard(ctx, sizeOptions),
+  const destroy = (parentNode: Element): void => {
+    parentNode.innerHTML = ''
+  }
+
+  const getPointer = (e: MouseEvent): Point => {
+    const { clientX, clientY } = e
+    const { left, top } = mainCanvas.getBoundingClientRect()
+
+    const x = (clientX - left) / ratio - padding / 2
+    const y = (clientY - top) / ratio - padding / 2
+
+    return {
+      x: Math.round(x / baseSize) + 1,
+      y: Math.round(y / baseSize) + 1
+    }
+  }
+
+  // drawCurrentStop(ctx, sizeOptions, counter, { x: 4, y: 9 })
+  // run()
+  return {
+    mainCanvas,
+    checkerBoardCanvas,
+
+    get sizeOptions () {
+      return Object.freeze(sizeOptions)
+    },
+    mount,
+    destroy,
+    getPointer,
+
+    clearMain: () => {
+      mainCanvas.getContext('2d')!.clearRect(0, 0, width, height)
+    },
     drawChessPieces: (chessPieces: ChessPiece[]) => drawChessPieces(ctx, sizeOptions, chessPieces),
     drawLastStop: (point: Point) => drawLastStop(ctx, sizeOptions, point),
     drawMovePath: (points: Point[]) => drawMovePath(ctx, sizeOptions, points),
     drawAllowPoints: (points: Point[]) => drawAllowPoints(ctx, sizeOptions, points),
-    drawCurrentStop: (point: Point) => drawCurrentStop(ctx, sizeOptions, 0, point)
+    drawCurrentStop: (point: Point, counter = 0) => drawCurrentStop(ctx, sizeOptions, counter, point)
   }
 }
