@@ -54,6 +54,9 @@ jobs:
       # 构建蜘蛛纸牌项目
       - name: Build Spider-solitaire
         run: pwd && cd ./packages/spider-solitaire && pnpm install && pnpm run build && mv dist ../entry/dist/games/spider-solitaire
+      # 构建中国象棋项目
+      - name: Build Chinese chess
+        run: pwd && cd ./packages/Chinese && pnpm install && pnpm run build && mv dist ../entry/dist/games/chinese-chess
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
