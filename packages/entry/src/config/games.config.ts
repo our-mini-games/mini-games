@@ -36,6 +36,11 @@ export const games: GameConfig[] = [
     cover: 'spider-solitaire.svg'
   },
   {
+    path: '/mini-games/games/chinese-chess/index.html',
+    name: '中国象棋',
+    cover: 'org.svg'
+  },
+  {
     path: 'https://github.com/our-mini-games/mini-games/discussions',
     name: '没有想要的？',
     cover: 'org.svg'
