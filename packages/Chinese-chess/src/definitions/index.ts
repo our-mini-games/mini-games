@@ -1,3 +1,5 @@
+import { Soldier, BigGun, Horse, Vehicle, Elephant, Scholar, Boss } from "../libs/PieceObject"
+
 export type ChessPieceValue =
   | 11 | 12 | 13 | 14 | 15 | 16 | 17
   | 21 | 22 | 23 | 24 | 25 | 26 | 27
@@ -10,7 +12,9 @@ export enum Camp {
 interface ChessPieceMapItem {
   camp: Camp
   name: string
-  coords: Array<[number, number]>
+  coords: Array<[number, number]>,
+  PieceObject: any
+  // Soldier | BigGun | Horse | Vehicle | Elephant | Scholar | Boss 
 }
 
 export const colorMapper = {
@@ -29,21 +33,21 @@ export const colorMapper = {
 }
 
 export const chessPieceMapper: Record<ChessPieceValue, ChessPieceMapItem> = {
-  11: { camp: Camp.RED, name: '帥', coords: [[5, 10]] },
-  12: { camp: Camp.RED, name: '車', coords: [[1, 10], [9, 10]] },
-  13: { camp: Camp.RED, name: '馬', coords: [[2, 10], [8, 10]] },
-  14: { camp: Camp.RED, name: '炮', coords: [[2, 8], [8, 8]] },
-  15: { camp: Camp.RED, name: '相', coords: [[3, 10], [7, 10]] },
-  16: { camp: Camp.RED, name: '仕', coords: [[4, 10], [6, 10]] },
-  17: { camp: Camp.RED, name: '兵', coords: [[1, 7], [3, 7], [5, 7], [7, 7], [9, 7]] },
+  11: { camp: Camp.RED, name: '帥', coords: [[5, 10]], PieceObject: Boss},
+  12: { camp: Camp.RED, name: '車', coords: [[1, 10], [9, 10]], PieceObject: Vehicle },
+  13: { camp: Camp.RED, name: '馬', coords: [[2, 10], [8, 10]], PieceObject: Horse },
+  14: { camp: Camp.RED, name: '炮', coords: [[2, 8], [8, 8]], PieceObject: BigGun },
+  15: { camp: Camp.RED, name: '相', coords: [[3, 10], [7, 10]], PieceObject: Elephant },
+  16: { camp: Camp.RED, name: '仕', coords: [[4, 10], [6, 10]], PieceObject: Scholar },
+  17: { camp: Camp.RED, name: '兵', coords: [[1, 7], [3, 7], [5, 7], [7, 7], [9, 7]], PieceObject: Soldier },
 
-  21: { camp: Camp.BLACK, name: '將', coords: [[5, 1]] },
-  22: { camp: Camp.BLACK, name: '車', coords: [[1, 1], [9, 1]] },
-  23: { camp: Camp.BLACK, name: '馬', coords: [[2, 1], [8, 1]] },
-  24: { camp: Camp.BLACK, name: '炮', coords: [[2, 3], [8, 3]] },
-  25: { camp: Camp.BLACK, name: '象', coords: [[3, 1], [7, 1]] },
-  26: { camp: Camp.BLACK, name: '士', coords: [[4, 1], [6, 1]] },
-  27: { camp: Camp.BLACK, name: '卒', coords: [[1, 4], [3, 4], [5, 4], [7, 4], [9, 4]] }
+  21: { camp: Camp.BLACK, name: '將', coords: [[5, 1]], PieceObject: Boss },
+  22: { camp: Camp.BLACK, name: '車', coords: [[1, 1], [9, 1]], PieceObject: Vehicle },
+  23: { camp: Camp.BLACK, name: '馬', coords: [[2, 1], [8, 1]], PieceObject: Horse },
+  24: { camp: Camp.BLACK, name: '炮', coords: [[2, 3], [8, 3]], PieceObject: BigGun  },
+  25: { camp: Camp.BLACK, name: '象', coords: [[3, 1], [7, 1]], PieceObject: Elephant },
+  26: { camp: Camp.BLACK, name: '士', coords: [[4, 1], [6, 1]], PieceObject: Scholar },
+  27: { camp: Camp.BLACK, name: '卒', coords: [[1, 4], [3, 4], [5, 4], [7, 4], [9, 4]], PieceObject: Soldier }
 }
 
 export enum GameStatus {

@@ -14,6 +14,7 @@ export interface MovePathCollection {
 
 export interface Context {
   status: GameStatus
+  /** 当前走子的阵营(默认红棋先行) */
   currentCamp: Camp
   /** 动画计时器 */
   counter: number
@@ -22,7 +23,8 @@ export interface Context {
   /** 收集移动路径，生成棋谱 */
   movePath: MovePathCollection[]
   /** 当前活跃棋子，当前阵营用户选中的已方棋子 */
-  activePiece: null | ChessPiece
+  activePiece: null | ChessPiece,
+  canMoveList: Array<[number, number]>
 }
 
 const initChessPieces = (): ChessPiece[] => {
@@ -55,7 +57,8 @@ const createContext = (): Context => {
     counter: 0,
     chessPieces: initChessPieces(),
     movePath: [],
-    activePiece: null
+    activePiece: null,
+    canMoveList: [],
   }
 }
 
@@ -80,21 +83,49 @@ export const createController = (): any => {
     }
     if (piece.camp === context.currentCamp) {
       context.activePiece = piece
-    } else {
-      context.activePiece = null
+      // 只计算可以移动到的空位置
+      context.canMoveList = computedCanMove(context.activePiece, context.chessPieces)
     }
+  }
+
+  function move(activePiece: ChessPiece, x: number, y: number) {
+    // 记棋谱
+    // recordChessManual(piece, x, y)
+    activePiece.move({ x, y })
+    context.activePiece = null
+    context.currentCamp = context.currentCamp === Camp.RED ? Camp.BLACK : Camp.RED
   }
 
   const handleClick = (e: MouseEvent): void => {
     const point = gameInterface.getPointer(e)
-
+    let currentPiece = getPieceByPoint(point)
+    // 点击上去的位置有没有棋子
     if (context.activePiece) {
-      // @todo 移动己方棋子
-      setActive()
+      // 判断一下之前有没有点击过棋子
+      if (currentPiece && isCurrentExecution(currentPiece.camp)) {
+        // 也就是说点到了同阵营的棋子 
+        // 如果还是原来的棋子就不变 如果点了新棋子那么就给新棋子active
+        if (currentPiece.coord.x === context.activePiece.coord.x && currentPiece.coord.y === context.activePiece.coord.y) return
+        context.activePiece = currentPiece
+        context.canMoveList = computedCanMove(context.activePiece, context.chessPieces)
+        return
+      }
+      // 是否吃子 因为上面已经判断过进入下一步是自己方
+      if (currentPiece) {
+        // 那么走吃子的逻辑
+        if (canEatPiece(context.activePiece, context.chessPieces, point.x, point.y)) {
+          context.chessPieces = eatPiece(currentPiece, context.chessPieces)
+          move(context.activePiece, point.x, point.y)
+          return
+        }
+      }
+      // 是否移动到可以移动的地方
+      if (context.canMoveList.find(item => item[0] === point.x && item[1] === point.y)) {
+        move(context.activePiece, point.x, point.y)
+      }
     } else {
       // 选中已方棋子
       const piece = getPieceByPoint(point)
-
       setActive(piece)
     }
   }
@@ -102,7 +133,7 @@ export const createController = (): any => {
   let reqId: number
   let lastTime = Date.now()
 
-  function run (): void {
+  function run(): void {
     reqId = requestAnimationFrame(run)
     context.counter += Math.PI / 180
 
@@ -133,7 +164,7 @@ export const createController = (): any => {
     }
   }
 
-  function pause (): void {
+  function pause(): void {
     cancelAnimationFrame(reqId)
   }
 
@@ -147,6 +178,40 @@ export const createController = (): any => {
 
   const destroy = (el?: Element): void => {
     gameInterface.destroy(el ?? _el)
+  }
+
+  function isCurrentExecution(camp: Camp): boolean {
+    return camp === context.currentCamp
+  }
+
+  function computedCanMove(activePiece: ChessPiece, pieces: Array<ChessPiece>): Array<[number, number]> {
+    let { PieceObject, coord, camp } = activePiece
+    let piece = new PieceObject(coord, pieces, camp, context.currentCamp)
+    return piece.computedCanMove()
+  }
+
+  // 判断是否可以吃子
+  function canEatPiece(activePiece: ChessPiece, pieces: Array<ChessPiece>, x: number, y: number): boolean {
+    let { PieceObject, coord, camp } = activePiece
+    let piece = new PieceObject(coord, pieces, camp, context.currentCamp)
+    let canEatList: Array<[number, number]> = piece.computedCanEat()
+    // 必须要在能吃子的范围内才能吃
+    return Boolean(canEatList.find(item => item[0] === x && item[1] === y))
+  }
+
+  function eatPiece(currentPiece: ChessPiece, pieces: Array<ChessPiece>): Array<ChessPiece> {
+    let { coord } = currentPiece
+    let index = pieces.findIndex(item => item.coord.x === coord.x && item.coord.y === coord.y)
+    if (pieces[index].name === "帥") {
+      alert("红方败")
+    }
+
+    if (pieces[index].name === "將") {
+      alert("黑方败")
+    }
+    pieces.splice(index, 1)
+    
+    return pieces
   }
 
   return {
