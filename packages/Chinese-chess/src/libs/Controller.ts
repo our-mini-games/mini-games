@@ -25,6 +25,18 @@ export interface Context {
   activePiece: null | ChessPiece
 }
 
+export interface Chat {
+  nickname: string
+  chat: string
+}
+
+export interface ControllerOptions {
+  oMain: Element
+  oManual: Element
+  oChatList: Element
+  oChatInput: HTMLInputElement
+}
+
 const initChessPieces = (): ChessPiece[] => {
   return ([
     [11],
@@ -59,9 +71,14 @@ const createContext = (): Context => {
   }
 }
 
-export const createController = (): any => {
+export const createController = ({
+  oMain,
+  oManual,
+  oChatList,
+  oChatInput
+}: ControllerOptions): any => {
   let context = createContext()
-  let _el: Element
+  const chatList: Chat[] = []
 
   const gameInterface = createGameInterface()
 
@@ -137,16 +154,64 @@ export const createController = (): any => {
     cancelAnimationFrame(reqId)
   }
 
-  const initGame = (el: Element): void => {
-    context = createContext()
-    _el = el
-    gameInterface.mount(el)
+  function handleInputMouseDown (e: KeyboardEvent): void {
+    const { key } = e
+    const target = e.target as HTMLInputElement
+    const { value } = target
 
-    gameInterface.mainCanvas.addEventListener('click', handleClick)
+    if (key === 'Enter' && value) {
+      console.log(value)
+      chatList.push({
+        nickname: 'Detail',
+        chat: value
+      })
+      target.value = ''
+      renderChatList(chatList)
+    }
   }
 
-  const destroy = (el?: Element): void => {
-    gameInterface.destroy(el ?? _el)
+  function renderChatList (chatList: Chat[]): void {
+    oChatList.innerHTML = chatList.reduce((text, item) => {
+      return text + `
+        <li class="chat-item ${Math.random() > 0.5 ? 'self' : ''}">
+          <div class="nickname">${item.nickname}</div>
+          <div class="value">${item.chat}</div>
+        </li>
+      `
+    }, '')
+
+    oChatList.scroll(0, 100000)
+  }
+
+  // @todo
+  function renderManual (manualList: any[] = []): void {
+    oManual.innerHTML = manualList.reduce((text: string, item) => {
+      return text + `
+        <li class="manual-item ${item.camp === Camp.RED ? 'red' : 'black'}">
+          ${item.value as string}
+        </li>
+      `
+    }, '')
+    oManual.scroll(0, 100000)
+  }
+
+  const initGame = (): void => {
+    context = createContext()
+    gameInterface.mount(oMain)
+
+    gameInterface.mainCanvas.addEventListener('click', handleClick)
+    oChatInput.addEventListener('keydown', handleInputMouseDown)
+    renderManual([
+      { camp: Camp.RED, value: '炮二平五' },
+      { camp: Camp.BLACK, value: '馬二進三' },
+      { camp: Camp.RED, value: '馬二進三' },
+      { camp: Camp.BLACK, value: '將五進一' },
+      { camp: Camp.RED, value: '馬三退五' }
+    ])
+  }
+
+  const destroy = (): void => {
+    gameInterface.destroy(oMain)
   }
 
   return {

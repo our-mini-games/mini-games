@@ -1,9 +1,23 @@
 import { createController } from './libs/Controller'
 
-const oMain = document.querySelector('#main')!
+import './assets/style.scss'
 
-const ctrl = createController()
+const oApp = document.querySelector('#app')!
 
-ctrl.initGame(oMain)
+const oMain = oApp.querySelector('#main')
+const oManual = oApp.querySelector('#manual')
+const oChatList = oApp.querySelector('#chat-list')
+const oChatInput = oApp.querySelector<HTMLInputElement>('#chat-input')
 
-ctrl.run()
+if (oMain && oManual && oChatList && oChatInput) {
+  const ctrl = createController({
+    oMain,
+    oManual,
+    oChatList,
+    oChatInput
+  })
+
+  ctrl.initGame(oApp)
+
+  // ctrl.run()
+}

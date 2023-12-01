@@ -96,12 +96,15 @@ importers:
 
   packages/Chinese-chess:
     devDependencies:
+      sass:
+        specifier: ^1.56.0
+        version: 1.56.1
       typescript:
         specifier: ^5.0.2
         version: 5.0.2
       vite:
         specifier: ^4.4.5
-        version: 4.4.5
+        version: 4.4.5(@types/node@14.18.33)(sass@1.56.1)
 
   packages/entry:
     devDependencies:
@@ -5119,7 +5122,7 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vite@4.4.5:
+  /vite@4.4.5(@types/node@14.18.33)(sass@1.56.1):
     resolution: {integrity: sha512-4m5kEtAWHYr0O1Fu7rZp64CfO1PsRGZlD3TAB32UmQlpd7qg15VF7ROqGN5CyqN7HFuwr7ICNM2+fDWRqFEKaA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -5147,9 +5150,11 @@ packages:
       terser:
         optional: true
     dependencies:
+      '@types/node': 14.18.33
       esbuild: 0.18.20
       postcss: 8.4.31
       rollup: 3.29.4
+      sass: 1.56.1
     optionalDependencies:
       fsevents: 2.3.2
     dev: true

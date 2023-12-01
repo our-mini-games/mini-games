@@ -4,27 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chinese chess</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-      }
-
-      #app {
-        width: 100vw;
-        height: 100vh;
-      }
-
-      .main {
-        position: relative;
-        width: calc(100% - 320px);
-        height: calc(100% - 120px);
-      }
-    </style>
   </head>
   <body>
     <div id="app">
       <main class="main" id="main"></main>
+      <aside class="aside">
+        <section class="chess-manual">
+          <ul class="manual-list" id="manual"></ul>
+        </section>
+        <section class="chat">
+          <ul class="chat-list" id="chat-list"></ul>
+          <div class="input-wrapper">
+            <input type="text" class="chat-input" id="chat-input" />
+          </div>
+        </section>
+      </aside>
+      <footer class="footer" id="footer"></footer>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
