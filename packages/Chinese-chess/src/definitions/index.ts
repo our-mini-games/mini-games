@@ -1,6 +1,13 @@
+export const USER_INFO_KEY = 'CHINESE_CHESS_USER_INFO'
+
 export type ChessPieceValue =
   | 11 | 12 | 13 | 14 | 15 | 16 | 17
   | 21 | 22 | 23 | 24 | 25 | 26 | 27
+
+export enum GameMode {
+  OFFLINE,
+  ONLINE
+}
 
 export enum Camp {
   RED,

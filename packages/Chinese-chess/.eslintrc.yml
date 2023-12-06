@@ -1,0 +1,6 @@
+extends:
+  -  '../../.eslintrc.yml'
+  - './.eslintrc-auto-import.json'
+rules: {
+  '@typescript-eslint/no-misused-promises': 0
+}

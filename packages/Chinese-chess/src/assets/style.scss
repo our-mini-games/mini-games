@@ -2,13 +2,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  transition: all 0.1s linear;
 }
 
-ul {
-  list-style: none;
-}
-
-body {
+:root {
   --red: #E60012;
   --black: #2C2F3B;
 
@@ -21,111 +18,38 @@ body {
   --shadow: 4px 4px 8px 2px var(--dark) inset, -4px -4px 8px 2px #fff inset;
   --shadow-small: 2px 2px 4px 1px var(--dark) inset, -2px -2px 4px 1px #fff inset;
 
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+body {
+  font-size: 16px;
+  line-height: 1.4;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   color: var(--black);
-  background-color: var(--light);
+  // background-color: var(--light);
+  opacity: .1;
+}
+
+:where(.btn) {
+  all: unset;
+  padding: 4px 16px;
+  border-radius: 4px;
+  color: var(--black);
+  border: 1px solid var(--line);
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
+    border-color: var(--light);
+    background-color: var(--light);
+  }
 }
 
 #app {
   width: 100vw;
   height: 100vh;
-}
-
-.main {
-  opacity: 0.05;
-  position: relative;
-  width: calc(100% - 320px);
-  height: calc(100% - 120px);
-}
-
-.aside {
-  position: absolute;
-  right: 0;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 320px;
-  height: 100%;
-  padding: 32px;
-}
-
-.chess-manual {
-  height: 40%;
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-
-  .manual-list {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 16px;
-    overflow-y: auto;
-
-    .manual-item {
-      width: 50%;
-      text-align: center;
-      line-height: 1.6;
-
-      &.red {
-        color: var(--red);
-      }
-
-      &.black {
-        color: var(--black);
-      }
-    }
-  }
-}
-
-.chat {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  height: 50%;
-
-  .chat-list {
-    flex: 1;
-    padding: 16px;
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-    overflow-y: auto;
-
-    .chat-item {
-      & + .chat-item {
-        margin-top: 16px;
-      }
-
-      &.self {
-        text-align: right;
-        padding-left: 44px;
-
-        .nickname {
-          color: var(--success);
-        }
-      }
-
-      .nickname {
-        font-size: 12px;
-        font-weight: 700;
-        overflow: hidden;
-      }
-
-      .value {
-        word-break: break-all;
-      }
-    }
-  }
-  
-  .input-wrapper {
-    height: 44px;
-    border-radius: 8px;
-    box-shadow: var(--shadow-small);
-  
-    .chat-input {
-      all: unset;
-      width: 100%;
-      height: 44px;
-      padding: 8px 16px;
-      box-sizing: border-box;
-    }
-  }
 }

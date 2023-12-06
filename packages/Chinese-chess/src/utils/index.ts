@@ -1,4 +1,6 @@
+import { ChessPiece, createChessPiece } from '@/libs/ChessPiece'
 import { Point } from '../libs/Point'
+import { ChessPieceValue } from '@/definitions'
 
 type CurryFunction<T> = (arg: T) => T | CurryFunction<T>
 type ComposeFunction = <T>(...funcs: Array<(arg: T) => T>) => (arg: T) => T
@@ -52,4 +54,27 @@ export const getTangentPoint = (r: number, C: Point, P: Point): [Point, Point] =
     { x: C.x + Math.cos(Math.PI - theta - radC1C2) * r, y: C.y + Math.sin(Math.PI - theta - radC1C2) * r },
     { x: C.x + Math.cos(Math.PI - (theta - radC1C2)) * r, y: C.y - Math.sin(Math.PI - (theta - radC1C2)) * r }
   ]
+}
+
+export const initChessPieces = (): ChessPiece[] => {
+  return ([
+    [11],
+    [12, 12],
+    [13, 13],
+    [14, 14],
+    [15, 15],
+    [16, 16],
+    [17, 17, 17, 17, 17],
+    [21],
+    [22, 22],
+    [23, 23],
+    [24, 24],
+    [25, 25],
+    [26, 26],
+    [27, 27, 27, 27, 27]
+  ] as ChessPieceValue[][]).reduce((list: ChessPiece[], item) => {
+    return list.concat(item.map((value, index) => {
+      return createChessPiece(value, index)
+    }))
+  }, [])
 }
