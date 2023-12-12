@@ -31,9 +31,7 @@
 <script setup lang="ts">
 import { Message, Room, User } from '@/types'
 
-const emits = defineEmits<{
-  (e: 'game:chat', msg: string): void
-}>()
+const emits = defineEmits<(e: 'game:chat', msg: string) => void>()
 
 const msgListRef = ref<HTMLUListElement | null>(null)
 
@@ -48,12 +46,12 @@ const currentMessage = computed(() => {
 watch(message, () => {
   nextTick(() => {
     if (msgListRef.value) {
-      msgListRef.value!.scroll(0, 1000)
+      msgListRef.value.scroll(0, 1000)
     }
   })
 }, { immediate: true })
 
-const handleKeyDown = (e: KeyboardEvent) => {
+const handleKeyDown = (e: KeyboardEvent): void => {
   const target = e.target as HTMLInputElement
   const { value } = target
 

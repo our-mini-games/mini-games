@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { Camp } from '@/definitions'
-import type { GameContext, User } from '@/types'
+import type { User } from '@/types'
 import { ComputedRef } from 'vue'
 
 const props = defineProps<{
@@ -34,7 +34,6 @@ const props = defineProps<{
   isSpectator?: boolean
 }>()
 
-const context = inject<ComputedRef<GameContext | null>>('context')!
 const currentUserCamp = inject<ComputedRef<Camp | null>>('currentUserCamp')!
 
 const seatCamp = computed(() => {

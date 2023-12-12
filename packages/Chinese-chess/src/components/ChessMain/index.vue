@@ -59,17 +59,6 @@ const players = inject<ComputedRef<Players>>('players')!
 const currentUser = inject('currentUser', ref<User | null>(null))
 const currentUserCamp = inject<ComputedRef<Camp | null>>('currentUserCamp')!
 
-const rotate = computed(() => {
-  switch (currentUserCamp.value) {
-    case Camp.BLACK:
-      return 2
-
-    case Camp.RED:
-    default:
-      return 0
-  }
-})
-
 const handleExchange = (): void => {
   emits('room:request-seat')
 }
