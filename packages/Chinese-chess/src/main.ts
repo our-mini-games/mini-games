@@ -1,9 +1,6 @@
-import { createController } from './libs/Controller'
+import { createApp } from 'vue'
+import App from './App.vue'
 
-const oMain = document.querySelector('#main')!
+import '@/assets/style.scss'
 
-const ctrl = createController()
-
-ctrl.initGame(oMain)
-
-ctrl.run()
+createApp(App).mount('#app')

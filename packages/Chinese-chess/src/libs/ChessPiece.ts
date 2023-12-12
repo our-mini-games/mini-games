@@ -3,12 +3,13 @@ import { Point } from './Point'
 
 export interface ChessPiece {
   name: string
+  value: ChessPieceValue
   camp: Camp
   coord: Point
   isActive: boolean
   scale: number
   setScale: (scale: number) => void
-  move: (point: Point) => void,
+  move: (point: Point) => void
   PieceObject: any
 }
 
@@ -24,6 +25,7 @@ export const createChessPiece = (value: ChessPieceValue, coordIndex = 0): ChessP
 
   return {
     name,
+    value,
     camp,
     coord,
     isActive: false,
@@ -35,6 +37,6 @@ export const createChessPiece = (value: ChessPieceValue, coordIndex = 0): ChessP
       this.coord.x = x
       this.coord.y = y
     },
-    PieceObject,
+    PieceObject
   }
 }
