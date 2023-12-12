@@ -34,8 +34,15 @@ export interface ChessManual {
 
 export type Players = Record<Camp, User> | null
 
+export type GameAnimationType = 'Check' | 'CheckMate' | 'Win'
+
+export interface GameAnimation {
+  type: GameAnimationType
+  camp: Camp
+}
+
 export interface GameContext {
-  status: GameStatus.Init
+  status: GameStatus
   players: Players
   firstCamp: Camp
   // waiting: number
@@ -49,4 +56,8 @@ export interface GameContext {
   movePath: MovePathCollection[]
   /** 当前活跃棋子，当前阵营用户选中的已方棋子 */
   activePiece: null | ChessPiece
+  /** 当前活跃棋子的可移动坐标 */
+  allowPoints: Point[]
+
+  animations: GameAnimation[]
 }

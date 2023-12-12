@@ -3,6 +3,7 @@ import { Point } from './Point'
 
 export interface ChessPiece {
   name: string
+  value: ChessPieceValue
   camp: Camp
   coord: Point
   isActive: boolean
@@ -24,6 +25,7 @@ export const createChessPiece = (value: ChessPieceValue, coordIndex = 0): ChessP
 
   return {
     name,
+    value,
     camp,
     coord,
     isActive: false,

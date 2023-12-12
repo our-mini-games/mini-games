@@ -17,7 +17,6 @@ interface RegularXCoordMap {
   coord: Array<[number, number]>
   xCoord: number
 }
-
 class Piece {
   x: number
   y: number

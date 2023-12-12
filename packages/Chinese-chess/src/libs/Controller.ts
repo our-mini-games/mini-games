@@ -9,6 +9,7 @@ import { changeXCoordMove, changeOtherCoordMove } from '../libs/ChessManual'
 import cloneDeep from 'lodash.clonedeep'
 
 import { Point } from './Point'
+import { movePiece } from '@/utils'
 
 export interface MovePathCollection {
   value: ChessPieceValue
@@ -165,10 +166,7 @@ export const createController = ({
     const newChessPiece: ChessPiece[] = cloneDeep(context.chessPieces)
     const newActivePiece = newChessPiece.find(item => item.coord.x === context.activePiece?.coord.x && item.coord.y === context.activePiece.coord.y)
     // 模拟它走一步
-    newActivePiece?.move({
-      x,
-      y
-    })
+    movePiece(newActivePiece!, { x, y })
     res = isGeneralInChess(newChessPiece, camp)
     return res
   }
@@ -219,7 +217,7 @@ export const createController = ({
       // 如果说有一个棋子走动了之后对方不能将军 那么就不是绝杀了
       const inGeneralInChess: boolean = allCanMoveCoord.filter(item => {
         // 移动到了这个位置 看看还是不是将军
-        activePiece?.move({
+        movePiece(activePiece!, {
           x: item[0],
           y: item[1]
         })
@@ -247,7 +245,7 @@ export const createController = ({
     // 记棋谱
     recordChessManual(activePiece, x, y)
     // 走子
-    activePiece.move({ x, y })
+    movePiece(activePiece, { x, y })
     // 判断是否吃子
     if (canEatPiece && currentPiece) {
       context.chessPieces = eatPiece(currentPiece, context.chessPieces)

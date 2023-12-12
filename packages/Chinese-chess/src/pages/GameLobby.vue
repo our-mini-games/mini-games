@@ -1,6 +1,9 @@
 <template>
   <div class="game-lobby">
-    <h1 class="title">Game Lobby</h1>
+    <h1 class="title">
+      Game Lobby
+      <button class="btn" @click="handleBack">返回</button>
+    </h1>
 
     <ul class="rooms">
       <li
@@ -17,13 +20,19 @@
 </template>
 
 <script setup lang="ts">
+import { GameMode } from '@/definitions'
 import type { Room } from '@/types'
 
 const emits = defineEmits<{
   (e: 'room:join', room: Room): void
+  (e: 'update:mode', mode: GameMode | null): void
 }>()
 
 const rooms = inject('rooms', ref<Room[]>([]))
+
+const handleBack = (): void => {
+  emits('update:mode', null)
+}
 </script>
 
 <style lang="scss" scoped>

@@ -4,6 +4,7 @@
       v-for="item of seats"
       :key="item.id"
       :user="item.user"
+      is-spectator
     />
   </div>
 </template>

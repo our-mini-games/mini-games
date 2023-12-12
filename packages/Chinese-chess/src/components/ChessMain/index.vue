@@ -7,28 +7,30 @@
     <main class="main-container">
       <div class="player-wrapper">
         <button
-          v-if="isInit && currentUser && currentUser.id === players?.[1]?.id"
+          v-if="isInit && currentUser && currentUser.id === (currentUserCamp === Camp.RED ? players?.[1] : players?.[0])?.id"
           class="btn btn-exchange"
           @click="handleExchange"
         >
           交换阵营
         </button>
         <camp-seat
-          :user="players?.[1]"
+          :user="currentUserCamp === Camp.RED ? players?.[1] : players?.[0]"
         />
       </div>
 
       <div class="wrapper">
-        <game-controller />
+        <game-controller
+          @game:change="emits('game:change', $event)"
+        />
       </div>
 
       <div class="player-wrapper">
         <camp-seat
-          :user="players?.[0]"
+          :user="currentUserCamp === Camp.RED ? players?.[0] : players?.[1]"
           is-self
         />
         <button
-          v-if="isInit && currentUser && currentUser.id === players?.[0]?.id"
+          v-if="isInit && currentUser && currentUser.id === (currentUserCamp === Camp.RED ? players?.[0] : players?.[1])?.id"
           class="btn btn-exchange"
           @click="handleExchange"
         >
@@ -41,22 +43,34 @@
 </template>
 
 <script setup lang="ts">
-import { Camp } from '@/definitions'
 import { ComputedRef } from 'vue'
 import { GameContext, Players, User } from '@/types'
+import { Camp } from '@/definitions'
 
 const emits = defineEmits<{
   (e: 'room:leave'): void
   (e: 'room:request-seat'): void
   (e: 'game:ready'): void
+  (e: 'game:change', context: GameContext): void
 }>()
 
-const context = inject<ComputedRef<GameContext | null>>('context')!
 const isInit = inject<ComputedRef<boolean>>('isInit')!
 const players = inject<ComputedRef<Players>>('players')!
 const currentUser = inject('currentUser', ref<User | null>(null))
+const currentUserCamp = inject<ComputedRef<Camp | null>>('currentUserCamp')!
 
-const handleExchange = () => {
+const rotate = computed(() => {
+  switch (currentUserCamp.value) {
+    case Camp.BLACK:
+      return 2
+
+    case Camp.RED:
+    default:
+      return 0
+  }
+})
+
+const handleExchange = (): void => {
   emits('room:request-seat')
 }
 </script>

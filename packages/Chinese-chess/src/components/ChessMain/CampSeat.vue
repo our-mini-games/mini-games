@@ -31,20 +31,34 @@ import { ComputedRef } from 'vue'
 const props = defineProps<{
   user?: User
   isSelf?: boolean
+  isSpectator?: boolean
 }>()
 
 const context = inject<ComputedRef<GameContext | null>>('context')!
+const currentUserCamp = inject<ComputedRef<Camp | null>>('currentUserCamp')!
 
 const seatCamp = computed(() => {
+  if (!currentUserCamp.value === null || props.isSpectator) {
+    return 'black'
+  }
+
   return props.isSelf
-    ? 'red'
-    : 'black'
+    ? currentUserCamp.value === Camp.BLACK
+      ? 'black'
+      : 'red'
+    : currentUserCamp.value === Camp.BLACK
+      ? 'red'
+      : 'black'
 })
 
 const isActive = computed(() => {
+  if (props.isSpectator) {
+    return false
+  }
+
   return props.isSelf
-    ? context.value?.currentCamp === Camp.RED
-    : context.value?.currentCamp === Camp.BLACK
+    ? currentUserCamp.value === Camp.RED
+    : currentUserCamp.value === Camp.BLACK
 })
 </script>
 

@@ -19,7 +19,6 @@ const install = (): void => {
 }
 
 const open = (options: Options): void => {
-  console.log(options)
   const event = new CustomEvent('confirm:open', {
     detail: options
   })

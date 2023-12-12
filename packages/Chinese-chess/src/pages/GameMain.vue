@@ -5,6 +5,7 @@
       @room:leave="emits('room:leave')"
       @room:request-seat="emits('room:request-seat')"
       @game:ready="emits('game:ready')"
+      @game:change="emits('game:change', $event)"
     />
     <aside v-if="false" class="aside">
       <chess-manual class="section chess-manual" />
@@ -17,13 +18,14 @@
 </template>
 
 <script setup lang="ts">
-import { Camp } from '@/definitions'
+import { GameContext } from '@/types'
 
 const emits = defineEmits<{
   (e: 'room:chat', msg: string): void
   (e: 'room:leave'): void
   (e: 'room:request-seat'): void
   (e: 'game:ready'): void
+  (e: 'game:change', context: GameContext): void
 }>()
 
 </script>

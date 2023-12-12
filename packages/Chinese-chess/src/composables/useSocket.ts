@@ -1,4 +1,4 @@
-import { GameStatus, USER_INFO_KEY } from '@/definitions'
+import { Camp, GameStatus, USER_INFO_KEY } from '@/definitions'
 import events from '@/definitions/events'
 import { ChessManual, GameContext, Message, Room, User } from '@/types'
 import { initChessPieces } from '@/utils'
@@ -34,6 +34,16 @@ export const useSocket = ($: any) => {
 
   const players = computed(() => context.value?.players ?? null)
 
+  const currentUserCamp = computed(() => {
+    return currentUser.value
+      ? players.value?.[0]?.id === currentUser.value?.id
+        ? Camp.RED
+        : players.value?.[1]?.id === currentUser.value?.id
+          ? Camp.BLACK
+          : null
+      : null
+  })
+
   // const currentRoom = computed(() => {
   //   return rooms.value.find(({ users }) => users.find(user => user.id === currentUser.value?.id))
   // })
@@ -44,7 +54,6 @@ export const useSocket = ($: any) => {
     socket.value = io('ws://localhost:10086')
 
     socket.value.on(events.client.connect, () => {
-      console.log('连接成功', socket.value)
       if (!currentUser.value) {
         currentUser.value = {
           id: socket.value!.id,
@@ -70,7 +79,6 @@ export const useSocket = ($: any) => {
       socket.value!.on(events.room.leave, data => {})
 
       socket.value!.on(events.room.info, room => {
-        console.log('room:info', room)
         currentRoom.value = room
       })
 
@@ -113,11 +121,6 @@ export const useSocket = ($: any) => {
           chessPieces: initChessPieces()
         })
       })
-
-      // socket.value!.on(events.game.change, data => {
-      //   console.log(events.game.change, data)
-      //   // context.value = data
-      // })
     })
 
     socket.value.on(events.client.disconnect, (userInfo: User) => {
@@ -153,20 +156,13 @@ export const useSocket = ($: any) => {
     }
   }
 
-  const handleGameChange = (room: Room, user: User, value: any): void => {
-    console.log(1111)
-    // if (socket.value) {
-    //   socket.value.emit(events.game.change, room.id, [
-    //     ...context.value,
-    //     {
-    //       id: Date.now() + Math.random().toString().slice(2, 10),
-    //       userId: user.id,
-    //       roomId: room.id,
-    //       value,
-    //       createdTime: Date.now()
-    //     }
-    //   ])
-    // }
+  const handleGameChange = (context: GameContext): void => {
+    if (socket.value && currentRoom.value) {
+      socket.value.emit(events.game.change, {
+        roomId: currentRoom.value.id,
+        context
+      })
+    }
   }
 
   const handleRoomRequestSeat = (): void => {
@@ -189,6 +185,7 @@ export const useSocket = ($: any) => {
 
   return {
     currentUser,
+    currentUserCamp,
     currentRoom,
     rooms,
     message,
