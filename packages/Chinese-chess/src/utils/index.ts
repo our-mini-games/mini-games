@@ -53,3 +53,7 @@ export const getTangentPoint = (r: number, C: Point, P: Point): [Point, Point] =
     { x: C.x + Math.cos(Math.PI - (theta - radC1C2)) * r, y: C.y - Math.sin(Math.PI - (theta - radC1C2)) * r }
   ]
 }
+
+export const deepClone = () => {
+  
+}

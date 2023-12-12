@@ -17,6 +17,7 @@ interface RegularXCoordMap {
     coord: Array<[number, number]>,
     xCoord: number
 }
+
 class Piece {
     x: number
     y: number
@@ -41,17 +42,21 @@ class Soldier extends Piece {
     constructor(coord: Point, pieces: Array<ChessPiece>, camp: Camp, currentExecution: Camp) {
         super(coord, pieces, camp, currentExecution)
     }
-    allCanMove(): Array<Array<number>> {
+    allCanMove(): Array<[number, number]> {
+        // 所有可以移动的空位和可以吃的位置
+        return [...this.computedCanMove(), ...this.computedCanEat()]
+    }
+    allMoveCoord(): Array<[number, number]> {
         // 可以吃也可以移动的空位 不去计算落点有没有棋子
         return this.camp === Camp.RED ? this.redSoldierMove() : this.blackSoldierMove()
     }
-    computedCanMove(): Array<Array<number>> {
+    computedCanMove(): Array<[number, number]> {
         // 计算只能移动的空位
-        return this.allCanMove().filter(item => {
+        return this.allMoveCoord().filter(item => {
             return !this.pieces.find(e => item[0] === e.coord.x && item[1] === e.coord.y)
         })
     }
-    redSoldierMove(): Array<Array<number>> {
+    redSoldierMove(): Array<[number, number]> {
         // 兵
         // 判断是否过河 没有过河的话就只有一个点位
         let isCrossRiver: boolean = this.y < 6
@@ -60,7 +65,7 @@ class Soldier extends Piece {
         }
         return [[this.x, this.y - 1]]
     }
-    blackSoldierMove(): Array<Array<number>> {
+    blackSoldierMove(): Array<[number, number]> {
         // 卒
         // 判断是否过河 没有过河的话就只有一个点位
         let isCrossRiver: boolean = this.y > 5
@@ -69,12 +74,12 @@ class Soldier extends Piece {
         }
         return [[this.x, this.y + 1]]
     }
-    soldierMove(coordList: Array<Array<number>>) {
+    soldierMove(coordList: Array<[number, number]>) {
         return coordList.filter(item => item[0] > 0 && item[0] < 10 && item[1] > 0 && item[1] < 11)
     }
-    computedCanEat(): Array<Array<number>> {
+    computedCanEat(): Array<[number, number]> {
         // 判断这些点位上那些是有敌方棋子的就是可以吃的
-        return this.allCanMove().filter(item => {
+        return this.allMoveCoord().filter(item => {
             return this.enemyPieceList.find(e => e.coord.x === item[0] && e.coord.y === item[1])
         })
     }
@@ -85,7 +90,11 @@ class BigGun extends Piece {
     constructor(coord: Point, pieces: Array<ChessPiece>, camp: Camp, currentExecution: Camp) {
         super(coord, pieces, camp, currentExecution)
     }
-    computedCanMove() {
+    allCanMove(): Array<[number, number]> {
+        // 所有可以移动的空位和可以吃的位置
+        return [...this.computedCanMove(), ...this.computedCanEat()]
+    }
+    computedCanMove(): Array<[number, number]> {
         // 炮可以移动的只有直线
         // 先列举出可以移动的地方
         // x轴
@@ -132,13 +141,13 @@ class BigGun extends Piece {
         }
         return Ycoord
     }
-    computedCanEat(): Array<[number, number]>{
+    computedCanEat(): Array<[number, number]> {
         return [...this.computedCanEatX(), ...this.computedCanEatY()]
     }
     computedCanEatX(): Array<[number, number]> {
         // 先找炮架
         let carriage: Array<number> = []
-        let Xcoord: Array<[number, number]>  = []
+        let Xcoord: Array<[number, number]> = []
         // 向左边找炮架子
         for (let x = this.x - 1; x > 0; x--) {
             let hasPiece: ChessPiece | undefined = this.pieces.find(item => item.coord.x === x && item.coord.y === this.y)
@@ -156,8 +165,8 @@ class BigGun extends Piece {
                     let isEnemyPiece: boolean = hasPiece.camp !== this.currentExecution
                     if (isEnemyPiece) {
                         Xcoord.push([x, this.y])
-                        break;
                     }
+                    break;
                 }
             }
         }
@@ -179,8 +188,8 @@ class BigGun extends Piece {
                     let isEnemyPiece: boolean = hasPiece.camp !== this.currentExecution
                     if (isEnemyPiece) {
                         Xcoord.push([x, this.y])
-                        break;
                     }
+                    break;
                 }
             }
         }
@@ -208,8 +217,8 @@ class BigGun extends Piece {
                     let isEnemyPiece: boolean = hasPiece.camp !== this.currentExecution
                     if (isEnemyPiece) {
                         Ycoord.push([this.x, y])
-                        break;
                     }
+                    break;
                 }
             }
         }
@@ -231,8 +240,8 @@ class BigGun extends Piece {
                     let isEnemyPiece: boolean = hasPiece.camp !== this.currentExecution
                     if (isEnemyPiece) {
                         Ycoord.push([this.x, y])
-                        break;
                     }
+                    break;
                 }
             }
         }
@@ -246,6 +255,10 @@ class Horse extends Piece {
         super(coord, pieces, camp, currentExecution)
     }
     allCanMove(): Array<[number, number]> {
+        // 所有可以移动的空位和可以吃的位置
+        return [...this.computedCanMove(), ...this.computedCanEat()]
+    }
+    allMoveCoord(): Array<[number, number]> {
         // 马只能前进或者后退1个方位或者两个方位
         // 例如马3进5或者马3进4 或者马3退5或者马3退4
         // 马主要计算别马腿 马别腿的棋子只会出现在四个方位
@@ -289,8 +302,8 @@ class Horse extends Piece {
         }, [])
     }
     computedCanMove(): Array<[number, number]> {
-        return this.allCanMove().filter(item => {
-            // 过滤落点没有友方棋子
+        return this.allMoveCoord().filter(item => {
+            // 过滤落点没有棋子
             return !this.hasPiece(item)
         })
     }
@@ -304,7 +317,7 @@ class Horse extends Piece {
     }
     computedCanEat(): Array<[number, number]> {
         // 只要能落点 且落点的子是敌方棋子就是吃
-        return this.allCanMove().filter(item => {
+        return this.allMoveCoord().filter(item => {
             return this.enemyPieceList.find(e => item[0] === e.coord.x && item[1] === e.coord.y)
         })
     }
@@ -314,6 +327,10 @@ class Horse extends Piece {
 class Vehicle extends Piece {
     constructor(coord: Point, pieces: Array<ChessPiece>, camp: Camp, currentExecution: Camp) {
         super(coord, pieces, camp, currentExecution)
+    }
+    allCanMove(): Array<[number, number]> {
+        // 所有可以移动的空位和可以吃的位置
+        return [...this.computedCanMove(), ...this.computedCanEat()]
     }
     computedCanMove(): Array<[number, number]> {
         // 车可以移动的只有直线
@@ -431,6 +448,10 @@ class Elephant extends Piece {
         super(coord, pieces, camp, currentExecution)
     }
     allCanMove(): Array<[number, number]> {
+        // 所有可以移动的空位和可以吃的位置
+        return [...this.computedCanMove(), ...this.computedCanEat()]
+    }
+    allMoveCoord(): Array<[number, number]> {
         // 象走田 只能前进两个方位或者后退两个方位
         // 这里要做红象和黑象的判断
         // 四个象腰
@@ -474,7 +495,7 @@ class Elephant extends Piece {
         }, [])
     }
     computedCanMove(): Array<[number, number]> {
-        return this.allCanMove().filter(item => {
+        return this.allMoveCoord().filter(item => {
             // 过滤落点有没有棋子
             return !this.hasPiece(item)
         })
@@ -491,7 +512,7 @@ class Elephant extends Piece {
     }
     computedCanEat(): Array<[number, number]> {
         // 只要能落点 且落点的子是敌方棋子就是吃
-        return this.allCanMove().filter(item => {
+        return this.allMoveCoord().filter(item => {
             return this.enemyPieceList.find(e => item[0] === e.coord.x && item[1] === e.coord.y)
         })
     }
@@ -503,13 +524,17 @@ class Scholar extends Piece {
         super(coord, pieces, camp, currentExecution)
     }
     allCanMove(): Array<[number, number]> {
+        // 所有可以移动的空位和可以吃的位置
+        return [...this.computedCanMove(), ...this.computedCanEat()]
+    }
+    allMoveCoord(): Array<[number, number]> {
         // 可以吃也可以移动的空位 不去计算落点有没有棋子
         return this.camp === Camp.RED ? this.redScholarMove() : this.blackScholarMove()
     }
     computedCanMove(): Array<[number, number]> {
         // 士只能移动在九宫格里面
         // 计算只能移动的空位
-        return this.allCanMove().filter(item => {
+        return this.allMoveCoord().filter(item => {
             return !this.pieces.find(e => item[0] === e.coord.x && item[1] === e.coord.y)
         })
     }
@@ -545,7 +570,7 @@ class Scholar extends Piece {
     }
     computedCanEat() {
         // 判断这些点位上那些是有敌方棋子的就是可以吃的
-        return this.allCanMove().filter(item => {
+        return this.allMoveCoord().filter(item => {
             return this.enemyPieceList.find(e => e.coord.x === item[0] && e.coord.y === item[1])
         })
     }
@@ -557,6 +582,10 @@ class Boss extends Piece {
         super(coord, pieces, camp, currentExecution)
     }
     allCanMove(): Array<[number, number]> {
+        // 所有可以移动的空位和可以吃的位置
+        return [...this.computedCanMove(), ...this.computedCanEat()]
+    }
+    allMoveCoord(): Array<[number, number]> {
         // 帅只能在九宫格里面移动
         // 先列举出可以移动的地方
         // 以帅为中心点 
@@ -569,13 +598,13 @@ class Boss extends Piece {
         }, {
             coord: [[6, this.y - 1], [6, this.y + 1], [6, this.y]],
             xCoord: 6
-        }] 
+        }]
         let bossCoord = map.find(item => item.xCoord === this.x)
-        let bossCanMoveCoord: Array<[number, number]>  = bossCoord ? bossCoord.coord : []
+        let bossCanMoveCoord: Array<[number, number]> = bossCoord ? bossCoord.coord : []
         return this.camp === Camp.RED ? bossCanMoveCoord.filter(item => item[1] > 7 && item[1] < 11) : bossCanMoveCoord.filter(item => item[1] > 0 && item[1] < 4)
     }
     computedCanMove(): Array<[number, number]> {
-        return this.allCanMove().filter(item => {
+        return this.allMoveCoord().filter(item => {
             return !this.pieces.find(e => item[0] === e.coord.x && item[1] === e.coord.y)
         })
     }
@@ -584,8 +613,7 @@ class Boss extends Piece {
         // 特殊判断将吃帅或者帅吃将
         // 如果y轴这一条线上只有将和帅那么就是可以吃
         let specialEatCoord = this.camp === Camp.RED ? this.canEatJiang() : this.canEatShuai()
-        console.log("specialEatCoord: ", specialEatCoord)
-        return [...this.allCanMove().filter(item => {
+        return [...this.allMoveCoord().filter(item => {
             return this.enemyPieceList.find(e => e.coord.x === item[0] && e.coord.y === item[1])
         }), ...specialEatCoord]
     }
@@ -597,7 +625,7 @@ class Boss extends Piece {
                 if (piece.name === "將") {
                     pieceCoord.push([this.x, y])
                 }
-                break; 
+                break;
             }
         }
         return pieceCoord
@@ -610,14 +638,12 @@ class Boss extends Piece {
                 if (piece.name === "帥") {
                     pieceCoord.push([this.x, y])
                 }
-                break; 
+                break;
             }
         }
         return pieceCoord
     }
 }
-
-
 
 export {
     Piece,

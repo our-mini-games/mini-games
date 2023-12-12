@@ -9,7 +9,11 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/lodash.clonedeep": "^4.5.9",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
+  },
+  "dependencies": {
+    "lodash.clonedeep": "^4.5.0"
   }
 }
