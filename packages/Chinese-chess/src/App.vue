@@ -2,6 +2,8 @@
   <div class="chinese-chess">
     <mode-selector v-if="currentMode === null" />
 
+    <offline-game v-else-if="currentMode === GameMode.OFFLINE" />
+
     <component
       v-else
       :is="comp"
@@ -13,7 +15,6 @@
       @game:ready="handleGameReady"
       @game:change="handleGameChange"
     />
-    <!-- <GameMain /> -->
   </div>
 </template>
 
@@ -36,7 +37,7 @@ const currentMode = ref<GameMode | null>(null)
 const comp = computed(() => {
   return currentMode.value === GameMode.ONLINE
     ? currentRoom.value ? GameMain : Gamelobby
-    : OfflineGame
+    : ''
 })
 
 onMounted(() => {
