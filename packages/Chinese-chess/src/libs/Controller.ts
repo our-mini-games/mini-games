@@ -5,11 +5,26 @@
 import { Camp, ChessPieceValue, GameStatus } from '../definitions'
 import { ChessPiece, createChessPiece } from './ChessPiece'
 import { createGameInterface } from './GameInterface'
+import { changeXCoordMove, changeOtherCoordMove } from "../libs/ChessManual"
+import cloneDeep from "lodash.clonedeep"
+
 import { Point } from './Point'
 
 export interface MovePathCollection {
   value: ChessPieceValue
   path: Point[]
+}
+
+interface ChessManual {
+  oldCoord: {
+    x: number,
+    y: number
+  },
+  newCoord: {
+    x: number,
+    y: number
+  },
+  text: string
 }
 
 export interface Context {
@@ -24,7 +39,8 @@ export interface Context {
   movePath: MovePathCollection[]
   /** 当前活跃棋子，当前阵营用户选中的已方棋子 */
   activePiece: null | ChessPiece,
-  canMoveList: Array<[number, number]>
+  canMoveList: Array<[number, number]>,
+  chessManualList: Array<ChessManual>
 }
 
 const initChessPieces = (): ChessPiece[] => {
@@ -59,6 +75,7 @@ const createContext = (): Context => {
     movePath: [],
     activePiece: null,
     canMoveList: [],
+    chessManualList: [],
   }
 }
 
@@ -88,10 +105,145 @@ export const createController = (): any => {
     }
   }
 
-  function move(activePiece: ChessPiece, x: number, y: number) {
+  // 计算出所有能吃子的坐标
+  const computedAllEatCoord = (chessPieces: Array<ChessPiece>, currentCamp: Camp): Array<[number, number]> => {
+    // 筛选出所有子力
+    let friendlyPieceList: Array<ChessPiece> = chessPieces.filter(item => item.camp === currentCamp)
+    // 然后计算出所有的可吃子的坐标
+    let allEatCoodr: Array<[number, number]> = friendlyPieceList.reduce((pre: Array<[number, number]>, item) => {
+      let { PieceObject, coord, camp } = item
+      let piece = new PieceObject(coord, chessPieces, camp, currentCamp)
+      let canEatList: Array<[number, number]> = piece.computedCanEat()
+      pre.push(...canEatList)
+      return pre
+    }, [])
+    return allEatCoodr
+  }
+
+  // 记棋谱
+  const recordChessManual = (piece: ChessPiece, x: number, y: number) => {
+    let moveTrace: ChessManual = {
+      oldCoord: {
+        x: piece.coord.x,
+        y: piece.coord.y
+      },
+      newCoord: {
+        x,
+        y
+      },
+      text: "",
+    }
+    let xCoordMoveList = ["馬", "相", "象", "仕", "士"]
+    if (xCoordMoveList.includes(piece.name)) {
+      moveTrace.text = changeXCoordMove(context.currentCamp, piece, x, y, context.chessPieces)
+    } else {
+      moveTrace.text = changeOtherCoordMove(context.currentCamp, piece, x, y)
+    }
+    context.chessManualList.push(moveTrace)
+  }
+
+  // 是否送将
+  const isDeliverGeneralInChess = (x: number, y: number, camp: Camp): boolean => {
+    let res: boolean = false
+    let newChessPiece: Array<ChessPiece> = cloneDeep(context.chessPieces)
+    let newActivePiece = newChessPiece.find(item => item.coord.x === context.activePiece?.coord.x && item.coord.y === context.activePiece.coord.y)
+    // 模拟它走一步
+    newActivePiece?.move({
+      x,
+      y
+    })
+    res = isGeneralInChess(newChessPiece, camp)
+    return res
+  }
+
+  // 是否将军
+  const isGeneralInChess = (chessPieces: Array<ChessPiece>, currentCamp: Camp): boolean => {
+    let res: boolean = false
+    // 判断将/帅在不在敌方子力吃的范围内就可以了
+    let allEatCoodr: Array<[number, number]> = computedAllEatCoord(chessPieces, currentCamp)
+    // 看帅/将在不在吃子范围内
+    let boss = chessPieces.find(item => item.name === (currentCamp === Camp.RED ? "將" : "帥"))
+    res = Boolean(allEatCoodr.find(item => item[0] === boss?.coord.x && item[1] === boss.coord.y))
+    return res
+  }
+  // 是否没有应将
+  const isNotRespondGeneralInChess = (x: number, y: number): boolean => {
+    let res = false
+    // 如果他之前都没有将过你的军 那么就不需要应将
+    let camp = context.currentCamp === Camp.RED ? Camp.BLACK : Camp.RED
+    if (isGeneralInChess(context.chessPieces, camp)) {
+      // 如果将过 那么就模拟走这一步 他还是不是再能将你的军
+      //  也就是说需要判断是不是送将
+      res = isDeliverGeneralInChess(x, y, camp)
+    }
+    return res
+  }
+
+  // 是否绝杀
+  const isGameOver = (): boolean => {
+    // 是否绝杀
+    /*
+      绝杀的思路
+        如果敌方移动了 并且这一步移动是送将 也就是移动过后我方依旧是将军 那么这一步棋就是不能走的
+        那么如果敌方每一个可以移动的点位都移动 而且我方都是将军 那么就是绝杀无解了
+    */
+    // 计算出敌方所有棋子可以走子的点位 然后挨个走子
+    let enemyPieceList: Array<ChessPiece> = context.chessPieces.filter(item => item.camp !== context.currentCamp)
+     for (let i = 0; i < enemyPieceList.length; i++) {
+      // 将棋盘复位
+      let newChessPiece: Array<ChessPiece> = cloneDeep(context.chessPieces)
+      let pieceItem: ChessPiece = enemyPieceList[i]
+      let { PieceObject, coord, camp } = pieceItem
+      let piece = new PieceObject(coord, newChessPiece, camp, camp)
+      // 获取每一个可以走动的坐标
+      let allCanMoveCoord: Array<[number, number]> = piece.allCanMove()
+      // 模拟每一个棋子的走动 然后判断是否是送将 如果有一个移动了 不是送将 那么就是可以的
+      let activePiece = newChessPiece.find(item => item.coord.x === coord.x && item.coord.y === coord.y)
+      // 如果说有一个棋子走动了之后对方不能将军 那么就不是绝杀了
+      let inGeneralInChess: boolean = allCanMoveCoord.filter(item => {
+        // 移动到了这个位置 看看还是不是将军
+        activePiece?.move({
+          x: item[0],
+          y: item[1]
+        })
+        return !isGeneralInChess(newChessPiece, camp === Camp.RED ? Camp.BLACK : Camp.RED)
+      }).length > 0
+      if (inGeneralInChess) {
+        return false
+      }
+    }
+    return true
+  }
+
+  // 移动
+  const move = (activePiece: ChessPiece, x: number, y: number, canEatPiece?: boolean, currentPiece?: ChessPiece ) => {
+    // 判断是否没有应将 
+    if (isNotRespondGeneralInChess(x, y)) {
+      console.log("正在被将军请应将")
+      return
+    }
+    // 判断是否送将
+    if (isDeliverGeneralInChess(x, y, context.currentCamp === Camp.RED ? Camp.BLACK : Camp.RED)) {
+      console.log("不能送将,请走其他棋")
+      return
+    }
     // 记棋谱
-    // recordChessManual(piece, x, y)
+    recordChessManual(activePiece, x, y)
+    // 走子
     activePiece.move({ x, y })
+     // 判断是否吃子
+     if (canEatPiece && currentPiece) {
+      context.chessPieces = eatPiece(currentPiece, context.chessPieces)
+    }
+    // 判断是否将军
+    if (isGeneralInChess(context.chessPieces, context.currentCamp)) {
+      console.log("将军")
+      if (isGameOver()) {
+        alert(`绝杀无解${context.currentCamp === Camp.RED ? "红" : "黑"}胜`)
+        console.log("绝杀无解")
+      }
+    }
+    // 判断是否绝杀
     context.activePiece = null
     context.currentCamp = context.currentCamp === Camp.RED ? Camp.BLACK : Camp.RED
   }
@@ -113,11 +265,8 @@ export const createController = (): any => {
       // 是否吃子 因为上面已经判断过进入下一步是自己方
       if (currentPiece) {
         // 那么走吃子的逻辑
-        if (canEatPiece(context.activePiece, context.chessPieces, point.x, point.y)) {
-          context.chessPieces = eatPiece(currentPiece, context.chessPieces)
-          move(context.activePiece, point.x, point.y)
-          return
-        }
+        move(context.activePiece, point.x, point.y, canEatPiece(context.activePiece, context.chessPieces, point.x, point.y), currentPiece)
+        return
       }
       // 是否移动到可以移动的地方
       if (context.canMoveList.find(item => item[0] === point.x && item[1] === point.y)) {
@@ -148,8 +297,6 @@ export const createController = (): any => {
         : 1
       )
       lastTime = currTime
-
-      console.log(context.activePiece.scale)
     }
 
     gameInterface.clearMain()
@@ -198,10 +345,10 @@ export const createController = (): any => {
     // 必须要在能吃子的范围内才能吃
     return Boolean(canEatList.find(item => item[0] === x && item[1] === y))
   }
-
   function eatPiece(currentPiece: ChessPiece, pieces: Array<ChessPiece>): Array<ChessPiece> {
     let { coord } = currentPiece
-    let index = pieces.findIndex(item => item.coord.x === coord.x && item.coord.y === coord.y)
+    // 找到当前位置的敌方阵营棋子
+    let index = pieces.findIndex(item => item.coord.x === coord.x && item.coord.y === coord.y && item.camp !== context.currentCamp)
     if (pieces[index].name === "帥") {
       alert("红方败")
     }
@@ -210,7 +357,7 @@ export const createController = (): any => {
       alert("黑方败")
     }
     pieces.splice(index, 1)
-    
+
     return pieces
   }
 

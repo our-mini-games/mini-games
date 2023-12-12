@@ -13,7 +13,8 @@ interface ChessPieceMapItem {
   camp: Camp
   name: string
   coords: Array<[number, number]>,
-  PieceObject: any
+  PieceObject: any,
+  getPieceRuleCoord?: () => void
   // Soldier | BigGun | Horse | Vehicle | Elephant | Scholar | Boss 
 }
 
