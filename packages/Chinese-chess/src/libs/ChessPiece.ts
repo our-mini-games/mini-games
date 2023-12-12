@@ -9,13 +9,15 @@ export interface ChessPiece {
   scale: number
   setScale: (scale: number) => void
   move: (point: Point) => void
+  PieceObject: any
 }
 
 export const createChessPiece = (value: ChessPieceValue, coordIndex = 0): ChessPiece => {
   const {
     name,
     camp,
-    coords
+    coords,
+    PieceObject
   } = chessPieceMapper[value]
 
   const coord = new Point(...coords[coordIndex])
@@ -32,6 +34,7 @@ export const createChessPiece = (value: ChessPieceValue, coordIndex = 0): ChessP
     move ({ x, y }) {
       this.coord.x = x
       this.coord.y = y
-    }
+    },
+    PieceObject
   }
 }
