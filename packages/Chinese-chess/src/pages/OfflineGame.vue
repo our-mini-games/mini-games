@@ -32,14 +32,20 @@ onMounted(() => {
     chatListRef.value &&
     chatInputRef.value
   ) {
-    const ctrl = createController({
-      oMain: mainRef.value,
-      oManual: manualRef.value,
-      oChatList: chatListRef.value,
-      oChatInput: chatInputRef.value
-    })
-    ctrl.initGame()
-    ctrl.run()
+    const font = new FontFace('PieceFont', 'url(fzlsft.ttf)')
+    font.load().then(f => {
+      (document.fonts as any).add(f)
+    }).then(async () => await document.fonts.ready.then())
+      .then(() => {
+        const ctrl = createController({
+          oMain: mainRef.value!,
+          oManual: manualRef.value!,
+          oChatList: chatListRef.value!,
+          oChatInput: chatInputRef.value!
+        })
+        ctrl.initGame()
+        ctrl.run()
+      })
   }
 })
 
