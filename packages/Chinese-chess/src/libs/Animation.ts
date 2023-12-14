@@ -28,19 +28,20 @@ export type AnimationType = 'check' | 'check-mate' | 'win'
 export interface AnimationOptions {
   width: number
   height: number
+  baseSize: number
   resource: {
     swordPic: HTMLImageElement
     winPic: HTMLImageElement
   }
-  stopCallback: (type: AnimationType, camp?: Camp) => void
 }
 
 interface AnimationExecutor {
-  run: () => void
+  run: (stopCallback?: (type: AnimationType, camp?: Camp) => void) => void
   stop: () => void
 }
 
 export interface AnimationReturnType {
+  clear: () => void
   check: AnimationExecutor
   checkMate: AnimationExecutor
   blackWin: AnimationExecutor
@@ -49,7 +50,7 @@ export interface AnimationReturnType {
 
 export const createAnimation = (
   ctx: CanvasRenderingContext2D,
-  { width, height, resource, stopCallback }: AnimationOptions
+  { width, height, baseSize, resource }: AnimationOptions
 ): AnimationReturnType => {
   function drawText (text: string, x: number, y: number, ratio = 1, color = '#f6d59a'): void {
     ctx.save()
@@ -66,7 +67,7 @@ export const createAnimation = (
     ctx.strokeStyle = 'rgba(0,0,0,0.6)'
     ctx.lineWidth = 1
 
-    ctx.font = 'normal 64px STXINGKAI'
+    ctx.font = `normal ${baseSize}px STXINGKAI`
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
 
@@ -130,8 +131,8 @@ export const createAnimation = (
       textList: TextItem[]
       value: Value
     } {
-      let r = 5
-      const outerRadius = 32
+      let r = baseSize / 16
+      const outerRadius = baseSize / 2
       const step = Math.PI / 180
       const points: Circle[] = Array.from({ length: 145 }, (_, index) => {
       // eslint-disable-next-line no-return-assign
@@ -145,15 +146,15 @@ export const createAnimation = (
       const textList = [
         {
           text: '将',
-          x: -16,
-          y: -12,
+          x: -baseSize / 4,
+          y: -baseSize / 6,
           ratio: 2,
           color: '#f6d59a'
         },
         {
           text: '军',
-          x: 16,
-          y: 12,
+          x: baseSize / 4,
+          y: baseSize / 6,
           ratio: 2,
           color: '#f6d59a'
         }
@@ -199,7 +200,8 @@ export const createAnimation = (
     }
 
     return {
-      run: () => {
+      run: (cb) => {
+        stopCallback = cb ?? ((_type, _camp) => {})
         const { value, textList, points } = init()
         run(value, textList, points)
       },
@@ -215,15 +217,15 @@ export const createAnimation = (
       const textList = [
         {
           text: '绝',
-          x: -16,
-          y: -12,
+          x: -baseSize / 4,
+          y: -baseSize / 6,
           ratio: 2,
           color: '#f40'
         },
         {
           text: '杀',
-          x: 16,
-          y: 12,
+          x: baseSize / 4,
+          y: baseSize / 6,
           ratio: 2,
           color: '#f40'
         }
@@ -270,7 +272,8 @@ export const createAnimation = (
     }
 
     return {
-      run: () => {
+      run: (cb) => {
+        stopCallback = cb ?? ((_type, _camp) => {})
         const { textList, value } = init()
         run(value, textList)
       },
@@ -283,7 +286,7 @@ export const createAnimation = (
       const text: TextItem = {
         text: `${camp === 0 ? '红' : '黑'}胜`,
         x: 0,
-        y: 32,
+        y: baseSize / 2,
         ratio: 2,
         color: camp === 0 ? '#f40' : '#000'
       }
@@ -333,7 +336,8 @@ export const createAnimation = (
     }
 
     return {
-      run: () => {
+      run: (cb) => {
+        stopCallback = cb ?? ((_type, _camp) => {})
         const { text, value } = init()
         run(text, value)
       },
@@ -342,8 +346,11 @@ export const createAnimation = (
   }
 
   let reqId: number
+  let stopCallback: (type: AnimationType, camp?: Camp) => void = (_type, _camp) => {}
 
   return {
+    // 应该让外部来关掉这个动画
+    clear,
     check: registerCheckAnimation(),
     checkMate: registerCheckMateAnimation(resource.swordPic),
     redWin: registerWinAnimation(resource.winPic, 0),

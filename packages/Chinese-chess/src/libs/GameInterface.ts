@@ -2,6 +2,8 @@ import { createCanvas } from './Canvas'
 import { Camp, colorMapper } from '../definitions'
 import { Point } from './Point'
 import { ChessPiece } from './ChessPiece'
+import { loadPic } from '@/utils'
+import { AnimationReturnType, createAnimation } from './Animation'
 
 export interface SizeOptions {
   width: number
@@ -18,6 +20,7 @@ export interface GameInterface {
   mainCanvas: HTMLCanvasElement
   checkerBoardCanvas: HTMLCanvasElement
   readonly sizeOptions: SizeOptions
+  readonly animations: AnimationReturnType
   mount: (node: Element) => void
   destroy: (node: Element) => void
   getPointer: (e: MouseEvent) => Point
@@ -491,6 +494,7 @@ export const createGameInterface = (baseSize = 128): GameInterface => {
     innerHeight + padding
   ]
 
+  // 主画布（棋子）
   const mainCanvas = createCanvas(width, height)
   const ctx = mainCanvas.getContext('2d')!
 
@@ -509,7 +513,14 @@ export const createGameInterface = (baseSize = 128): GameInterface => {
     }
   }
 
+  // 背景画布（棋盘）
   const checkerBoardCanvas = createCanvas(width, height)
+  // 底层动画画布（负责绘制棋子底下动画，位于棋子与棋盘的中间）
+  const bottomAnimationCanvas = createCanvas(width, height)
+  // 顶层动画画布（负责绘制提示类动画，位于棋子上一层）
+  const topAnimationCanvas = createCanvas(width, height)
+
+  let animations: AnimationReturnType
 
   const mount = async (parentNode: Element): Promise<void> => {
     const rect = parentNode.getBoundingClientRect()
@@ -524,23 +535,47 @@ export const createGameInterface = (baseSize = 128): GameInterface => {
       'transform-origin: center center;' +
       `transform: translate(-50%, -50%) scale(${ratio})`
 
-    checkerBoardCanvas.style.position = mainCanvas.style.position = 'absolute'
-    checkerBoardCanvas.style.left = mainCanvas.style.left = '0'
-    checkerBoardCanvas.style.top = mainCanvas.style.top = '0'
+    checkerBoardCanvas.style.position = mainCanvas.style.position = bottomAnimationCanvas.style.position = topAnimationCanvas.style.position = 'absolute'
+    checkerBoardCanvas.style.left = mainCanvas.style.left = bottomAnimationCanvas.style.left = topAnimationCanvas.style.left = '0'
+    checkerBoardCanvas.style.top = mainCanvas.style.top = bottomAnimationCanvas.style.top = topAnimationCanvas.style.top = '0'
 
+    topAnimationCanvas.style.pointerEvents = 'none'
+
+    bottomAnimationCanvas.style.zIndex = '1'
     mainCanvas.style.zIndex = '2'
+    topAnimationCanvas.style.zIndex = '3'
 
     oInterface.appendChild(checkerBoardCanvas)
+    oInterface.appendChild(bottomAnimationCanvas)
     oInterface.appendChild(mainCanvas)
+    oInterface.appendChild(topAnimationCanvas)
 
     oInterface.style.width = checkerBoardCanvas.style.width
     oInterface.style.height = checkerBoardCanvas.style.height
 
     parentNode.appendChild(oInterface)
 
-    const font = new FontFace('PieceFont', 'url(fzlsft.ttf)')
-    return await font.load().then(f => {
-      (document.fonts as any).add(f)
+    const pieceFont = new FontFace('PieceFont', 'url(fzlsft.ttf)')
+    const aniFont = new FontFace('STXINGKAI', 'url(STXINGKAI.ttf)')
+
+    const [f1, f2, p1, p2] = await Promise.all([
+      pieceFont.load(),
+      aniFont.load(),
+      loadPic('sword.png'),
+      loadPic('win.png')
+    ])
+    ;(document.fonts as any).add(f1)
+    ;(document.fonts as any).add(f2)
+    await document.fonts.ready.then()
+
+    animations = createAnimation(topAnimationCanvas.getContext('2d')!, {
+      width,
+      height,
+      baseSize,
+      resource: {
+        swordPic: p1,
+        winPic: p2
+      }
     })
   }
 
@@ -571,6 +606,14 @@ export const createGameInterface = (baseSize = 128): GameInterface => {
     get sizeOptions () {
       return sizeOptions
     },
+
+    get animations () {
+      if (!animations) {
+        throw new Error('Please call `mount()` first.')
+      }
+      return animations
+    },
+
     mount,
     destroy,
     getPointer,
