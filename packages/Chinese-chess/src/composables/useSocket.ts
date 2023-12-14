@@ -51,7 +51,9 @@ export const useSocket = ($: any) => {
   const isInit = computed(() => context.value?.status === GameStatus.Init)
 
   onMounted(() => {
-    socket.value = io(import.meta.env.VITE_SOCKET)
+    socket.value = io(import.meta.env.VITE_SOCKET, {
+      transports: ['websocket']
+    })
 
     socket.value.on(events.client.connect, () => {
       if (!currentUser.value) {
