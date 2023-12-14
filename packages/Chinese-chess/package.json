@@ -10,6 +10,8 @@
   },
   "devDependencies": {
     "@types/lodash.clonedeep": "^4.5.9",
+    "@vitejs/plugin-vue": "^4.5.2",
+    "sass": "^1.56.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   },
