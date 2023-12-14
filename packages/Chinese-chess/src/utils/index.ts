@@ -63,6 +63,17 @@ export const getTangentPoint = (r: number, C: Point, P: Point): [Point, Point] =
   ]
 }
 
+// eslint-disable-next-line @typescript-eslint/promise-function-async
+export const loadPic = (pic: string): Promise<HTMLImageElement> => {
+  return new Promise(resolve => {
+    const swordPic = new Image()
+    swordPic.onload = () => {
+      resolve(swordPic)
+    }
+    swordPic.src = pic
+  })
+}
+
 export const isSameCoord = ({ x: x1, y: y1 }: Point, { x: x2, y: y2 }: Point): boolean => x1 === x2 && y1 === y2
 
 export const switchCamp = (camp: Camp): Camp => {

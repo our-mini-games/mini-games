@@ -21,20 +21,6 @@
       </div>
     </div>
 
-
-    <!-- <button
-      class="btn btn-exchange"
-    >
-      交换阵营
-    </button>
-    <div
-      v-if="isPlayer"
-      class="current-camp"
-    >
-      当前执子：
-      <span v-if="context?.currentCamp === Camp.RED" class="red">红</span>
-      <span v-else class="black">黑</span>
-    </div> -->
     <button
       v-if="!!player"
       class="btn btn-ready"
@@ -62,10 +48,10 @@ const currentUser = inject('currentUser', ref<User | null>(null))
 
 const firstOptions = [{
   label: '红先',
-  value: Camp.RED,
+  value: Camp.RED
 }, {
   label: '黑先',
-  value: Camp.BLACK,
+  value: Camp.BLACK
 }]
 const first = ref(Camp.RED)
 
@@ -78,7 +64,7 @@ const player = computed(() => currentUser.value
   : null
 )
 
-const handleOptionClick = (val: Camp) => {
+const handleOptionClick = (val: Camp): void => {
   if (!isInit.value) {
     return
   }
@@ -86,15 +72,15 @@ const handleOptionClick = (val: Camp) => {
   first.value = val
 }
 
-const handleBtnBackClick = () => {
+const handleBtnBackClick = (): void => {
   emits('room:leave')
 }
 
-const handleBtnReadyClick = () => {
+const handleBtnReadyClick = (): void => {
   if (!isInit) {
     return
   }
-  
+
   emits('game:ready')
 }
 </script>
@@ -141,7 +127,6 @@ const handleBtnReadyClick = () => {
         color: var(--black);
         border-top-right-radius: 64px;
       }
-      
 
       &.active {
         color: #fff;

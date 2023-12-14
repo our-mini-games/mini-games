@@ -115,13 +115,15 @@ const execMove = (point: Point, piece?: ChessPiece): void => {
           localContext.value.animations.push({
             type: 'CheckMate',
             camp: localContext.value.currentCamp
-          }, {
-            type: 'Win',
-            camp: localContext.value.currentCamp
           })
 
           // 游戏结束
           localContext.value.status = GameStatus.Finished
+          // setTimeout(() => {
+          //   localContext.value!.players![0].isReady = false
+          //   localContext.value!.players![1].isReady = false
+          //   localContext.value!.status = GameStatus.Init
+          // }, 1000)
         } else {
           // 移除当前活跃棋子
           setActive(null)
@@ -207,6 +209,38 @@ function draw (): void {
   gameInterface.setRotate(currentUserCamp.value === Camp.BLACK ? Math.PI : 0)
 
   gameInterface.drawChessPieces(localContext.value.chessPieces)
+
+  if (localContext.value.animations.length > 0) {
+    while (localContext.value.animations.length > 0) {
+      const ani = localContext.value.animations.shift()!
+
+      switch (ani.type) {
+        case 'Check':
+          gameInterface.animations.check.run(() => {
+            setTimeout(() => {
+              gameInterface.animations.clear()
+            }, 1000)
+          })
+          break
+        case 'CheckMate':
+          gameInterface.animations.checkMate.run(() => {
+            gameInterface.animations[ani.camp === Camp.RED ? 'redWin' : 'blackWin'].run(() => {
+              setTimeout(() => {
+                gameInterface.animations.clear()
+              }, 1000)
+            })
+          })
+          break
+        case 'Win':
+          gameInterface.animations[ani.camp === Camp.RED ? 'redWin' : 'blackWin'].run(() => {
+            gameInterface.animations.clear()
+          })
+          break
+        default:
+          break
+      }
+    }
+  }
 
   if (localContext.value?.allowPoints?.length > 0 && currentUserCamp.value === localContext.value.currentCamp) {
     gameInterface.drawAllowPoints(localContext.value.allowPoints)
