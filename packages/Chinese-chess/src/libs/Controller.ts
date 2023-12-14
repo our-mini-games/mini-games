@@ -151,8 +151,8 @@ export const createController = ({
       },
       text: ''
     }
-    const xCoordMoveList = ['馬', '相', '象', '仕', '士']
-    if (xCoordMoveList.includes(piece.name)) {
+    const xCoordMoveList = [3, 33, 5, 55, 6, 66]
+    if (xCoordMoveList.includes(piece.id)) {
       moveTrace.text = changeXCoordMove(context.currentCamp, piece, x, y, context.chessPieces)
     } else {
       moveTrace.text = changeOtherCoordMove(context.currentCamp, piece, x, y)
@@ -162,24 +162,20 @@ export const createController = ({
 
   // 是否送将
   const isDeliverGeneralInChess = (x: number, y: number, camp: Camp): boolean => {
-    let res: boolean = false
     const newChessPiece: ChessPiece[] = cloneDeep(context.chessPieces)
     const newActivePiece = newChessPiece.find(item => item.coord.x === context.activePiece?.coord.x && item.coord.y === context.activePiece.coord.y)
     // 模拟它走一步
     movePiece(newActivePiece!, { x, y })
-    res = isGeneralInChess(newChessPiece, camp)
-    return res
+    return isGeneralInChess(newChessPiece, camp)
   }
 
   // 是否将军
   const isGeneralInChess = (chessPieces: ChessPiece[], currentCamp: Camp): boolean => {
-    let res: boolean = false
     // 判断将/帅在不在敌方子力吃的范围内就可以了
     const allEatCoodr: Array<[number, number]> = computedAllEatCoord(chessPieces, currentCamp)
     // 看帅/将在不在吃子范围内
-    const boss = chessPieces.find(item => item.name === (currentCamp === Camp.RED ? '將' : '帥'))
-    res = Boolean(allEatCoodr.find(item => item[0] === boss?.coord.x && item[1] === boss.coord.y))
-    return res
+    const boss = chessPieces.find(item => item.id === (currentCamp === Camp.RED ? 11 : 1))
+    return Boolean(allEatCoodr.find(item => item[0] === boss?.coord.x && item[1] === boss.coord.y))
   }
   // 是否没有应将
   const isNotRespondGeneralInChess = (x: number, y: number): boolean => {
@@ -231,25 +227,21 @@ export const createController = ({
   }
 
   // 移动
-  const move = (activePiece: ChessPiece, x: number, y: number, canEatPiece?: boolean, currentPiece?: ChessPiece): void => {
+  const move = (activePiece: ChessPiece, x: number, y: number): boolean => {
     // 判断是否没有应将
     if (isNotRespondGeneralInChess(x, y)) {
       console.log('正在被将军请应将')
-      return
+      return false
     }
     // 判断是否送将
     if (isDeliverGeneralInChess(x, y, context.currentCamp === Camp.RED ? Camp.BLACK : Camp.RED)) {
       console.log('不能送将,请走其他棋')
-      return
+      return false
     }
     // 记棋谱
     recordChessManual(activePiece, x, y)
     // 走子
     movePiece(activePiece, { x, y })
-    // 判断是否吃子
-    if (canEatPiece && currentPiece) {
-      context.chessPieces = eatPiece(currentPiece, context.chessPieces)
-    }
     // 判断是否将军
     if (isGeneralInChess(context.chessPieces, context.currentCamp)) {
       console.log('将军')
@@ -261,6 +253,7 @@ export const createController = ({
     // 判断是否绝杀
     context.activePiece = null
     context.currentCamp = context.currentCamp === Camp.RED ? Camp.BLACK : Camp.RED
+    return true
   }
 
   const handleClick = (e: MouseEvent): void => {
@@ -278,9 +271,10 @@ export const createController = ({
         return
       }
       // 是否吃子 因为上面已经判断过进入下一步是自己方
-      if (currentPiece) {
+      // 判断是否吃子 移动过成功才可以进行吃子
+      if (currentPiece && canEatPiece(context.activePiece, context.chessPieces, point.x, point.y) && move(context.activePiece, point.x, point.y)) {
         // 那么走吃子的逻辑
-        move(context.activePiece, point.x, point.y, canEatPiece(context.activePiece, context.chessPieces, point.x, point.y), currentPiece)
+        context.chessPieces = eatPiece(currentPiece, context.chessPieces)
         return
       }
       // 是否移动到可以移动的地方
@@ -297,7 +291,7 @@ export const createController = ({
   let reqId: number
   let lastTime = Date.now()
 
-  function run (): void {
+  function run(): void {
     reqId = requestAnimationFrame(run)
     context.counter += Math.PI / 180
 
@@ -326,11 +320,11 @@ export const createController = ({
     }
   }
 
-  function pause (): void {
+  function pause(): void {
     cancelAnimationFrame(reqId)
   }
 
-  function handleInputMouseDown (e: KeyboardEvent): void {
+  function handleInputMouseDown(e: KeyboardEvent): void {
     const { key } = e
     const target = e.target as HTMLInputElement
     const { value } = target
@@ -346,7 +340,7 @@ export const createController = ({
     }
   }
 
-  function renderChatList (chatList: Chat[]): void {
+  function renderChatList(chatList: Chat[]): void {
     oChatList.innerHTML = chatList.reduce((text, item) => {
       return text + `
         <li class="chat-item ${Math.random() > 0.5 ? 'self' : ''}">
@@ -360,7 +354,7 @@ export const createController = ({
   }
 
   // @todo
-  function renderManual (manualList: any[] = []): void {
+  function renderManual(manualList: any[] = []): void {
     oManual.innerHTML = manualList.reduce((text: string, item) => {
       return text + `
         <li class="manual-item ${item.camp === Camp.RED ? 'red' : 'black'}">
@@ -390,33 +384,33 @@ export const createController = ({
     gameInterface.destroy(oMain)
   }
 
-  function isCurrentExecution (camp: Camp): boolean {
+  function isCurrentExecution(camp: Camp): boolean {
     return camp === context.currentCamp
   }
 
-  function computedCanMove (activePiece: ChessPiece, pieces: ChessPiece[]): Array<[number, number]> {
+  function computedCanMove(activePiece: ChessPiece, pieces: ChessPiece[]): Array<[number, number]> {
     const { PieceObject, coord, camp } = activePiece
     const piece = new PieceObject(coord, pieces, camp, context.currentCamp)
     return piece.computedCanMove()
   }
 
   // 判断是否可以吃子
-  function canEatPiece (activePiece: ChessPiece, pieces: ChessPiece[], x: number, y: number): boolean {
+  function canEatPiece(activePiece: ChessPiece, pieces: ChessPiece[], x: number, y: number): boolean {
     const { PieceObject, coord, camp } = activePiece
     const piece = new PieceObject(coord, pieces, camp, context.currentCamp)
     const canEatList: Array<[number, number]> = piece.computedCanEat()
     // 必须要在能吃子的范围内才能吃
     return Boolean(canEatList.find(item => item[0] === x && item[1] === y))
   }
-  function eatPiece (currentPiece: ChessPiece, pieces: ChessPiece[]): ChessPiece[] {
+  function eatPiece(currentPiece: ChessPiece, pieces: ChessPiece[]): ChessPiece[] {
     const { coord } = currentPiece
     // 找到当前位置的敌方阵营棋子
-    const index = pieces.findIndex(item => item.coord.x === coord.x && item.coord.y === coord.y && item.camp !== context.currentCamp)
-    if (pieces[index].name === '帥') {
+    const index = pieces.findIndex(item => item.coord.x === coord.x && item.coord.y === coord.y && item.camp === context.currentCamp)
+    if (pieces[index].id === 1) {
       alert('红方败')
     }
 
-    if (pieces[index].name === '將') {
+    if (pieces[index].id === 11) {
       alert('黑方败')
     }
     pieces.splice(index, 1)

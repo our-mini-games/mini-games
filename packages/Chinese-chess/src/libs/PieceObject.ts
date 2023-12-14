@@ -668,7 +668,7 @@ class Boss extends Piece {
     for (let y = this.y - 1; y > 0; y--) {
       const piece: ChessPiece | undefined = this.pieces.find(e => this.x === e.coord.x && y === e.coord.y)
       if (piece) {
-        if (piece.name === '將') {
+        if (piece.id === 11) {
           pieceCoord.push([this.x, y])
         }
         break
@@ -682,7 +682,7 @@ class Boss extends Piece {
     for (let y = this.y + 1; y < 11; y++) {
       const piece: ChessPiece | undefined = this.pieces.find(e => this.x === e.coord.x && y === e.coord.y)
       if (piece) {
-        if (piece.name === '帥') {
+        if (piece.id === 1) {
           pieceCoord.push([this.x, y])
         }
         break

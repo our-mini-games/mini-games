@@ -17,6 +17,8 @@ declare module '@vue/runtime-core' {
     IconSeat: typeof import('./src/components/IconSeat.vue')['default']
     Modal: typeof import('./src/components/Message/Modal.vue')['default']
     ModeSelector: typeof import('./src/components/ModeSelector.vue')['default']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
     Seperator: typeof import('./src/components/ChessMain/Seperator.vue')['default']
     Spectator: typeof import('./src/components/ChessMain/Spectator.vue')['default']
     StatusWrapper: typeof import('./src/components/ChessMain/StatusWrapper.vue')['default']

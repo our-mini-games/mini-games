@@ -2,6 +2,7 @@ import { Camp, chessPieceMapper, type ChessPieceValue } from '../definitions'
 import { Point } from './Point'
 
 export interface ChessPiece {
+  id: number,
   name: string
   value: ChessPieceValue
   camp: Camp
@@ -18,12 +19,14 @@ export const createChessPiece = (value: ChessPieceValue, coordIndex = 0): ChessP
     name,
     camp,
     coords,
-    PieceObject
+    PieceObject,
+    id
   } = chessPieceMapper[value]
 
   const coord = new Point(...coords[coordIndex])
 
   return {
+    id,
     name,
     value,
     camp,
