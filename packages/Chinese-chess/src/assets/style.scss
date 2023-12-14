@@ -1,0 +1,61 @@
+@font-face {
+  font-family: PieceFont;
+  src: url(fzlsft.ttf);
+  font-weight: bold;
+  font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: all 0.1s linear;
+}
+
+:root {
+  --red: #E60012;
+  --black: #2C2F3B;
+
+  --line: #B2BFC3;
+  --light: #DCE4E8;
+  --dark: #D4DDE1;
+
+  --success: #84A729;
+  --error: #D24735;
+  --shadow: 4px 4px 8px 2px var(--dark) inset, -4px -4px 8px 2px #fff inset;
+  --shadow-small: 2px 2px 4px 1px var(--dark) inset, -2px -2px 4px 1px #fff inset;
+
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+body {
+  font-size: 16px;
+  line-height: 1.4;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  color: var(--black);
+  // background-color: var(--light);
+}
+
+:where(.btn) {
+  all: unset;
+  padding: 4px 16px;
+  border-radius: 4px;
+  color: var(--black);
+  border: 1px solid var(--line);
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
+    border-color: var(--light);
+    background-color: var(--light);
+  }
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+}

@@ -10,7 +10,8 @@ export interface SizeOptions {
   innerHeight: number
   padding: number
   baseSize: number
-  fixedOrigin: () => void
+  rotate: number
+  fixedOrigin: (rotate: number) => void
 }
 
 export interface GameInterface {
@@ -22,6 +23,7 @@ export interface GameInterface {
   getPointer: (e: MouseEvent) => Point
 
   clearMain: () => void
+  setRotate: (angle: number) => void
   drawChessPieces: (chessPieces: ChessPiece[]) => void
   drawLastStop: (point: Point) => void
   drawMovePath: (points: Point[]) => void
@@ -52,9 +54,17 @@ const drawCheckerboard = (ctx: CanvasRenderingContext2D, {
   height,
   innerWidth,
   innerHeight,
-  baseSize
+  baseSize,
+  rotate
 }: SizeOptions): void => {
+  ctx.clearRect(0, 0, width, height)
+
   ctx.save()
+
+  ctx.translate(width / 2, height / 2)
+  ctx.rotate(rotate)
+  ctx.translate(-width / 2, -height / 2)
+
   ctx.lineCap = 'round'
 
   const lineWidth = baseSize / 32
@@ -205,7 +215,7 @@ const drawCheckerboard = (ctx: CanvasRenderingContext2D, {
     textGroup.forEach((text, index) => {
       drawEngrave(ctx, () => {
         ctx.beginPath()
-        ctx.font = `Bold ${baseSize / 4}px SimSun`
+        ctx.font = `Bold ${baseSize / 4}px PieceFont`
         ctx.textAlign = 'center'
         ctx.textBaseline = 'middle'
         ctx.fillStyle = colorMapper.line
@@ -218,12 +228,15 @@ const drawCheckerboard = (ctx: CanvasRenderingContext2D, {
     })
 
     drawEngrave(ctx, () => {
+      ctx.save()
+      ctx.translate(0, baseSize / 24)
       ctx.beginPath()
-      ctx.font = `Bold ${baseSize / 2}px SimSun`
+      ctx.font = `Bold ${baseSize / 1.5}px PieceFont`
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       ctx.fillStyle = colorMapper.line
-      ctx.fillText(camp === Camp.RED ? '漢界' : '楚河', baseSize * 2.5, 0)
+      ctx.fillText(camp === Camp.RED ? '汉界' : '楚河', baseSize * 2.5, 0)
+      ctx.restore()
     }, 2, false)
 
     ctx.restore()
@@ -233,18 +246,16 @@ const drawCheckerboard = (ctx: CanvasRenderingContext2D, {
 }
 
 function drawChessPieces (ctx: CanvasRenderingContext2D, {
-  width,
-  height,
-  innerWidth,
-  innerHeight,
-  baseSize
+  baseSize,
+  rotate,
+  fixedOrigin
 }: SizeOptions, chessPieces: ChessPiece[]): void {
   ctx.save()
 
-  ctx.translate(width / 2 - innerWidth / 2, height / 2 - innerHeight / 2)
+  fixedOrigin(rotate)
 
   chessPieces.forEach(piece => {
-    drawChessPiece(ctx, baseSize, piece)
+    drawChessPiece(ctx, baseSize, piece, rotate)
   })
 
   ctx.restore()
@@ -253,7 +264,8 @@ function drawChessPieces (ctx: CanvasRenderingContext2D, {
 function drawChessPiece (
   ctx: CanvasRenderingContext2D,
   baseSize: number,
-  { name, camp, coord, scale }: ChessPiece
+  { name, camp, coord, scale }: ChessPiece,
+  rotate: number
 ): void {
   const campColor = camp === Camp.RED ? colorMapper.red : colorMapper.black
 
@@ -264,6 +276,7 @@ function drawChessPiece (
     (coord.x - 1) * baseSize,
     (coord.y - 1) * baseSize
   )
+  ctx.rotate(-rotate)
 
   // 当前被选中了
   ctx.scale(scale, scale)
@@ -293,12 +306,15 @@ function drawChessPiece (
 
   // 字
   drawEngrave(ctx, () => {
+    ctx.save()
+    ctx.translate(0, baseSize / 24)
     ctx.beginPath()
-    ctx.font = 'bold 60px SimSun'
+    ctx.font = `Bold ${baseSize / 1.8}px PieceFont`
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillStyle = campColor
     ctx.fillText(name, 0, 0)
+    ctx.restore()
   }, 2, false)
 
   // 圈
@@ -314,11 +330,11 @@ function drawChessPiece (
   ctx.restore()
 }
 
-function drawLastStop (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }: SizeOptions, point: Point): void {
+function drawLastStop (ctx: CanvasRenderingContext2D, { baseSize, rotate, fixedOrigin }: SizeOptions, point: Point): void {
   const { x, y } = Point.toActualPoint(point)
 
   ctx.save()
-  fixedOrigin()
+  fixedOrigin(rotate)
   ctx.translate(x, y)
   const lineWidth = baseSize / 32
 
@@ -338,11 +354,11 @@ function drawLastStop (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }:
   ctx.restore()
 }
 
-function drawCurrentStop (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }: SizeOptions, counter: number, point: Point): void {
+function drawCurrentStop (ctx: CanvasRenderingContext2D, { baseSize, rotate, fixedOrigin }: SizeOptions, counter: number, point: Point): void {
   const { x, y } = Point.toActualPoint(point)
 
   ctx.save()
-  fixedOrigin()
+  fixedOrigin(rotate)
   ctx.strokeStyle = colorMapper.white
   ctx.fillStyle = colorMapper.success
   ctx.lineWidth = baseSize * 0.05
@@ -370,7 +386,7 @@ function drawCurrentStop (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin
   ctx.restore()
 }
 
-function drawMovePath (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }: SizeOptions, points: Point[]): void {
+function drawMovePath (ctx: CanvasRenderingContext2D, { baseSize, rotate, fixedOrigin }: SizeOptions, points: Point[]): void {
   if (points.length === 0) {
     return
   }
@@ -402,7 +418,7 @@ function drawMovePath (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }:
     }
 
     ctx.save()
-    fixedOrigin()
+    fixedOrigin(rotate)
     ctx.globalAlpha = 0.8
     ctx.translate(x1, y1)
     ctx.rotate(x1 > x2 ? (Math.PI - a) : (Math.PI + a))
@@ -441,12 +457,14 @@ function drawMovePath (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }:
   })
 }
 
-function drawAllowPoints (ctx: CanvasRenderingContext2D, { baseSize, fixedOrigin }: SizeOptions, points: Point[]): void {
+function drawAllowPoints (ctx: CanvasRenderingContext2D, { baseSize, rotate, fixedOrigin }: SizeOptions, points: Point[]): void {
   points.forEach(point => {
     const { x, y } = Point.toActualPoint(point, baseSize)
+
     ctx.save()
-    fixedOrigin()
-    ctx.translate(x, y)
+    fixedOrigin(rotate)
+    // 需要注意他是从 0，0 开始的，而我们算出来的 Points 是从 1，1 => 9,10
+    ctx.translate(x - baseSize, y - baseSize)
 
     ctx.beginPath()
     ctx.arc(0, 0, baseSize / 16, 0, Math.PI * 2)
@@ -483,16 +501,19 @@ export const createGameInterface = (baseSize = 128): GameInterface => {
     innerHeight,
     baseSize,
     padding,
-    fixedOrigin: () => ctx.translate(width / 2 - innerWidth / 2, height / 2 - innerHeight / 2)
+    rotate: 0,
+    fixedOrigin: (rotate: number) => {
+      ctx.translate(width / 2, height / 2)
+      ctx.rotate(rotate)
+      ctx.translate(-innerWidth / 2, -innerHeight / 2)
+    }
   }
 
   const checkerBoardCanvas = createCanvas(width, height)
 
-  const mount = (parentNode: Element): void => {
+  const mount = async (parentNode: Element): Promise<void> => {
     const rect = parentNode.getBoundingClientRect()
-    console.log(rect, parseInt(mainCanvas.style.height))
     ratio = rect.height / parseInt(mainCanvas.style.height)
-    console.log(ratio)
 
     drawCheckerboard(checkerBoardCanvas.getContext('2d')!, sizeOptions)
 
@@ -516,6 +537,11 @@ export const createGameInterface = (baseSize = 128): GameInterface => {
     oInterface.style.height = checkerBoardCanvas.style.height
 
     parentNode.appendChild(oInterface)
+
+    const font = new FontFace('PieceFont', 'url(fzlsft.ttf)')
+    return await font.load().then(f => {
+      (document.fonts as any).add(f)
+    })
   }
 
   const destroy = (parentNode: Element): void => {
@@ -525,13 +551,14 @@ export const createGameInterface = (baseSize = 128): GameInterface => {
   const getPointer = (e: MouseEvent): Point => {
     const { clientX, clientY } = e
     const { left, top } = mainCanvas.getBoundingClientRect()
+    const { rotate } = sizeOptions
 
-    const x = (clientX - left) / ratio - padding / 2
-    const y = (clientY - top) / ratio - padding / 2
+    const x = Math.round(((clientX - left) / ratio - padding / 2) / baseSize) + 1
+    const y = Math.round(((clientY - top) / ratio - padding / 2) / baseSize) + 1
 
     return {
-      x: Math.round(x / baseSize) + 1,
-      y: Math.round(y / baseSize) + 1
+      x: rotate === 0 ? x : 10 - x,
+      y: rotate === 0 ? y : 11 - y
     }
   }
 
@@ -542,15 +569,22 @@ export const createGameInterface = (baseSize = 128): GameInterface => {
     checkerBoardCanvas,
 
     get sizeOptions () {
-      return Object.freeze(sizeOptions)
+      return sizeOptions
     },
     mount,
     destroy,
     getPointer,
 
     clearMain: () => {
-      mainCanvas.getContext('2d')!.clearRect(0, 0, width, height)
+      const ctx = mainCanvas.getContext('2d')!
+      ctx.clearRect(0, 0, width, height)
     },
+    setRotate: (angle: number) => {
+      sizeOptions.rotate = angle
+
+      drawCheckerboard(checkerBoardCanvas.getContext('2d')!, sizeOptions)
+    },
+
     drawChessPieces: (chessPieces: ChessPiece[]) => drawChessPieces(ctx, sizeOptions, chessPieces),
     drawLastStop: (point: Point) => drawLastStop(ctx, sizeOptions, point),
     drawMovePath: (points: Point[]) => drawMovePath(ctx, sizeOptions, points),
