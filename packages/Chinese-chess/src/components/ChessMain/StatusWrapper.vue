@@ -24,7 +24,7 @@
     <button
       v-if="!!player"
       class="btn btn-ready"
-      :disabled="!isInit"
+      :disabled="isStatusBtnDisabled"
       @click="handleBtnReadyClick"
     >
       准备 {{ player?.isReady ? 'true' : 'false' }}
@@ -33,8 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import { Camp } from '@/definitions'
-import { Players, User } from '@/types'
+import { Camp, GameStatus } from '@/definitions'
+import { GameContext, Players, User } from '@/types'
 import { ComputedRef } from 'vue'
 
 const emits = defineEmits<{
@@ -42,8 +42,8 @@ const emits = defineEmits<{
   (e: 'game:ready'): void
 }>()
 
-const isInit = inject<ComputedRef<boolean>>('isInit')!
 const players = inject<ComputedRef<Players>>('players')!
+const context = inject<ComputedRef<GameContext>>('context')!
 const currentUser = inject('currentUser', ref<User | null>(null))
 
 const firstOptions = [{
@@ -55,6 +55,10 @@ const firstOptions = [{
 }]
 const first = ref(Camp.RED)
 
+const isStatusBtnDisabled = computed(() => {
+  return !(context.value.status === GameStatus.Init || context.value.status === GameStatus.Finished)
+})
+
 const player = computed(() => currentUser.value
   ? currentUser.value.id === players.value?.[0].id
     ? players.value[0]
@@ -65,7 +69,7 @@ const player = computed(() => currentUser.value
 )
 
 const handleOptionClick = (val: Camp): void => {
-  if (!isInit.value) {
+  if (isStatusBtnDisabled.value) {
     return
   }
 
@@ -77,7 +81,7 @@ const handleBtnBackClick = (): void => {
 }
 
 const handleBtnReadyClick = (): void => {
-  if (!isInit) {
+  if (isStatusBtnDisabled.value) {
     return
   }
 
