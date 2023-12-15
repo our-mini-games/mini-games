@@ -4,17 +4,6 @@ import { ChessManual, GameContext, Message, Room, User } from '@/types'
 import { initChessPieces } from '@/utils'
 import { io, type Socket } from 'socket.io-client'
 
-// const createContext = (): GameContext => {
-//   return {
-//     players: null,
-//     status: GameStatus.Init,
-//     firstCamp: Camp.RED,
-//     currentCamp: Camp.RED,
-//     manual: [],
-//     chessPieces: []
-//   }
-// }
-
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useSocket = ($: any) => {
   const socket = ref<Socket | null>(null)
@@ -22,7 +11,6 @@ export const useSocket = ($: any) => {
   const currentUser = ref<User | null>(JSON.parse(localStorage.getItem(USER_INFO_KEY) ?? 'null'))
   const message = ref<Message[]>([])
   const chessManual = ref<ChessManual[]>([])
-  // const context = ref<GameContext>(createContext())
 
   const rooms = ref<Room[]>([])
 
@@ -43,10 +31,6 @@ export const useSocket = ($: any) => {
           : null
       : null
   })
-
-  // const currentRoom = computed(() => {
-  //   return rooms.value.find(({ users }) => users.find(user => user.id === currentUser.value?.id))
-  // })
 
   const isInit = computed(() => context.value?.status === GameStatus.Init)
 
@@ -177,7 +161,7 @@ export const useSocket = ($: any) => {
   }
 
   const handleGameReady = (): void => {
-    if (isInit.value && socket.value && currentRoom.value && currentUser.value) {
+    if (socket.value && currentRoom.value && currentUser.value) {
       socket.value.emit(events.game.ready, {
         roomId: currentRoom.value.id,
         user: currentUser.value

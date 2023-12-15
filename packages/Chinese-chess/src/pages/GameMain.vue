@@ -7,7 +7,7 @@
       @game:ready="emits('game:ready')"
       @game:change="emits('game:change', $event)"
     />
-    <aside v-if="false" class="aside">
+    <aside class="aside">
       <chess-manual class="section chess-manual" />
       <chat-container
         class="section chat-container"

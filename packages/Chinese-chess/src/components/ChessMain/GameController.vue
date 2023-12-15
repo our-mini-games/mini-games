@@ -119,11 +119,6 @@ const execMove = (point: Point, piece?: ChessPiece): void => {
 
           // 游戏结束
           localContext.value.status = GameStatus.Finished
-          // setTimeout(() => {
-          //   localContext.value!.players![0].isReady = false
-          //   localContext.value!.players![1].isReady = false
-          //   localContext.value!.status = GameStatus.Init
-          // }, 1000)
         } else {
           // 移除当前活跃棋子
           setActive(null)

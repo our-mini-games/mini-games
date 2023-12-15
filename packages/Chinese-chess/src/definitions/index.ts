@@ -60,10 +60,10 @@ export const chessPieceMapper: Record<ChessPieceValue, ChessPieceMapItem> = {
 }
 
 export enum GameStatus {
-  Init,
-  Playing,
-  Paused,
-  Finished
+  Init = 'INIT',
+  Playing = 'PLAYING',
+  Paused = 'PAUSED',
+  Finished = 'FINISHED'
 }
 
 export const defaultMoveList: Record<ChessPieceValue, (p: Point) => Point[]> = {
