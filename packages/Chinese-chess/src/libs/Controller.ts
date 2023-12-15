@@ -209,7 +209,7 @@ export const createController = ({
       // 获取每一个可以走动的坐标
       const allCanMoveCoord: Array<[number, number]> = piece.allCanMove()
       // 模拟每一个棋子的走动 然后判断是否是送将 如果有一个移动了 不是送将 那么就是可以的
-      const activePiece = newChessPiece.find(item => item.coord.x === coord.x && item.coord.y === coord.y)
+      const activePiece = newChessPiece.find(item => item.coord.x === coord.x && item.coord.y === coord.y && item.camp !== context.currentCamp)
       // 如果说有一个棋子走动了之后对方不能将军 那么就不是绝杀了
       const inGeneralInChess: boolean = allCanMoveCoord.filter(item => {
         // 移动到了这个位置 看看还是不是将军
@@ -245,12 +245,13 @@ export const createController = ({
     // 判断是否将军
     if (isGeneralInChess(context.chessPieces, context.currentCamp)) {
       console.log('将军')
+      // 判断是否绝杀
       if (isGameOver()) {
         alert(`绝杀无解${context.currentCamp === Camp.RED ? '红' : '黑'}胜`)
         console.log('绝杀无解')
       }
     }
-    // 判断是否绝杀
+
     context.activePiece = null
     context.currentCamp = context.currentCamp === Camp.RED ? Camp.BLACK : Camp.RED
     return true
@@ -272,7 +273,7 @@ export const createController = ({
       }
       // 是否吃子 因为上面已经判断过进入下一步是自己方
       // 判断是否吃子 移动过成功才可以进行吃子
-      if (currentPiece && canEatPiece(context.activePiece, context.chessPieces, point.x, point.y) && move(context.activePiece, point.x, point.y)) {
+      if (currentPiece && canEatPiece(context.activePiece, context.chessPieces, point.x, point.y) && move(context.activePiece, point.x, point.y, true)) {
         // 那么走吃子的逻辑
         context.chessPieces = eatPiece(currentPiece, context.chessPieces)
         return
