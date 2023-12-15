@@ -244,11 +244,21 @@ export const createController = ({
     movePiece(activePiece, { x, y })
     // 判断是否将军
     if (isGeneralInChess(context.chessPieces, context.currentCamp)) {
-      console.log('将军')
+      // console.log('将军')
+      gameInterface.animations.check.run(() => {
+        gameInterface.animations.clear()
+      })
       // 判断是否绝杀
       if (isGameOver()) {
-        alert(`绝杀无解${context.currentCamp === Camp.RED ? '红' : '黑'}胜`)
-        console.log('绝杀无解')
+        // alert(`绝杀无解${context.currentCamp === Camp.RED ? '红' : '黑'}胜`)
+        // console.log('绝杀无解')
+        gameInterface.animations.checkMate.run(() => {
+          gameInterface.animations[context.currentCamp === Camp.RED ? 'redWin' : 'blackWin'].run(() => {
+            gameInterface.animations.clear()
+          })
+        })
+        context.status = GameStatus.Finished
+        return false
       }
     }
 
@@ -260,69 +270,44 @@ export const createController = ({
   const handleClick = (e: MouseEvent): void => {
     const point = gameInterface.getPointer(e)
     const currentPiece = getPieceByPoint(point)
+
+    if (context.status !== GameStatus.Playing) {
+      return
+    }
+
     // 点击上去的位置有没有棋子
     if (context.activePiece) {
       // 判断一下之前有没有点击过棋子
       if (currentPiece && isCurrentExecution(currentPiece.camp)) {
         // 也就是说点到了同阵营的棋子
         // 如果还是原来的棋子就不变 如果点了新棋子那么就给新棋子active
-        if (currentPiece.coord.x === context.activePiece.coord.x && currentPiece.coord.y === context.activePiece.coord.y) return
+        if (currentPiece.coord.x === context.activePiece.coord.x && currentPiece.coord.y === context.activePiece.coord.y) {
+          return
+        }
         context.activePiece = currentPiece
         context.canMoveList = computedCanMove(context.activePiece, context.chessPieces)
-        return
-      }
-      // 是否吃子 因为上面已经判断过进入下一步是自己方
-      // 判断是否吃子 移动过成功才可以进行吃子
-      if (currentPiece && canEatPiece(context.activePiece, context.chessPieces, point.x, point.y) && move(context.activePiece, point.x, point.y)) {
+      } else if (currentPiece && canEatPiece(context.activePiece, context.chessPieces, point.x, point.y) && move(context.activePiece, point.x, point.y)) {
+        // 是否吃子 因为上面已经判断过进入下一步是自己方
+        // 判断是否吃子 移动过成功才可以进行吃子
         // 那么走吃子的逻辑
         context.chessPieces = eatPiece(currentPiece, context.chessPieces)
-        return
-      }
-      // 是否移动到可以移动的地方
-      if (context.canMoveList.find(item => item[0] === point.x && item[1] === point.y)) {
+      } else if (context.canMoveList.find(item => item[0] === point.x && item[1] === point.y)) {
+        // 是否移动到可以移动的地方
         move(context.activePiece, point.x, point.y)
+        context.canMoveList.length = 0
       }
     } else {
       // 选中已方棋子
       const piece = getPieceByPoint(point)
       setActive(piece)
     }
-  }
-
-  let reqId: number
-  let lastTime = Date.now()
-
-  function run (): void {
-    reqId = requestAnimationFrame(run)
-    context.counter += Math.PI / 180
-
-    if (context.counter >= 2 * Math.PI) {
-      context.counter = 0
-    }
-
-    const currTime = Date.now()
-    if (currTime - lastTime > 500 && context.activePiece) {
-      context.activePiece.setScale(context.activePiece.scale === 1
-        ? 0.9
-        : 1
-      )
-      lastTime = currTime
-    }
 
     gameInterface.clearMain()
-
     gameInterface.drawChessPieces(context.chessPieces)
-    const lastPath = context.movePath.at(-1)
 
-    if (lastPath) {
-      gameInterface.drawCurrentStop(lastPath.path.at(-1)!, context.counter)
-      gameInterface.drawLastStop(lastPath.path[0])
-      gameInterface.drawMovePath(lastPath.path)
+    if (context.canMoveList.length > 0) {
+      gameInterface.drawAllowPoints(context.canMoveList.map(item => new Point(item[0], item[1])))
     }
-  }
-
-  function pause (): void {
-    cancelAnimationFrame(reqId)
   }
 
   function handleInputMouseDown (e: KeyboardEvent): void {
@@ -422,7 +407,11 @@ export const createController = ({
   return {
     initGame,
     destroy,
-    run,
-    pause
+    run: () => {
+      context.status = GameStatus.Playing
+      gameInterface.clearMain()
+      gameInterface.drawChessPieces(context.chessPieces)
+    }
+    // pause
   }
 }
