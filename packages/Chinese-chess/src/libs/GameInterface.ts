@@ -553,8 +553,6 @@ export const createGameInterface = (baseSize = 128): GameInterface => {
     oInterface.style.width = checkerBoardCanvas.style.width
     oInterface.style.height = checkerBoardCanvas.style.height
 
-    parentNode.appendChild(oInterface)
-
     const pieceFont = new FontFace('PieceFont', 'url(fzlsft.ttf)')
     const aniFont = new FontFace('STXINGKAI', 'url(STXINGKAI.ttf)')
 
@@ -567,6 +565,8 @@ export const createGameInterface = (baseSize = 128): GameInterface => {
     ;(document.fonts as any).add(f1)
     ;(document.fonts as any).add(f2)
     await document.fonts.ready.then()
+
+    parentNode.appendChild(oInterface)
 
     animations = createAnimation(topAnimationCanvas.getContext('2d')!, {
       width,
