@@ -1,8 +1,11 @@
-<template>
-  <div class="game-lobby">
+<!-- <template>
+  <div
+    v-if="!currentRoom"
+    class="game-lobby"
+  >
     <h1 class="title">
-      Game Lobby
-      <button class="btn" @click="handleBack">返回</button>
+      Rooms
+      <a-button class="btn" @click="handleBack">返回</a-button>
     </h1>
 
     <ul class="rooms">
@@ -10,29 +13,61 @@
         v-for="room of rooms"
         :key="room.id"
         class="room"
-        @click="emits('room:join', room)"
+        @click="() => handleRoomJoin(room)"
       >
         <div class="value">{{ room.users.length }}</div>
         <div class="name">{{ room.name }}</div>
       </li>
     </ul>
   </div>
+
+  <game-main
+    v-else
+  />
 </template>
 
 <script setup lang="ts">
+// import { useSocket } from '@/composables/useSocket'
 import { GameMode } from '@/definitions'
 import type { Room } from '@/types'
+
+// eslint-disable-next-line @typescript-eslint/promise-function-async
+const GameMain = defineAsyncComponent(() => import('./GameMain.vue'))
 
 const emits = defineEmits<{
   (e: 'room:join', room: Room): void
   (e: 'update:mode', mode: GameMode | null): void
 }>()
 
-const rooms = inject('rooms', ref<Room[]>([]))
-
 const handleBack = (): void => {
   emits('update:mode', null)
 }
+
+// const {
+//   currentUser,
+//   currentUserCamp,
+//   currentRoom,
+//   rooms,
+//   context,
+//   chessManual,
+//   players,
+//   isInit,
+//   handleRoomJoin,
+//   handleRoomLeave,
+//   handleRoomChat,
+//   handleRoomRequestSeat,
+//   handleGameReady,
+//   handleGameChange
+// } = useSocket()
+
+// provide('currentUser', currentUser)
+// provide('currentUserCamp', currentUserCamp)
+// provide('rooms', rooms)
+// provide('currentRoom', currentRoom)
+// provide('context', context)
+// provide('chessManual', chessManual)
+// provide('players', players)
+// provide('isInit', isInit)
 </script>
 
 <style lang="scss" scoped>
@@ -87,4 +122,8 @@ const handleBack = (): void => {
     }
   }
 }
-</style>
+</style> -->
+
+<template>
+  <div></div>
+</template>

@@ -2,7 +2,7 @@
   <div
     class="camp-seat"
     :class="[
-      seatCamp
+      user?.camp
     ]"
   >
     <div class="finger-wrapper">
@@ -20,44 +20,42 @@
     <div class="nickname">
       {{ user?.nickname || '空' }}
     </div>
+
+    <div v-if="user?.isReady" class="ready-state">
+      已准备
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Camp } from '@/definitions'
-import type { User } from '@/types'
-import { ComputedRef } from 'vue'
+import { Camp, UserLike, GameContext } from 'chinese-chess-service'
+// import { ComputedRef } from 'vue'
 
 const props = defineProps<{
-  user?: User
-  isSelf?: boolean
+  user?: UserLike
   isSpectator?: boolean
 }>()
 
-const currentUserCamp = inject<ComputedRef<Camp | null>>('currentUserCamp')!
+const context = inject('context', ref<GameContext | null>(null))
 
-const seatCamp = computed(() => {
-  if (!currentUserCamp.value === null || props.isSpectator) {
-    return 'black'
-  }
-
-  return props.isSelf
-    ? currentUserCamp.value === Camp.BLACK
-      ? 'black'
-      : 'red'
-    : currentUserCamp.value === Camp.BLACK
-      ? 'red'
-      : 'black'
-})
+// const seatCamp = computed(() => {
+//   return props.isSelf
+//     ? user.camp === Camp.BLACK
+//       ? 'black'
+//       : 'red'
+//     : currentUserCamp.value === Camp.BLACK
+//       ? 'red'
+//       : 'black'
+// })
 
 const isActive = computed(() => {
   if (props.isSpectator) {
     return false
   }
 
-  return props.isSelf
-    ? currentUserCamp.value === Camp.RED
-    : currentUserCamp.value === Camp.BLACK
+  return props.user?.camp === Camp.RED
+    ? context.value?.currentCamp === Camp.RED
+    : context.value?.currentCamp === Camp.BLACK
 })
 </script>
 

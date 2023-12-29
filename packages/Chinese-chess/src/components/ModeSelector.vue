@@ -3,14 +3,14 @@
     <h2 class="title">请选择模式</h2>
 
     <div class="modes">
-      <button
+      <a-button
         v-for="mode of modes"
         :key="mode.value"
         class="btn btn-mode"
         @click="handleChangeMode(mode.value)"
       >
         {{ mode.label }}
-      </button>
+      </a-button>
     </div>
   </section>
 </template>
@@ -18,15 +18,15 @@
 <script setup lang="ts">
 import { GameMode } from '../definitions'
 
-const currentMode = inject('currentMode', ref<GameMode | null>(null))
+const emits = defineEmits<(e: 'update:mode', value: GameMode) => void>()
 
 const modes = [
   { value: GameMode.OFFLINE, label: 'Offline' },
   { value: GameMode.ONLINE, label: 'Online' }
 ]
 
-const handleChangeMode = (mode: GameMode) => {
-  currentMode.value = mode
+const handleChangeMode = (mode: GameMode): void => {
+  emits('update:mode', mode)
 }
 </script>
 
