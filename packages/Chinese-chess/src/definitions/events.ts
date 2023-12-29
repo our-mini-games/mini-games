@@ -5,8 +5,12 @@ export default {
     // 用户主动注册进入
     register: 'user:register'
   },
+  user: {
+    update: 'user:update'
+  },
   room: {
     list: 'room:list',
+    context: 'room:context',
     create: 'room:create',
     join: 'room:join',
     leave: 'room:leave',
@@ -23,7 +27,8 @@ export default {
   game: {
     ready: 'game:ready',
     start: 'game:start',
-    change: 'game:change'
+    change: 'game:change',
+    pointer: 'game:pointer:click'
   },
   client: {
     connect: 'connect',
