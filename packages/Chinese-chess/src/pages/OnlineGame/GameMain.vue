@@ -94,8 +94,15 @@ onMounted(async () => {
       })
     })
     gameInterface.value.on('animation:finished', type => {
-      if (type === 'check-mate') {
-        runAnimation(context.value!.currentCamp === Camp.RED ? 'redWin' : 'blackWin')
+      gameInterface.value?.animations.clear()
+      console.log(JSON.stringify(context.value!.message))
+      if (context.value!.message.length > 0) {
+        const msg = context.value!.message.shift()
+        if (msg.type === 'animation') {
+          runAnimation(msg.content)
+        } else if (msg.type === 'tips') {
+          runTips(msg.content)
+        }
       }
     })
   }
@@ -168,7 +175,7 @@ const handleContextChange = (context: GameContext, gameInterface: ReturnType<typ
     if (context.activePiece) {
       if (context.players![context.currentCamp]!.id === currentUser.value!.id) {
         gameInterface.activePieceAnimation.stop()
-        gameInterface.activePieceAnimation.run(context.activePiece)
+        gameInterface.activePieceAnimation.run(context.activePiece, currentUserCamp.value === Camp.BLACK ? Math.PI : 0)
       }
     } else {
       gameInterface.activePieceAnimation.stop()
@@ -179,8 +186,8 @@ const handleContextChange = (context: GameContext, gameInterface: ReturnType<typ
     }
 
     if (context.movePath.length > 0) {
-      gameInterface.drawCurrentStop(context.movePath[0])
-      gameInterface.drawLastStop(context.movePath.at(-1)!)
+      gameInterface.drawCurrentStop(context.movePath.at(-1)!)
+      gameInterface.drawLastStop(context.movePath[0])
     }
 
     if (context.message.length > 0) {
