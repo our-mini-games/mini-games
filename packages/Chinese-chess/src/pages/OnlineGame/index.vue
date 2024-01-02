@@ -76,7 +76,7 @@ const socketHandler = (socket: Socket) => {
     })
 
     // 用户加入房间
-    socket.on(events.room.join, (user) => {
+    socket.on(events.room.join, (user, data) => {
       currentUser.value = user
       localStorage.setItem(USER_INFO_KEY, JSON.stringify(user))
 
@@ -85,6 +85,7 @@ const socketHandler = (socket: Socket) => {
         throw new Error('程序出错，房间不存在', user.roomId)
       }
       currentRoom.value = room
+      context.value = data
     })
     // 用户离开房间
     socket.on(events.room.leave, user => {
