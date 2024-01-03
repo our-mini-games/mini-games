@@ -19,12 +19,14 @@ import { Socket } from 'socket.io-client'
 import events from '@/definitions/events'
 import { USER_INFO_KEY } from '@/definitions'
 import { Room, User } from '@/types'
-import { Modal } from 'ant-design-vue'
+import { Modal, message } from 'ant-design-vue'
+import GameLobby from './GameLobby.vue'
+import GameMain from './GameMain.vue'
 
 const emits = defineEmits<(e: 'update:mode', value: null) => void>()
 
-const GameLobby = defineAsyncComponent(() => import('./GameLobby.vue'))
-const GameMain = defineAsyncComponent(() => import('./GameMain.vue'))
+// const GameLobby = defineAsyncComponent(() => import('./GameLobby.vue'))
+// const GameMain = defineAsyncComponent(() => import('./GameMain.vue'))
 
 const socket = useSocket()
 
@@ -77,7 +79,9 @@ const socketHandler = (socket: Socket) => {
 
     // 用户加入房间
     socket.on(events.room.join, (user, data) => {
-      currentUser.value = user
+      if (!currentUser.value || currentUser.value.id === user.id) {
+        currentUser.value = user
+      }
       localStorage.setItem(USER_INFO_KEY, JSON.stringify(user))
 
       const room = rooms.value.find(room => room.id === user.roomId)
@@ -88,16 +92,27 @@ const socketHandler = (socket: Socket) => {
       context.value = data
     })
     // 用户离开房间
-    socket.on(events.room.leave, user => {
-      currentUser.value = user
-      localStorage.setItem(USER_INFO_KEY, JSON.stringify(user))
+    socket.on(events.room.leave, (user, data) => {
+      if (currentUser.value?.id === user.id) {
+        currentUser.value = user
 
-      currentRoom.value = null
-      context.value = null
+        localStorage.setItem(USER_INFO_KEY, JSON.stringify(user))
+
+        currentRoom.value = null
+        context.value = null
+      } else {
+        context.value = data
+      }
     })
 
     socket.on(events.room.info, room => {
       currentRoom.value = room
+    })
+
+    socket.on(events.room.offline, (user, data) => {
+      message.info(`用户${user.nickname + ''}掉线了`)
+
+      context.value = data
     })
 
     socket.on(events.room.context, data => {
@@ -147,6 +162,7 @@ const socketHandler = (socket: Socket) => {
 
   socket.on(events.client.disconnect, (userInfo: User) => {
     console.log('88')
+    message.error('服务器连接中断，88')
   })
 }
 

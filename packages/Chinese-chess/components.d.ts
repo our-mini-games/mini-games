@@ -9,6 +9,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AButton: typeof import('ant-design-vue/es')['Button']
     ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']
+    ASpin: typeof import('ant-design-vue/es')['Spin']
     CampSeat: typeof import('./src/components/ChessMain/CampSeat.vue')['default']
     ChatContainer: typeof import('./src/components/ChatContainer.vue')['default']
     ChessMain: typeof import('./src/components/ChessMain/index.vue')['default']

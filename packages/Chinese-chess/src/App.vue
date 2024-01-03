@@ -1,64 +1,61 @@
 <template>
   <div class="chinese-chess">
-    <input
-      v-if="!nickname"
-      @keydown="handleMouseDown"
-    />
-
-    <template v-else>
-      <mode-selector
-        v-if="currentMode === null"
-        v-model:mode="currentMode"
+    <a-spin
+      :spinning="loading"
+      tip="资源加载中..."
+    >
+      <input
+        v-if="!nickname"
+        placeholder="请输入您的昵称，按“回车”提交"
+        @keydown="handleMouseDown"
       />
 
-      <offline-game
-        v-else-if="currentMode === GameMode.OFFLINE"
-      />
+      <template v-else>
+        <mode-selector
+          v-if="currentMode === null"
+          v-model:mode="currentMode"
+        />
 
-      <online-game
-        v-else
-        v-model:mode="currentMode"
-      />
-    </template>
+        <offline-game
+          v-else-if="currentMode === GameMode.OFFLINE"
+          v-model:mode="currentMode"
+        />
 
-    <!-- <component
-      v-else
-      :is="comp"
-      v-model:mode="currentMode"
-      @room:join="handleRoomJoin"
-      @room:leave="handleRoomLeave"
-      @room:request-seat="handleRoomRequestSeat"
-      @room:chat="handleRoomChat"
-      @game:ready="handleGameReady"
-      @game:change="handleGameChange"
-    /> -->
+        <online-game
+          v-else
+          v-model:mode="currentMode"
+        />
+      </template>
+    </a-spin>
   </div>
 </template>
 
 <script setup lang="ts">
 import { GameMode, NICKNAME_KEY } from './definitions'
-// import { createAnimation } from './libs/Animation'
+import { loadResources } from './libs/Resource'
+import OnlineGame from './pages/OnlineGame/index.vue'
 
-// // eslint-disable-next-line @typescript-eslint/promise-function-async
-// const GameLobby = defineAsyncComponent(() => import('./pages/GameLobby.vue'))
-// // // eslint-disable-next-line @typescript-eslint/promise-function-async
-// // const GameMain = defineAsyncComponent(() => import('./pages/GameMain.vue'))
-// // eslint-disable-next-line @typescript-eslint/promise-function-async
 const OfflineGame = defineAsyncComponent(() => import('./pages/OfflineGame.vue'))
-const OnlineGame = defineAsyncComponent(() => import('./pages/OnlineGame/index.vue'))
+// const OnlineGame = defineAsyncComponent(() => import('./pages/OnlineGame/index.vue'))
 
 const currentMode = ref<GameMode | null>(null)
 
 const nickname = ref('')
+const resources = ref<any>({})
+const loading = ref(false)
 
-// const comp = computed(() => {
-//   return currentMode.value === GameMode.ONLINE
-//     ? GameLobby
-//     : ''
-// })
-
-onMounted(() => {
+onMounted(async () => {
   nickname.value = localStorage.getItem(NICKNAME_KEY) ?? ''
+
+  loading.value = true
+  try {
+    resources.value = await loadResources()
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err)
+  } finally {
+    loading.value = false
+  }
 })
 
 const handleMouseDown = (e: KeyboardEvent): void => {
@@ -69,7 +66,17 @@ const handleMouseDown = (e: KeyboardEvent): void => {
     localStorage.setItem(NICKNAME_KEY, nickname.value)
   }
 }
+
+provide('nickname', () => nickname.value)
 </script>
 
 <style lang="scss" scoped>
+.chinese-chess {
+  width: 100vw;
+  height: 100vh;
+
+  .ant-spin-nested-loading {
+    height: 100%;
+  }
+}
 </style>

@@ -57,7 +57,6 @@
 import events from '@/definitions/events'
 import { Room } from '@/types'
 import { createGameInterface, GameStatus, Camp, type GameContext, type UserLike } from 'chinese-chess-service'
-import { loadResources } from '@/libs/Resource'
 import { Socket } from 'socket.io-client'
 import { message } from 'ant-design-vue'
 
@@ -69,6 +68,7 @@ const socket = inject('socket', ref<Socket | null>(null))
 const context = inject('context', ref<GameContext | null>(null))
 const currentRoom = inject('currentRoom', ref<Room | null>())
 const currentUser = inject('currentUser', ref<UserLike | null>())
+const resources = inject('resources', ref<any>({}))
 
 const firstCamp = ref(Camp.RED) // 玩家推荐先手
 
@@ -78,8 +78,7 @@ const gameInterface = ref<ReturnType<typeof createGameInterface> | null>(null)
 
 onMounted(async () => {
   if (gameMainRef.value) {
-    const resource = await loadResources()
-    gameInterface.value = createGameInterface(resource)
+    gameInterface.value = createGameInterface(resources)
     gameInterface.value.mount(gameMainRef.value)
 
     if (currentUserCamp.value === Camp.BLACK) {
@@ -164,8 +163,12 @@ const handleReadyBtnClick = () => {
 watch(context, () => {
   if (gameInterface.value && context.value) {
     handleContextChange(context.value, gameInterface.value)
+  } else if (!gameInterface.value) {
+    nextTick(() => {
+      handleContextChange(context.value!, gameInterface.value!)
+    })
   }
-})
+}, { immediate: true })
 
 const handleContextChange = (context: GameContext, gameInterface: ReturnType<typeof createGameInterface>) => {
   if (context.status === GameStatus.Playing || context.status === GameStatus.Finished) {
