@@ -17,7 +17,8 @@ export default {
     info: 'room:info',
     seatRequest: 'room:seat:request',
     seatResponse: 'room:seat:response',
-    chat: 'room:chat'
+    chat: 'room:chat',
+    offline: 'room:offline'
   },
   error: {
     roomMax: 'error:room:max',

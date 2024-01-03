@@ -18,17 +18,17 @@
     />
 
     <div class="nickname">
-      {{ user?.nickname || '空' }}
+      {{ user?.nickname || '空' }}{{ user?.offline ? '(掉线了~)' : '' }}
     </div>
 
-    <div v-if="user?.isReady" class="ready-state">
+    <div v-if="context?.status === GameStatus.Init && user?.isReady" class="ready-state">
       已准备
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Camp, UserLike, GameContext } from 'chinese-chess-service'
+import { Camp, UserLike, GameContext, GameStatus } from 'chinese-chess-service'
 // import { ComputedRef } from 'vue'
 
 const props = defineProps<{
