@@ -2,9 +2,10 @@
   <div class="lobby-container">
     <header class="header">
       <a-button
+        class="btn-back"
         @click="handleBack"
       >
-        Back
+        游戏大厅
       </a-button>
       <h1 class="title">
         Room
@@ -19,7 +20,17 @@
           class="room"
           @click="handleRoomJoin(room)"
         >
-          {{ room.name }}({{ room.users.length }})
+          <h3 class="title">{{ room.name }} 房</h3>
+          <div class="number">({{ room.users.length }}/{{ room.limit }})</div>
+          <div class="status">
+            {{
+              room.status === GameStatus.Finished
+                ? '游戏结束'
+                : room.status === GameStatus.Playing
+                  ? '游戏中'
+                  : '空闲'
+            }}
+          </div>
         </li>
       </ul>
     </section>
@@ -28,6 +39,7 @@
 
 <script setup lang="ts">
 import { Room } from '@/types'
+import { GameStatus } from 'chinese-chess-service'
 
 defineProps<{
   handleRoomJoin: (room: Room) => void
@@ -43,6 +55,24 @@ const handleBack = () => {
 </script>
 
 <style lang="scss" scoped>
+
+.header {
+  position: relative;
+  padding: 8px;
+
+  .btn-back {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+  }
+
+  .title {
+    margin: 0;
+    text-align: center;
+    line-height: 24px;
+  }
+}
+
 .rooms {
   display: flex;
   justify-content: center;
@@ -50,12 +80,19 @@ const handleBack = () => {
   gap: 32px;
 
   .room {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
     width: 108px;
     height: 108px;
-    text-align: center;
-    line-height: 108px;
     box-shadow: 0 0 1px #666;
     cursor: pointer;
+
+    .title {
+      margin: 0;
+    }
   }
 }
 </style>

@@ -14,42 +14,69 @@
       </h1>
     </header>
 
-    <main class="main">
-      <camp-seat
-        :isSpectator="!isPlayer"
-        :user="enemyPlayer"
-      />
-      <div ref="gameMainRef" class="game-main"></div>
-      <camp-seat
-        :isSpectator="!isPlayer"
-        :user="selfPlayer"
-      />
-    </main>
-
-    <footer class="footer">
-      <template v-if="isPlayer && [GameStatus.Init, GameStatus.Finished].includes(gameStatus)">
-        <a-button
-          @click="handleReadyBtnClick"
-        >
-          {{ selfPlayer?.isReady ? '取消准备' : '准备' }}
-        </a-button>
-
-        <a-radio-group
-          v-model:value="firstCamp"
-          name="firstCamp"
-          :options="[
-            { label: '红先', value: Camp.RED },
-            { label: '黑先', value: Camp.BLACK }
-          ]"
+    <div class="container">
+      <main class="main">
+        <camp-seat
+          :isSpectator="!isPlayer"
+          :user="enemyPlayer"
         />
+        <div ref="gameMainRef" class="game-main"></div>
+        <camp-seat
+          :isSpectator="!isPlayer"
+          :user="selfPlayer"
+        />
+      </main>
 
-        <!-- <a-button
-          @click="handleSwitchCamp"
-        >
-          交换阵营
-        </a-button> -->
-      </template>
-    </footer>
+      <footer v-if="isPlayer" class="footer">
+        <template v-if="[GameStatus.Init, GameStatus.Finished].includes(gameStatus)">
+          <a-button
+            :type="selfPlayer?.isReady ? 'primary' : 'default'"
+            @click="handleReadyBtnClick"
+          >
+            {{ selfPlayer?.isReady ? '取消准备' : '准备' }}
+          </a-button>
+
+          <a-radio-group
+            v-model:value="firstCamp"
+            name="firstCamp"
+            :options="[
+              { label: '红先', value: Camp.RED },
+              { label: '黑先', value: Camp.BLACK }
+            ]"
+          />
+
+          <a-button
+            type="warning"
+            @click="handleSwitchCamp"
+          >
+            交换阵营
+          </a-button>
+        </template>
+
+        <template v-else>
+          <a-button
+            type="warning"
+            :disabled="context?.currentCamp === currentUserCamp"
+            @click="handleRequestUndo"
+          >
+            悔棋
+          </a-button>
+
+          <a-button
+            type="warning"
+            @click="handleGiveUp"
+          >
+            投降
+          </a-button>
+        </template>
+      </footer>
+    </div>
+
+    <aside class="aside">
+      <game-aside
+        @chat="handleChat"
+      />
+    </aside>
   </div>
 </template>
 
@@ -58,7 +85,8 @@ import events from '@/definitions/events'
 import { Room } from '@/types'
 import { createGameInterface, GameStatus, Camp, type GameContext, type UserLike } from 'chinese-chess-service'
 import { Socket } from 'socket.io-client'
-import { message } from 'ant-design-vue'
+import { Modal, message } from 'ant-design-vue'
+import GameAside from './GameAside.vue'
 
 defineProps<{
   handleRoomLeave: (roomId?: number | string) => void
@@ -75,6 +103,8 @@ const firstCamp = ref(Camp.RED) // 玩家推荐先手
 const gameMainRef = ref<HTMLElement | null>(null)
 
 const gameInterface = ref<ReturnType<typeof createGameInterface> | null>(null)
+
+const manual = computed(() => context.value?.manual ?? [])
 
 onMounted(async () => {
   if (gameMainRef.value) {
@@ -203,7 +233,7 @@ const handleContextChange = (context: GameContext, gameInterface: ReturnType<typ
     }
 
     if (context.status === GameStatus.Finished) {
-      message.destroy()
+      // message.destroy()
       message.info('游戏结束')
     }
   }
@@ -239,16 +269,57 @@ const runTips = (content: string) => {
   }
 }
 
-// const handleSwitchCamp = () => {
-//   if (socket.value && currentUser.value && currentRoom.value) {
-//     socket.value.emit(events.room.seatRequest, {
-//       userId: currentUser.value.id,
-//       roomId: currentRoom.value.id
-//     })
-//   }
-// }
+const handleSwitchCamp = () => {
+  if (socket.value && currentUser.value && currentRoom.value) {
+    socket.value.emit(events.room.seatRequest, {
+      userId: currentUser.value.id,
+      roomId: currentRoom.value.id
+    })
+  }
+}
+
+const handleRequestUndo = () => {
+  Modal.confirm({
+    title: '提示',
+    content: '确定要悔棋吗？好丢人的哦～',
+    onOk: () => {
+      if (socket.value && currentUser.value && currentRoom.value) {
+        socket.value.emit(events.game.undoRequest, {
+          userId: currentUser.value.id,
+          roomId: currentRoom.value.id
+        })
+      }
+    }
+  })
+}
+
+const handleGiveUp = () => {
+  Modal.confirm({
+    title: '提示',
+    content: '确定要投降？好丢人的哦～',
+    onOk: () => {
+      if (socket.value && currentUser.value && currentRoom.value) {
+        socket.value.emit(events.game.giveUp, {
+          userId: currentUser.value.id,
+          roomId: currentRoom.value.id
+        })
+      }
+    }
+  })
+}
+
+const handleChat = (content: string) => {
+  if (socket.value && currentUser.value && currentRoom.value) {
+    socket.value.emit(events.room.chat, {
+      userId: currentUser.value.id,
+      roomId: currentRoom.value.id,
+      content
+    })
+  }
+}
 
 provide('context', context)
+provide('manual', manual)
 </script>
 
 <style lang="scss" scoped>
@@ -278,21 +349,38 @@ provide('context', context)
     }
   }
 
-  .main {
+  .container {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 16px;
+    width: calc(100% - 320px);
 
-    .game-main {
+    .main {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+
+      .game-main {
+        flex: 1;
+      }
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 16px;
     }
   }
 
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 16px;
+  .aside {
+    position: absolute;
+    right: 0;
+    top: 40px;
+    width: 320px;
+    height: calc(100% - 40px);
   }
 }
 </style>

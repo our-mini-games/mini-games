@@ -1,5 +1,6 @@
 <template>
   <div class="chinese-chess">
+    <a-button v-if="loading" @click="loading = false">放弃加载资源</a-button>
     <a-spin
       :spinning="loading"
       tip="资源加载中..."

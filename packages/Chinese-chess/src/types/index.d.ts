@@ -14,16 +14,8 @@ export interface Room {
   id: string
   name: string
   users: User[]
-  context: GameContext
-}
-
-export interface Message {
-  id: string
-  roomId: Room['id']
-  user: User
-  type: MessageType
-  msg: string
-  createdTime: number
+  limit: number
+  status: GameStatus
 }
 
 export interface ChessManual {
@@ -60,4 +52,12 @@ export interface GameContext {
   allowPoints: Point[]
 
   animations: GameAnimation[]
+}
+
+export interface ChatInfo {
+  content: string
+  userId: string
+  nickname: string
+  roomId: string
+  createdTime: number
 }

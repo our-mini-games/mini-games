@@ -28,8 +28,12 @@ export default {
   game: {
     ready: 'game:ready',
     start: 'game:start',
+    over: 'game:over',
     change: 'game:change',
-    pointer: 'game:pointer:click'
+    pointer: 'game:pointer:click',
+    undoRequest: 'game:undo:request',
+    undoResponse: 'game:undo:response',
+    giveUp: 'game:give'
   },
   client: {
     connect: 'connect',

@@ -1,6 +1,11 @@
-const resources = import.meta.glob('../assets/resources/*')
+/* eslint-disable import/no-absolute-path */
 export const loadResources = async () => {
-  const data = Object.values(resources)
+  const data = await Promise.all([
+    import('/resources/FZLSFT.ttf'),
+    import('/resources/STXINGKAI.ttf'),
+    import('/resources/sword.png'),
+    import('/resources/win.png')
+  ])
 
   const result: any = {}
   let type
@@ -8,9 +13,9 @@ export const loadResources = async () => {
   let resource
 
   for (let i = 0; i < data.length; i++) {
-    resource = await data[i]() as any
+    resource = data[i] as any
 
-    [name, type] = resource.default.split('/').at(-1).split('.')
+    ;[name, type] = resource.default.split('/').at(-1).split('.')
 
     if (type === 'png') {
       result[name] = await loadPic(resource.default)

@@ -18,15 +18,12 @@ import useSocket from '@/composables/useSocket'
 import { Socket } from 'socket.io-client'
 import events from '@/definitions/events'
 import { USER_INFO_KEY } from '@/definitions'
-import { Room, User } from '@/types'
+import { ChatInfo, Room, User } from '@/types'
 import { Modal, message } from 'ant-design-vue'
 import GameLobby from './GameLobby.vue'
 import GameMain from './GameMain.vue'
 
 const emits = defineEmits<(e: 'update:mode', value: null) => void>()
-
-// const GameLobby = defineAsyncComponent(() => import('./GameLobby.vue'))
-// const GameMain = defineAsyncComponent(() => import('./GameMain.vue'))
 
 const socket = useSocket()
 
@@ -34,6 +31,7 @@ const rooms = ref<Room[]>([])
 const currentUser = ref<User | null>(JSON.parse(localStorage.getItem(USER_INFO_KEY) ?? 'null'))
 const currentRoom = ref<Room | null>(null)
 const context = ref<any>(null)
+const chatList = ref<ChatInfo[]>([])
 
 onMounted(() => {
   if (!socket.value) {
@@ -100,6 +98,7 @@ const socketHandler = (socket: Socket) => {
 
         currentRoom.value = null
         context.value = null
+        chatList.value.length = 0
       } else {
         context.value = data
       }
@@ -110,6 +109,7 @@ const socketHandler = (socket: Socket) => {
     })
 
     socket.on(events.room.offline, (user, data) => {
+      message.destroy()
       message.info(`用户${user.nickname + ''}掉线了`)
 
       context.value = data
@@ -123,45 +123,95 @@ const socketHandler = (socket: Socket) => {
       // message.value = msg
     })
 
-    socket.on(events.room.seatRequest, (user: User) => {
-      // $.Message.open({
-      //   type: 'confirm',
-      //   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      //   content: `用户「${user.nickname}」申请更换阵营`,
-      //   onConfirm: () => {
-      //     socket!.emit(events.room.seatResponse, {
-      //       roomId: currentRoom.value!.id,
-      //       user: currentUser.value!,
-      //       isAgree: true
-      //     })
-      //   },
-      //   onCancel: () => {
-      //     socket!.emit(events.room.seatResponse, {
-      //       roomId: currentRoom.value!.id,
-      //       user: currentUser.value!,
-      //       isAgree: false
-      //     })
-      //   }
-      // })
+    socket.on(events.room.seatRequest, () => {
+      Modal.destroyAll()
+      Modal.confirm({
+        title: '提示',
+        content: '对方申请更换阵营，是否同意？',
+        onOk: () => {
+          socket.emit(events.room.seatResponse, {
+            userId: currentUser.value!.id,
+            roomId: currentRoom.value!.id,
+            isAgree: true
+          })
+        },
+        onCancel: () => {
+          socket.emit(events.room.seatResponse, {
+            userId: currentUser.value!.id,
+            roomId: currentRoom.value!.id,
+            isAgree: false
+          })
+        }
+      })
     })
 
-    socket.on(events.room.seatResponse, agree => {
-      // $.Message.open({
-      //   type: 'message',
-      //   content: `对方${agree ? '同意' : '拒绝'}更换阵营`
-      // })
+    socket.on(events.room.seatResponse, (user, data, isAgree) => {
+      message.destroy()
+      if (currentUser.value?.id === user.id) {
+        message.info(`对方${isAgree ? '同意' : '拒绝'}更换阵营`)
+      }
+      context.value = data
     })
 
-    socket.on(events.game.start, () => {
-      // socket.emit(events.game.start, {
-      //   roomId: currentRoom.value!.id,
-      //   chessPieces: initChessPieces()
-      // })
+    socket.on(events.game.undoRequest, () => {
+      Modal.destroyAll()
+      Modal.confirm({
+        title: '提示',
+        content: '对方申请悔棋，是否同意？',
+        onOk: () => {
+          socket.emit(events.game.undoResponse, {
+            userId: currentUser.value!.id,
+            roomId: currentRoom.value!.id,
+            isAgree: true
+          })
+        },
+        onCancel: () => {
+          socket.emit(events.game.undoResponse, {
+            userId: currentUser.value!.id,
+            roomId: currentRoom.value!.id,
+            isAgree: false
+          })
+        }
+      })
+    })
+
+    socket.on(events.game.undoResponse, (user, data, isAgree) => {
+      message.destroy()
+      if (currentUser.value?.id === user.id) {
+        message.info(`对方${isAgree ? '同意' : '拒绝'}悔棋`)
+      }
+      message.info(`用户「${user.nickname + ''}」悔棋了！！！！！！！！！！！！！`)
+      context.value = data
+    })
+
+    socket.on(events.game.giveUp, data => {
+      context.value = data
+    })
+
+    socket.on(events.game.start, (data) => {
+      message.destroy()
+      message.info('游戏开始')
+      context.value = data
+    })
+
+    socket.on(events.game.over, (data) => {
+      message.destroy()
+      message.info('游戏结束')
+      context.value = data
+    })
+
+    socket.on(events.room.chat, (chatInfo: ChatInfo) => {
+      chatList.value.push(chatInfo)
+    })
+
+    socket.on(events.error.roomMax, () => {
+      message.destroy()
+      message.info('当前房间容纳人数已满，去其他房间逛逛吧～')
     })
   })
 
   socket.on(events.client.disconnect, (userInfo: User) => {
-    console.log('88')
+    message.destroy()
     message.error('服务器连接中断，88')
   })
 }
@@ -189,4 +239,5 @@ provide('rooms', rooms)
 provide('currentRoom', currentRoom)
 provide('currentUser', currentUser)
 provide('context', context)
+provide('chatList', chatList)
 </script>
