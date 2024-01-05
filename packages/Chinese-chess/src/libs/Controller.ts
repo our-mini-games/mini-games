@@ -251,7 +251,7 @@ export const createController = ({
         console.log('绝杀无解')
       }
     }
-
+    context.canMoveList = []
     context.activePiece = null
     context.currentCamp = context.currentCamp === Camp.RED ? Camp.BLACK : Camp.RED
     return true
@@ -273,7 +273,7 @@ export const createController = ({
       }
       // 是否吃子 因为上面已经判断过进入下一步是自己方
       // 判断是否吃子 移动过成功才可以进行吃子
-      if (currentPiece && canEatPiece(context.activePiece, context.chessPieces, point.x, point.y) && move(context.activePiece, point.x, point.y, true)) {
+      if (currentPiece && canEatPiece(context.activePiece, context.chessPieces, point.x, point.y) && move(context.activePiece, point.x, point.y)) {
         // 那么走吃子的逻辑
         context.chessPieces = eatPiece(currentPiece, context.chessPieces)
         return

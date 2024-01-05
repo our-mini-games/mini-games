@@ -6,8 +6,8 @@ export const changeXCoordMove = (currentCamp: Camp, piece: ChessPiece, x: number
   // 士 象 马三种
   // 只有马特殊判断 因为如果在一路上有前马和后马的话就要判断是那个马进行了移动
   let text: string = piece.name
-  if (piece.name === '馬') {
-    const hasTowHorse: ChessPiece[] = chessPieces.filter(item => item.coord.x === piece.coord.x && item.coord.y !== piece.coord.y && item.camp === currentCamp && item.name === '馬')
+  if (piece.id === 3 || piece.id === 33) {
+    const hasTowHorse: ChessPiece[] = chessPieces.filter(item => item.coord.x === piece.coord.x && item.coord.y !== piece.coord.y && item.camp === currentCamp && piece.id === 3 || piece.id === 33)
     if (hasTowHorse.length === 1) {
       // 判断是前马还是后马
       if (currentCamp === Camp.RED) {
