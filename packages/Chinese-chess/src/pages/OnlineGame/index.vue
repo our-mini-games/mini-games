@@ -53,7 +53,7 @@ const socketHandler = (socket: Socket) => {
     socket.on(events.user.update, (user) => {
       currentUser.value = user
       // 将用户和当前 socket 连接绑定
-      currentUser.value!.socketId = socket.id
+      currentUser.value!.socketId = socket.id as any
       localStorage.setItem(USER_INFO_KEY, JSON.stringify(user))
 
       if (user.roomId) {
