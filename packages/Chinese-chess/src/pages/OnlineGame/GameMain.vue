@@ -146,7 +146,7 @@ const manual = computed(() => context.value?.manual ?? [])
 onMounted(async () => {
   if (gameMainRef.value) {
     gameInterface.value = createGameInterface(resources)
-    gameInterface.value.mount(gameMainRef.value)
+    gameInterface.value.mount(gameMainRef.value as Element)
 
     if (currentUserCamp.value === Camp.BLACK) {
       gameInterface.value.setRotate(Math.PI)
@@ -229,10 +229,10 @@ const handleReadyBtnClick = () => {
 
 watch(context, () => {
   if (gameInterface.value && context.value) {
-    handleContextChange(context.value, gameInterface.value)
+    handleContextChange(context.value, gameInterface.value as any)
   } else if (!gameInterface.value) {
     nextTick(() => {
-      handleContextChange(context.value!, gameInterface.value!)
+      handleContextChange(context.value!, gameInterface.value! as any)
     })
   }
 }, { immediate: true })

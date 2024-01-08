@@ -1,37 +1,44 @@
 <template>
-  <div class="chinese-chess">
-    <a-button v-if="loading" @click="loading = false">放弃加载资源</a-button>
-    <a-spin
-      :spinning="loading"
-      tip="资源加载中..."
-    >
-      <input
-        v-if="!nickname"
-        placeholder="请输入您的昵称，按“回车”提交"
-        @keydown="handleMouseDown"
-      />
-
-      <template v-else>
-        <mode-selector
-          v-if="currentMode === null"
-          v-model:mode="currentMode"
+  <a-config-provider
+    :theme="{
+      algorithm: theme.defaultAlgorithm
+    }"
+  >
+    <div class="chinese-chess">
+      <a-button v-if="loading" @click="loading = false">放弃加载资源</a-button>
+      <a-spin
+        :spinning="loading"
+        tip="资源加载中..."
+      >
+        <input
+          v-if="!nickname"
+          placeholder="请输入您的昵称，按“回车”提交"
+          @keydown="handleMouseDown"
         />
 
-        <offline-game
-          v-else-if="currentMode === GameMode.OFFLINE"
-          v-model:mode="currentMode"
-        />
+        <template v-else>
+          <mode-selector
+            v-if="currentMode === null"
+            v-model:mode="currentMode"
+          />
 
-        <online-game
-          v-else
-          v-model:mode="currentMode"
-        />
-      </template>
-    </a-spin>
-  </div>
+          <offline-game
+            v-else-if="currentMode === GameMode.OFFLINE"
+            v-model:mode="currentMode"
+          />
+
+          <online-game
+            v-else
+            v-model:mode="currentMode"
+          />
+        </template>
+      </a-spin>
+    </div>
+  </a-config-provider>
 </template>
 
 <script setup lang="ts">
+import { theme } from 'ant-design-vue'
 import { GameMode, NICKNAME_KEY } from './definitions'
 import { loadResources } from './libs/Resource'
 import OnlineGame from './pages/OnlineGame/index.vue'
