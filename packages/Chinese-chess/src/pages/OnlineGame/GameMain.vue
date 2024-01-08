@@ -12,6 +12,36 @@
       <h1 class="title">
         {{ currentRoom?.name }}
       </h1>
+
+      <div class="mini-operations">
+        <a-button
+          @click="chatDrawerVisible = !chatDrawerVisible"
+        >
+          <message-outlined />
+        </a-button>
+
+        <a-button
+          @click="manualDrawerVisible = !manualDrawerVisible"
+        >
+          <profile-outlined />
+        </a-button>
+
+        <drawer
+          v-model:open="chatDrawerVisible"
+          title="对话"
+          width="90%"
+        >
+          <game-aside-chat @chat="handleChat" />
+        </drawer>
+
+        <drawer
+          v-model:open="manualDrawerVisible"
+          title="棋谱"
+          width="90%"
+        >
+          <game-aside-manual />
+        </drawer>
+      </div>
     </header>
 
     <div class="container">
@@ -87,10 +117,17 @@ import { createGameInterface, GameStatus, Camp, type GameContext, type UserLike 
 import { Socket } from 'socket.io-client'
 import { Modal, message } from 'ant-design-vue'
 import GameAside from './GameAside.vue'
+import Drawer from '@/components/Drawer.vue'
 
 defineProps<{
   handleRoomLeave: (roomId?: number | string) => void
 }>()
+
+const GameAsideChat = defineAsyncComponent(() => import('./GameAsideChat.vue'))
+const GameAsideManual = defineAsyncComponent(() => import('./GameAsideManual.vue'))
+
+const chatDrawerVisible = ref(false)
+const manualDrawerVisible = ref(false)
 
 const socket = inject('socket', ref<Socket | null>(null))
 const context = inject('context', ref<GameContext | null>(null))
@@ -124,7 +161,7 @@ onMounted(async () => {
     })
     gameInterface.value.on('animation:finished', type => {
       gameInterface.value?.animations.clear()
-      console.log(JSON.stringify(context.value!.message))
+
       if (context.value!.message.length > 0) {
         const msg = context.value!.message.shift()
         if (msg.type === 'animation') {
@@ -347,6 +384,18 @@ provide('manual', manual)
       text-align: center;
       line-height: 24px;
     }
+
+    .mini-operations {
+      display: none;
+
+      @media screen and (max-width: 640px) {
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        display: flex;
+        gap: 8px;
+      }
+    }
   }
 
   .container {
@@ -355,6 +404,10 @@ provide('manual', manual)
     flex-direction: column;
     gap: 16px;
     width: calc(100% - 320px);
+
+    @media screen and (max-width: 640px) {
+      width: 100%;
+    }
 
     .main {
       flex: 1;
@@ -381,6 +434,10 @@ provide('manual', manual)
     top: 40px;
     width: 320px;
     height: calc(100% - 40px);
+
+    @media screen and (max-width: 640px) {
+      display: none;
+    }
   }
 }
 </style>
