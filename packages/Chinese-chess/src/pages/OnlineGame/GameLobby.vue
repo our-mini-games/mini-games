@@ -5,10 +5,10 @@
         class="btn-back"
         @click="handleBack"
       >
-        游戏大厅
+        首页
       </a-button>
       <h1 class="title">
-        Room
+        游戏大厅
       </h1>
     </header>
 

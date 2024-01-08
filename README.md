@@ -19,4 +19,4 @@ https://our-mini-games.github.io/mini-games/games/
 
 - [x] 蜘蛛纸牌
 
-- [ ] 中国象棋
+- [x] 中国象棋
