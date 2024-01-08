@@ -38,7 +38,7 @@ export const games: GameConfig[] = [
   {
     path: '/mini-games/games/chinese-chess/index.html',
     name: '中国象棋',
-    cover: 'org.svg'
+    cover: 'Chinese-chess.jpg'
   },
   {
     path: 'https://github.com/our-mini-games/mini-games/discussions',
