@@ -29,12 +29,14 @@
       <a-input
         v-model:value="msg"
         allow-clear
+        class="msg-input"
         placeholder="按「回车」键发送"
         style="width: 70%"
         @keydown="handleInputKeydown"
       />
       <a-button
         type="primary"
+        class="btn-send"
         style="width: 30%"
         @click="handleSend"
       >
@@ -103,6 +105,7 @@ const handleSend = () => {
     padding: 16px;
 
     .chat-item {
+
       & + .chat-item {
         margin-top: 8px;
       }
@@ -112,10 +115,12 @@ const handleSend = () => {
         text-overflow: ellipsis;
         white-space: nowrap;
         font-weight: 700;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !important;
       }
 
       .content {
         word-break: break-all;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !important;
       }
 
       &.is-self {
@@ -135,6 +140,11 @@ const handleSend = () => {
         color: #fff;
       }
     }
+  }
+
+  :deep(.msg-input *),
+  :deep(.btn-send *) {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !important;
   }
 }
 </style>

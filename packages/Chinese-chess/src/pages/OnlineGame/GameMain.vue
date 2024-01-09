@@ -240,6 +240,7 @@ watch(context, () => {
 const handleContextChange = (context: GameContext, gameInterface: ReturnType<typeof createGameInterface>) => {
   if (context.status === GameStatus.Playing || context.status === GameStatus.Finished) {
     gameInterface.clearAll()
+    gameInterface.setRotate(currentUserCamp.value === Camp.BLACK ? Math.PI : 0)
     gameInterface.drawChessPieces(context.chessPieces)
 
     if (context.activePiece) {
