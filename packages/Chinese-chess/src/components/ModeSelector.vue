@@ -42,11 +42,11 @@ const handleChangeMode = (mode: GameMode): void => {
   }
 
   .modes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
     padding: 16px 0;
-
-    .btn {
-      margin: 0 8px;
-    }
   }
 }
 </style>
