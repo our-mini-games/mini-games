@@ -13,7 +13,15 @@
     </header>
 
     <section class="rooms-wrapper">
-      <ul class="rooms">
+      <a-empty
+        v-if="rooms.length === 0"
+        :image="Empty.PRESENTED_IMAGE_SIMPLE"
+      >
+        <template #description>
+          <span>空间列表正在加载中，请耐心等候</span>
+        </template>
+      </a-empty>
+      <ul v-else class="rooms">
         <li
           v-for="room of rooms"
           :key="room.id"
@@ -40,6 +48,7 @@
 <script setup lang="ts">
 import { Room } from '@/types'
 import { GameStatus } from 'chinese-chess-service'
+import { Empty } from 'ant-design-vue'
 
 defineProps<{
   handleRoomJoin: (room: Room) => void

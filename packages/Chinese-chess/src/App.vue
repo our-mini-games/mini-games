@@ -76,13 +76,18 @@ const handleMouseDown = (e: KeyboardEvent): void => {
   }
 }
 
-provide('nickname', () => nickname.value)
+provide('resources', resources)
+provide('nickname', nickname)
 </script>
 
 <style lang="scss" scoped>
 .chinese-chess {
   width: 100vw;
   height: 100vh;
+
+  @media screen and (max-width: 640px) {
+    height: calc(100vh - 98px); // 预留点空间，底部看不到啊兄弟
+  }
 
   .ant-spin-nested-loading {
     height: 100%;

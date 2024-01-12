@@ -77,12 +77,26 @@ onMounted(() => {
   if (offlineMainRef.value) {
     server.readyOrCancelReady(user1, true)
     server.readyOrCancelReady(user2, true)
-    gameInterface.value = createGameInterface(resources)
 
-    gameInterface.value.mount(offlineMainRef.value)
+    gameInterface.value = createGameInterface(resources.value)
+
+    gameInterface.value.mount(offlineMainRef.value as any)
 
     gameInterface.value.mainCanvas.addEventListener('click', (e) => {
       server.moveOrSelect(server.context.players![server.context.currentCamp]!, gameInterface.value!.getPointer(e))
+    })
+
+    gameInterface.value.on('animation:finished', () => {
+      gameInterface.value?.animations.clear()
+
+      if (context.value!.message.length > 0) {
+        const msg = context.value!.message.shift()
+        if (msg.type === 'animation') {
+          runAnimation(msg.content)
+        } else if (msg.type === 'tips') {
+          runTips(msg.content)
+        }
+      }
     })
 
     server.on('game:start', context => { handleContextChange(context) })
@@ -100,6 +114,7 @@ onMounted(() => {
 
 const handleContextChange = (value: GameContext) => {
   context.value = value
+  console.log(value)
   if (gameInterface.value) {
     gameInterface.value.clearAll()
     gameInterface.value.drawChessPieces(context.value.chessPieces)
@@ -122,6 +137,7 @@ const handleContextChange = (value: GameContext) => {
 
     if (context.value.message.length > 0) {
       const msg = context.value.message.shift()
+      console.log(context.value.message)
       if (msg.type === 'animation') {
         runAnimation(msg.content)
       } else if (msg.type === 'tips') {
@@ -131,6 +147,7 @@ const handleContextChange = (value: GameContext) => {
 
     if (context.value.status === GameStatus.Finished) {
       // message.destroy()
+      console.log(context.value.manual)
       message.info('游戏结束')
     }
   }

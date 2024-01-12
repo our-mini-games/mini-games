@@ -271,7 +271,7 @@ const handleContextChange = (context: GameContext, gameInterface: ReturnType<typ
     }
 
     if (context.status === GameStatus.Finished) {
-      // message.destroy()
+      message.destroy()
       message.info('游戏结束')
     }
   }
@@ -370,6 +370,10 @@ provide('manual', manual)
   top: 0;
   width: 100vw;
   height: 100vh;
+
+  @media screen and (max-width: 640px) {
+    height: calc(100vh - 98px); // 预留点空间，底部看不到啊兄弟
+  }
 
   .header {
     padding: 8px;
