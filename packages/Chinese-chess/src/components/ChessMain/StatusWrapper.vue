@@ -21,24 +21,10 @@
       </div>
     </div>
 
-
-    <!-- <button
-      class="btn btn-exchange"
-    >
-      交换阵营
-    </button>
-    <div
-      v-if="isPlayer"
-      class="current-camp"
-    >
-      当前执子：
-      <span v-if="context?.currentCamp === Camp.RED" class="red">红</span>
-      <span v-else class="black">黑</span>
-    </div> -->
     <button
       v-if="!!player"
       class="btn btn-ready"
-      :disabled="!isInit"
+      :disabled="isStatusBtnDisabled"
       @click="handleBtnReadyClick"
     >
       准备 {{ player?.isReady ? 'true' : 'false' }}
@@ -47,8 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import { Camp } from '@/definitions'
-import { Players, User } from '@/types'
+import { Camp, GameStatus } from '@/definitions'
+import { GameContext, Players, User } from '@/types'
 import { ComputedRef } from 'vue'
 
 const emits = defineEmits<{
@@ -56,18 +42,22 @@ const emits = defineEmits<{
   (e: 'game:ready'): void
 }>()
 
-const isInit = inject<ComputedRef<boolean>>('isInit')!
 const players = inject<ComputedRef<Players>>('players')!
+const context = inject<ComputedRef<GameContext>>('context')!
 const currentUser = inject('currentUser', ref<User | null>(null))
 
 const firstOptions = [{
   label: '红先',
-  value: Camp.RED,
+  value: Camp.RED
 }, {
   label: '黑先',
-  value: Camp.BLACK,
+  value: Camp.BLACK
 }]
 const first = ref(Camp.RED)
+
+const isStatusBtnDisabled = computed(() => {
+  return !(context.value.status === GameStatus.Init || context.value.status === GameStatus.Finished)
+})
 
 const player = computed(() => currentUser.value
   ? currentUser.value.id === players.value?.[0].id
@@ -78,23 +68,23 @@ const player = computed(() => currentUser.value
   : null
 )
 
-const handleOptionClick = (val: Camp) => {
-  if (!isInit.value) {
+const handleOptionClick = (val: Camp): void => {
+  if (isStatusBtnDisabled.value) {
     return
   }
 
   first.value = val
 }
 
-const handleBtnBackClick = () => {
+const handleBtnBackClick = (): void => {
   emits('room:leave')
 }
 
-const handleBtnReadyClick = () => {
-  if (!isInit) {
+const handleBtnReadyClick = (): void => {
+  if (isStatusBtnDisabled.value) {
     return
   }
-  
+
   emits('game:ready')
 }
 </script>
@@ -141,7 +131,6 @@ const handleBtnReadyClick = () => {
         color: var(--black);
         border-top-right-radius: 64px;
       }
-      
 
       &.active {
         color: #fff;

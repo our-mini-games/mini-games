@@ -164,8 +164,14 @@ export const createController = ({
   const isDeliverGeneralInChess = (x: number, y: number, camp: Camp): boolean => {
     const newChessPiece: ChessPiece[] = cloneDeep(context.chessPieces)
     const newActivePiece = newChessPiece.find(item => item.coord.x === context.activePiece?.coord.x && item.coord.y === context.activePiece.coord.y)
+    // 如果这个坐标有地方子力的话就吃子
+    let index = newChessPiece.findIndex(item => item.coord.x === x && item.coord.y === y && item.camp === camp)
     // 模拟它走一步
     movePiece(newActivePiece!, { x, y })
+    if (index !== -1) {
+      newChessPiece.splice(index, 1)
+    }
+    
     return isGeneralInChess(newChessPiece, camp)
   }
 
@@ -202,26 +208,43 @@ export const createController = ({
     const enemyPieceList: ChessPiece[] = context.chessPieces.filter(item => item.camp !== context.currentCamp)
     for (let i = 0; i < enemyPieceList.length; i++) {
       // 将棋盘复位
-      const newChessPiece: ChessPiece[] = cloneDeep(context.chessPieces)
+      const moveChessPiece: ChessPiece[] = cloneDeep(context.chessPieces)
       const pieceItem: ChessPiece = enemyPieceList[i]
       const { PieceObject, coord, camp } = pieceItem
-      const piece = new PieceObject(coord, newChessPiece, camp, camp)
+      const piece = new PieceObject(coord, moveChessPiece, camp, camp)
       // 获取每一个可以走动的坐标
-      const allCanMoveCoord: Array<[number, number]> = piece.allCanMove()
+      const canMoveCoord: Array<[number, number]> = piece.computedCanMove()
+      // 获取每一个可以吃掉的坐标
+      const canEatCoord: Array<[number, number]> = piece.computedCanEat()
       // 模拟每一个棋子的走动 然后判断是否是送将 如果有一个移动了 不是送将 那么就是可以的
-      const activePiece = newChessPiece.find(item => item.coord.x === coord.x && item.coord.y === coord.y && item.camp !== context.currentCamp)
+      const moveActivePiece = moveChessPiece.find(item => item.coord.x === coord.x && item.coord.y === coord.y && item.camp !== context.currentCamp)
       // 如果说有一个棋子走动了之后对方不能将军 那么就不是绝杀了
-      const inGeneralInChess: boolean = allCanMoveCoord.filter(item => {
+      const moveInGeneralInChess: boolean = canMoveCoord.filter(item => {
         // 移动到了这个位置 看看还是不是将军
-        movePiece(activePiece!, {
+        movePiece(moveActivePiece!, {
           x: item[0],
           y: item[1]
         })
-        return !isGeneralInChess(newChessPiece, camp === Camp.RED ? Camp.BLACK : Camp.RED)
+        return !isGeneralInChess(moveChessPiece, camp === Camp.RED ? Camp.BLACK : Camp.RED)
       }).length > 0
-      if (inGeneralInChess) {
+
+      const eatInGeneralInChess: boolean = canEatCoord.filter(item => {
+        let eatChessPiece: ChessPiece[] = cloneDeep(context.chessPieces)
+        let eatActivePiece = eatChessPiece.find(item => item.coord.x === coord.x && item.coord.y === coord.y && item.camp !== context.currentCamp)
+        // 吃掉这个位置的子 看看还是不是将军
+        movePiece(eatActivePiece!, {
+          x: item[0],
+          y: item[1]
+        })
+        // 模拟吃掉该棋子
+        const index = eatChessPiece.findIndex(e => e.coord.x === item[0] && e.coord.y === item[1] && e.camp === context.currentCamp)
+        eatChessPiece.splice(index, 1)
+        return !isGeneralInChess(eatChessPiece, camp === Camp.RED ? Camp.BLACK : Camp.RED)
+      }).length > 0
+      if (moveInGeneralInChess || eatInGeneralInChess) {
         return false
       }
+
     }
     return true
   }
@@ -244,11 +267,21 @@ export const createController = ({
     movePiece(activePiece, { x, y })
     // 判断是否将军
     if (isGeneralInChess(context.chessPieces, context.currentCamp)) {
-      console.log('将军')
+      // console.log('将军')
+      gameInterface.animations.check.run(() => {
+        gameInterface.animations.clear()
+      })
       // 判断是否绝杀
       if (isGameOver()) {
-        alert(`绝杀无解${context.currentCamp === Camp.RED ? '红' : '黑'}胜`)
-        console.log('绝杀无解')
+        // alert(`绝杀无解${context.currentCamp === Camp.RED ? '红' : '黑'}胜`)
+        // console.log('绝杀无解')
+        gameInterface.animations.checkMate.run(() => {
+          gameInterface.animations[context.currentCamp === Camp.RED ? 'redWin' : 'blackWin'].run(() => {
+            gameInterface.animations.clear()
+          })
+        })
+        context.status = GameStatus.Finished
+        return false
       }
     }
     context.canMoveList = []
@@ -260,13 +293,20 @@ export const createController = ({
   const handleClick = (e: MouseEvent): void => {
     const point = gameInterface.getPointer(e)
     const currentPiece = getPieceByPoint(point)
+
+    if (context.status !== GameStatus.Playing) {
+      return
+    }
+
     // 点击上去的位置有没有棋子
     if (context.activePiece) {
       // 判断一下之前有没有点击过棋子
       if (currentPiece && isCurrentExecution(currentPiece.camp)) {
         // 也就是说点到了同阵营的棋子
         // 如果还是原来的棋子就不变 如果点了新棋子那么就给新棋子active
-        if (currentPiece.coord.x === context.activePiece.coord.x && currentPiece.coord.y === context.activePiece.coord.y) return
+        if (currentPiece.coord.x === context.activePiece.coord.x && currentPiece.coord.y === context.activePiece.coord.y) {
+          return
+        }
         context.activePiece = currentPiece
         context.canMoveList = computedCanMove(context.activePiece, context.chessPieces)
         return
@@ -276,56 +316,26 @@ export const createController = ({
       if (currentPiece && canEatPiece(context.activePiece, context.chessPieces, point.x, point.y) && move(context.activePiece, point.x, point.y)) {
         // 那么走吃子的逻辑
         context.chessPieces = eatPiece(currentPiece, context.chessPieces)
-        return
-      }
-      // 是否移动到可以移动的地方
-      if (context.canMoveList.find(item => item[0] === point.x && item[1] === point.y)) {
+      } else if (context.canMoveList.find(item => item[0] === point.x && item[1] === point.y)) {
+        // 是否移动到可以移动的地方
         move(context.activePiece, point.x, point.y)
+        context.canMoveList.length = 0
       }
     } else {
       // 选中已方棋子
       const piece = getPieceByPoint(point)
       setActive(piece)
     }
-  }
-
-  let reqId: number
-  let lastTime = Date.now()
-
-  function run(): void {
-    reqId = requestAnimationFrame(run)
-    context.counter += Math.PI / 180
-
-    if (context.counter >= 2 * Math.PI) {
-      context.counter = 0
-    }
-
-    const currTime = Date.now()
-    if (currTime - lastTime > 500 && context.activePiece) {
-      context.activePiece.setScale(context.activePiece.scale === 1
-        ? 0.9
-        : 1
-      )
-      lastTime = currTime
-    }
 
     gameInterface.clearMain()
-
     gameInterface.drawChessPieces(context.chessPieces)
-    const lastPath = context.movePath.at(-1)
 
-    if (lastPath) {
-      gameInterface.drawCurrentStop(lastPath.path.at(-1)!, context.counter)
-      gameInterface.drawLastStop(lastPath.path[0])
-      gameInterface.drawMovePath(lastPath.path)
+    if (context.canMoveList.length > 0) {
+      gameInterface.drawAllowPoints(context.canMoveList.map(item => new Point(item[0], item[1])))
     }
   }
 
-  function pause(): void {
-    cancelAnimationFrame(reqId)
-  }
-
-  function handleInputMouseDown(e: KeyboardEvent): void {
+  function handleInputMouseDown (e: KeyboardEvent): void {
     const { key } = e
     const target = e.target as HTMLInputElement
     const { value } = target
@@ -341,7 +351,7 @@ export const createController = ({
     }
   }
 
-  function renderChatList(chatList: Chat[]): void {
+  function renderChatList (chatList: Chat[]): void {
     oChatList.innerHTML = chatList.reduce((text, item) => {
       return text + `
         <li class="chat-item ${Math.random() > 0.5 ? 'self' : ''}">
@@ -355,7 +365,7 @@ export const createController = ({
   }
 
   // @todo
-  function renderManual(manualList: any[] = []): void {
+  function renderManual (manualList: any[] = []): void {
     oManual.innerHTML = manualList.reduce((text: string, item) => {
       return text + `
         <li class="manual-item ${item.camp === Camp.RED ? 'red' : 'black'}">
@@ -385,25 +395,25 @@ export const createController = ({
     gameInterface.destroy(oMain)
   }
 
-  function isCurrentExecution(camp: Camp): boolean {
+  function isCurrentExecution (camp: Camp): boolean {
     return camp === context.currentCamp
   }
 
-  function computedCanMove(activePiece: ChessPiece, pieces: ChessPiece[]): Array<[number, number]> {
+  function computedCanMove (activePiece: ChessPiece, pieces: ChessPiece[]): Array<[number, number]> {
     const { PieceObject, coord, camp } = activePiece
     const piece = new PieceObject(coord, pieces, camp, context.currentCamp)
     return piece.computedCanMove()
   }
 
   // 判断是否可以吃子
-  function canEatPiece(activePiece: ChessPiece, pieces: ChessPiece[], x: number, y: number): boolean {
+  function canEatPiece (activePiece: ChessPiece, pieces: ChessPiece[], x: number, y: number): boolean {
     const { PieceObject, coord, camp } = activePiece
     const piece = new PieceObject(coord, pieces, camp, context.currentCamp)
     const canEatList: Array<[number, number]> = piece.computedCanEat()
     // 必须要在能吃子的范围内才能吃
     return Boolean(canEatList.find(item => item[0] === x && item[1] === y))
   }
-  function eatPiece(currentPiece: ChessPiece, pieces: ChessPiece[]): ChessPiece[] {
+  function eatPiece (currentPiece: ChessPiece, pieces: ChessPiece[]): ChessPiece[] {
     const { coord } = currentPiece
     // 找到当前位置的敌方阵营棋子
     const index = pieces.findIndex(item => item.coord.x === coord.x && item.coord.y === coord.y && item.camp === context.currentCamp)
@@ -422,7 +432,11 @@ export const createController = ({
   return {
     initGame,
     destroy,
-    run,
-    pause
+    run: () => {
+      context.status = GameStatus.Playing
+      gameInterface.clearMain()
+      gameInterface.drawChessPieces(context.chessPieces)
+    }
+    // pause
   }
 }

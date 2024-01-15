@@ -29,13 +29,13 @@
 </template>
 
 <script setup lang="ts">
-import { Message, Room, User } from '@/types'
+import { Room, User } from '@/types'
 
 const emits = defineEmits<(e: 'game:chat', msg: string) => void>()
 
 const msgListRef = ref<HTMLUListElement | null>(null)
 
-const message = inject('message', ref<Message[]>([]))
+const message = inject('message', ref<any[]>([]))
 const currentRoom = inject('currentRoom', ref<Room | null>(null))
 const currentUser = inject('currentUser', ref<User | null>(null))
 

@@ -1,81 +1,83 @@
 <template>
   <div class="chinese-chess">
-    <mode-selector v-if="currentMode === null" />
+    <a-button v-if="loading" @click="loading = false">放弃加载资源</a-button>
+    <a-spin
+      :spinning="loading"
+      tip="资源加载中..."
+    >
+      <input
+        v-if="!nickname"
+        placeholder="请输入您的昵称，按“回车”提交"
+        @keydown="handleMouseDown"
+      />
 
-    <offline-game v-else-if="currentMode === GameMode.OFFLINE" />
+      <template v-else>
+        <mode-selector
+          v-if="currentMode === null"
+          v-model:mode="currentMode"
+        />
 
-    <component
-      v-else
-      :is="comp"
-      v-model:mode="currentMode"
-      @room:join="handleRoomJoin"
-      @room:leave="handleRoomLeave"
-      @room:request-seat="handleRoomRequestSeat"
-      @room:chat="handleRoomChat"
-      @game:ready="handleGameReady"
-      @game:change="handleGameChange"
-    />
+        <offline-game
+          v-else-if="currentMode === GameMode.OFFLINE"
+          v-model:mode="currentMode"
+        />
+
+        <online-game
+          v-else
+          v-model:mode="currentMode"
+        />
+      </template>
+    </a-spin>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useSocket } from './composables/useSocket'
-import { GameMode } from './definitions'
-import Message from './components/Message'
+import { GameMode, NICKNAME_KEY } from './definitions'
+import { loadResources } from './libs/Resource'
+import OnlineGame from './pages/OnlineGame/index.vue'
 
-import { getMoveList } from './utils'
-
-// eslint-disable-next-line @typescript-eslint/promise-function-async
-const Gamelobby = defineAsyncComponent(() => import('./pages/GameLobby.vue'))
-// eslint-disable-next-line @typescript-eslint/promise-function-async
-const GameMain = defineAsyncComponent(() => import('./pages/GameMain.vue'))
-// eslint-disable-next-line @typescript-eslint/promise-function-async
 const OfflineGame = defineAsyncComponent(() => import('./pages/OfflineGame.vue'))
+// const OnlineGame = defineAsyncComponent(() => import('./pages/OnlineGame/index.vue'))
 
 const currentMode = ref<GameMode | null>(null)
 
-const comp = computed(() => {
-  return currentMode.value === GameMode.ONLINE
-    ? currentRoom.value ? GameMain : Gamelobby
-    : ''
+const nickname = ref('')
+const resources = ref<any>({})
+const loading = ref(false)
+
+onMounted(async () => {
+  nickname.value = localStorage.getItem(NICKNAME_KEY) ?? ''
+
+  loading.value = true
+  try {
+    resources.value = await loadResources()
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err)
+  } finally {
+    loading.value = false
+  }
 })
 
-onMounted(() => {
-  Message.install()
-  ;(window as any).getMoveList = getMoveList
-})
+const handleMouseDown = (e: KeyboardEvent): void => {
+  const target = e.target as HTMLInputElement
+  if (e.key === 'Enter' && target.value.trim()) {
+    nickname.value = target.value.trim()
 
-const {
-  currentUser,
-  currentUserCamp,
-  currentRoom,
-  rooms,
-  message,
-  context,
-  chessManual,
-  players,
-  isInit,
-  handleRoomJoin,
-  handleRoomLeave,
-  handleRoomChat,
-  handleRoomRequestSeat,
-  handleGameReady,
-  handleGameChange
-} = useSocket({
-  Message
-})
+    localStorage.setItem(NICKNAME_KEY, nickname.value)
+  }
+}
 
-provide('currentMode', currentMode)
-provide('currentUser', currentUser)
-provide('currentUserCamp', currentUserCamp)
-provide('rooms', rooms)
-provide('currentRoom', currentRoom)
-provide('message', message)
-provide('context', context)
-provide('chessManual', chessManual)
-provide('players', players)
-provide('isInit', isInit)
+provide('nickname', () => nickname.value)
 </script>
 
 <style lang="scss" scoped>
+.chinese-chess {
+  width: 100vw;
+  height: 100vh;
+
+  .ant-spin-nested-loading {
+    height: 100%;
+  }
+}
 </style>

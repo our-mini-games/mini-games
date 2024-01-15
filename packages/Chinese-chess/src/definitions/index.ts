@@ -1,6 +1,7 @@
 import { Point } from '@/libs/Point'
 import { Soldier, BigGun, Horse, Vehicle, Elephant, Scholar, Boss } from '../libs/PieceObject'
 export const USER_INFO_KEY = 'CHINESE_CHESS_USER_INFO'
+export const NICKNAME_KEY = 'CHINESE_CHESS_NICKNAME'
 
 export type ChessPieceValue =
   | 11 | 12 | 13 | 14 | 15 | 16 | 17
@@ -60,10 +61,10 @@ export const chessPieceMapper: Record<ChessPieceValue, ChessPieceMapItem> = {
 }
 
 export enum GameStatus {
-  Init,
-  Playing,
-  Paused,
-  Finished
+  Init = 'INIT',
+  Playing = 'PLAYING',
+  Paused = 'PAUSED',
+  Finished = 'FINISHED'
 }
 
 export const defaultMoveList: Record<ChessPieceValue, (p: Point) => Point[]> = {
