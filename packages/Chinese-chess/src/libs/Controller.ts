@@ -164,8 +164,14 @@ export const createController = ({
   const isDeliverGeneralInChess = (x: number, y: number, camp: Camp): boolean => {
     const newChessPiece: ChessPiece[] = cloneDeep(context.chessPieces)
     const newActivePiece = newChessPiece.find(item => item.coord.x === context.activePiece?.coord.x && item.coord.y === context.activePiece.coord.y)
+    // 如果这个坐标有地方子力的话就吃子
+    let index = newChessPiece.findIndex(item => item.coord.x === x && item.coord.y === y && item.camp === camp)
     // 模拟它走一步
     movePiece(newActivePiece!, { x, y })
+    if (index !== -1) {
+      newChessPiece.splice(index, 1)
+    }
+    
     return isGeneralInChess(newChessPiece, camp)
   }
 
@@ -202,26 +208,43 @@ export const createController = ({
     const enemyPieceList: ChessPiece[] = context.chessPieces.filter(item => item.camp !== context.currentCamp)
     for (let i = 0; i < enemyPieceList.length; i++) {
       // 将棋盘复位
-      const newChessPiece: ChessPiece[] = cloneDeep(context.chessPieces)
+      const moveChessPiece: ChessPiece[] = cloneDeep(context.chessPieces)
       const pieceItem: ChessPiece = enemyPieceList[i]
       const { PieceObject, coord, camp } = pieceItem
-      const piece = new PieceObject(coord, newChessPiece, camp, camp)
+      const piece = new PieceObject(coord, moveChessPiece, camp, camp)
       // 获取每一个可以走动的坐标
-      const allCanMoveCoord: Array<[number, number]> = piece.allCanMove()
+      const canMoveCoord: Array<[number, number]> = piece.computedCanMove()
+      // 获取每一个可以吃掉的坐标
+      const canEatCoord: Array<[number, number]> = piece.computedCanEat()
       // 模拟每一个棋子的走动 然后判断是否是送将 如果有一个移动了 不是送将 那么就是可以的
-      const activePiece = newChessPiece.find(item => item.coord.x === coord.x && item.coord.y === coord.y && item.camp !== context.currentCamp)
+      const moveActivePiece = moveChessPiece.find(item => item.coord.x === coord.x && item.coord.y === coord.y && item.camp !== context.currentCamp)
       // 如果说有一个棋子走动了之后对方不能将军 那么就不是绝杀了
-      const inGeneralInChess: boolean = allCanMoveCoord.filter(item => {
+      const moveInGeneralInChess: boolean = canMoveCoord.filter(item => {
         // 移动到了这个位置 看看还是不是将军
-        movePiece(activePiece!, {
+        movePiece(moveActivePiece!, {
           x: item[0],
           y: item[1]
         })
-        return !isGeneralInChess(newChessPiece, camp === Camp.RED ? Camp.BLACK : Camp.RED)
+        return !isGeneralInChess(moveChessPiece, camp === Camp.RED ? Camp.BLACK : Camp.RED)
       }).length > 0
-      if (inGeneralInChess) {
+
+      const eatInGeneralInChess: boolean = canEatCoord.filter(item => {
+        let eatChessPiece: ChessPiece[] = cloneDeep(context.chessPieces)
+        let eatActivePiece = eatChessPiece.find(item => item.coord.x === coord.x && item.coord.y === coord.y && item.camp !== context.currentCamp)
+        // 吃掉这个位置的子 看看还是不是将军
+        movePiece(eatActivePiece!, {
+          x: item[0],
+          y: item[1]
+        })
+        // 模拟吃掉该棋子
+        const index = eatChessPiece.findIndex(e => e.coord.x === item[0] && e.coord.y === item[1] && e.camp === context.currentCamp)
+        eatChessPiece.splice(index, 1)
+        return !isGeneralInChess(eatChessPiece, camp === Camp.RED ? Camp.BLACK : Camp.RED)
+      }).length > 0
+      if (moveInGeneralInChess || eatInGeneralInChess) {
         return false
       }
+
     }
     return true
   }
@@ -261,7 +284,7 @@ export const createController = ({
         return false
       }
     }
-
+    context.canMoveList = []
     context.activePiece = null
     context.currentCamp = context.currentCamp === Camp.RED ? Camp.BLACK : Camp.RED
     return true
@@ -286,9 +309,11 @@ export const createController = ({
         }
         context.activePiece = currentPiece
         context.canMoveList = computedCanMove(context.activePiece, context.chessPieces)
-      } else if (currentPiece && canEatPiece(context.activePiece, context.chessPieces, point.x, point.y) && move(context.activePiece, point.x, point.y)) {
-        // 是否吃子 因为上面已经判断过进入下一步是自己方
-        // 判断是否吃子 移动过成功才可以进行吃子
+        return
+      }
+      // 是否吃子 因为上面已经判断过进入下一步是自己方
+      // 判断是否吃子 移动过成功才可以进行吃子
+      if (currentPiece && canEatPiece(context.activePiece, context.chessPieces, point.x, point.y) && move(context.activePiece, point.x, point.y)) {
         // 那么走吃子的逻辑
         context.chessPieces = eatPiece(currentPiece, context.chessPieces)
       } else if (context.canMoveList.find(item => item[0] === point.x && item[1] === point.y)) {
