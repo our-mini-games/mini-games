@@ -553,18 +553,18 @@ export const createGameInterface = (baseSize = 128): GameInterface => {
     oInterface.style.width = checkerBoardCanvas.style.width
     oInterface.style.height = checkerBoardCanvas.style.height
 
-    // const pieceFont = new FontFace('PieceFont', 'url(fzlsft.ttf)')
-    // const aniFont = new FontFace('STXINGKAI', 'url(STXINGKAI.ttf)')
+    const pieceFont = new FontFace('PieceFont', 'url(fzlsft.ttf)')
+    const aniFont = new FontFace('STXINGKAI', 'url(STXINGKAI.ttf)')
 
-    // const [f1, f2, p1, p2] = await Promise.all([
-    //   pieceFont.load(),
-    //   aniFont.load(),
-    //   loadPic('sword.png'),
-    //   loadPic('win.png')
-    // ])
-    // ;(document.fonts as any).add(f1)
-    // ;(document.fonts as any).add(f2)
-    // await document.fonts.ready.then()
+    const [f1, f2, p1, p2] = await Promise.all([
+      pieceFont.load(),
+      aniFont.load(),
+      loadPic('sword.png'),
+      loadPic('win.png')
+    ])
+    ;(document.fonts as any).add(f1)
+    ;(document.fonts as any).add(f2)
+    await document.fonts.ready.then()
 
     parentNode.appendChild(oInterface)
 

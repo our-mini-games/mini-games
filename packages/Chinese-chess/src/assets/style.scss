@@ -1,6 +1,6 @@
 @font-face {
   font-family: PieceFont;
-  src: url(fzlsft.ttf);
+  src: url(/resources/FZLSFT.ttf);
   font-weight: bold;
   font-style: normal;
 }
@@ -35,9 +35,11 @@ ol {
 body {
   font-size: 16px;
   line-height: 1.4;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   color: var(--black);
-  // background-color: var(--light);
+}
+
+* {
+  font-family: PieceFont, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !important;
 }
 
 :where(.btn) {

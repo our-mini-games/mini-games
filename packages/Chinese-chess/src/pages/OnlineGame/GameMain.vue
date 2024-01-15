@@ -12,6 +12,36 @@
       <h1 class="title">
         {{ currentRoom?.name }}
       </h1>
+
+      <div class="mini-operations">
+        <a-button
+          @click="chatDrawerVisible = !chatDrawerVisible"
+        >
+          <message-outlined />
+        </a-button>
+
+        <a-button
+          @click="manualDrawerVisible = !manualDrawerVisible"
+        >
+          <profile-outlined />
+        </a-button>
+
+        <drawer
+          v-model:open="chatDrawerVisible"
+          title="对话"
+          width="90%"
+        >
+          <game-aside-chat @chat="handleChat" />
+        </drawer>
+
+        <drawer
+          v-model:open="manualDrawerVisible"
+          title="棋谱"
+          width="90%"
+        >
+          <game-aside-manual />
+        </drawer>
+      </div>
     </header>
 
     <div class="container">
@@ -87,10 +117,17 @@ import { createGameInterface, GameStatus, Camp, type GameContext, type UserLike 
 import { Socket } from 'socket.io-client'
 import { Modal, message } from 'ant-design-vue'
 import GameAside from './GameAside.vue'
+import Drawer from '@/components/Drawer.vue'
 
 defineProps<{
   handleRoomLeave: (roomId?: number | string) => void
 }>()
+
+const GameAsideChat = defineAsyncComponent(() => import('./GameAsideChat.vue'))
+const GameAsideManual = defineAsyncComponent(() => import('./GameAsideManual.vue'))
+
+const chatDrawerVisible = ref(false)
+const manualDrawerVisible = ref(false)
 
 const socket = inject('socket', ref<Socket | null>(null))
 const context = inject('context', ref<GameContext | null>(null))
@@ -109,7 +146,7 @@ const manual = computed(() => context.value?.manual ?? [])
 onMounted(async () => {
   if (gameMainRef.value) {
     gameInterface.value = createGameInterface(resources)
-    gameInterface.value.mount(gameMainRef.value)
+    gameInterface.value.mount(gameMainRef.value as Element)
 
     if (currentUserCamp.value === Camp.BLACK) {
       gameInterface.value.setRotate(Math.PI)
@@ -124,7 +161,7 @@ onMounted(async () => {
     })
     gameInterface.value.on('animation:finished', type => {
       gameInterface.value?.animations.clear()
-      console.log(JSON.stringify(context.value!.message))
+
       if (context.value!.message.length > 0) {
         const msg = context.value!.message.shift()
         if (msg.type === 'animation') {
@@ -192,10 +229,10 @@ const handleReadyBtnClick = () => {
 
 watch(context, () => {
   if (gameInterface.value && context.value) {
-    handleContextChange(context.value, gameInterface.value)
+    handleContextChange(context.value, gameInterface.value as any)
   } else if (!gameInterface.value) {
     nextTick(() => {
-      handleContextChange(context.value!, gameInterface.value!)
+      handleContextChange(context.value!, gameInterface.value! as any)
     })
   }
 }, { immediate: true })
@@ -203,6 +240,7 @@ watch(context, () => {
 const handleContextChange = (context: GameContext, gameInterface: ReturnType<typeof createGameInterface>) => {
   if (context.status === GameStatus.Playing || context.status === GameStatus.Finished) {
     gameInterface.clearAll()
+    gameInterface.setRotate(currentUserCamp.value === Camp.BLACK ? Math.PI : 0)
     gameInterface.drawChessPieces(context.chessPieces)
 
     if (context.activePiece) {
@@ -233,7 +271,7 @@ const handleContextChange = (context: GameContext, gameInterface: ReturnType<typ
     }
 
     if (context.status === GameStatus.Finished) {
-      // message.destroy()
+      message.destroy()
       message.info('游戏结束')
     }
   }
@@ -333,6 +371,10 @@ provide('manual', manual)
   width: 100vw;
   height: 100vh;
 
+  @media screen and (max-width: 640px) {
+    height: calc(100vh - 98px); // 预留点空间，底部看不到啊兄弟
+  }
+
   .header {
     padding: 8px;
 
@@ -347,6 +389,18 @@ provide('manual', manual)
       text-align: center;
       line-height: 24px;
     }
+
+    .mini-operations {
+      display: none;
+
+      @media screen and (max-width: 640px) {
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        display: flex;
+        gap: 8px;
+      }
+    }
   }
 
   .container {
@@ -355,6 +409,10 @@ provide('manual', manual)
     flex-direction: column;
     gap: 16px;
     width: calc(100% - 320px);
+
+    @media screen and (max-width: 640px) {
+      width: 100%;
+    }
 
     .main {
       flex: 1;
@@ -381,6 +439,10 @@ provide('manual', manual)
     top: 40px;
     width: 320px;
     height: calc(100% - 40px);
+
+    @media screen and (max-width: 640px) {
+      display: none;
+    }
   }
 }
 </style>
