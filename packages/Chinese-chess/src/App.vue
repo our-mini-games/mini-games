@@ -13,7 +13,7 @@
         <a-input
           v-if="!nickname"
           placeholder="请输入您的昵称，按“回车”提交"
-          style="position: fixed; left: 50%; top: 50%; width: 320px; transform: translate(-50%, -50%);"
+          style="position: fixed; left: 50%; top: 50%; width: 300px; transform: translate(-50%, -50%);"
           @keydown="handleMouseDown"
         />
 

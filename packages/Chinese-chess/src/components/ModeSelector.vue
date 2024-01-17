@@ -6,6 +6,7 @@
       <a-button
         v-for="mode of modes"
         :key="mode.value"
+        type="primary"
         class="btn btn-mode"
         @click="handleChangeMode(mode.value)"
       >

@@ -26,6 +26,7 @@ const emits = defineEmits<(e: 'chat', content: string) => void>()
   :deep(.section) {
 
     .list {
+      margin: 0;
       border: 1px solid var(--line);
       border-radius: 8px;
       overflow-y: auto;

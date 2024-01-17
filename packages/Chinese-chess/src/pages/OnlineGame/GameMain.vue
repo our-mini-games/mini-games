@@ -118,6 +118,7 @@ import { Socket } from 'socket.io-client'
 import { Modal, message } from 'ant-design-vue'
 import GameAside from './GameAside.vue'
 import Drawer from '@/components/Drawer.vue'
+import { switchCamp } from '@/utils'
 
 defineProps<{
   handleRoomLeave: (roomId?: number | string) => void
@@ -237,6 +238,16 @@ watch(context, () => {
   }
 }, { immediate: true })
 
+watch(resources, () => {
+  if (gameInterface.value) {
+    gameInterface.value.clearAll()
+    gameInterface.value.setResource(resources)
+    if (context.value) {
+      handleContextChange(context.value, gameInterface.value as ReturnType<typeof createGameInterface>)
+    }
+  }
+})
+
 const handleContextChange = (context: GameContext, gameInterface: ReturnType<typeof createGameInterface>) => {
   if (context.status === GameStatus.Playing || context.status === GameStatus.Finished) {
     gameInterface.clearAll()
@@ -257,8 +268,8 @@ const handleContextChange = (context: GameContext, gameInterface: ReturnType<typ
     }
 
     if (context.movePath.length > 0) {
-      gameInterface.drawCurrentStop(context.movePath.at(-1)!)
-      gameInterface.drawLastStop(context.movePath[0])
+      gameInterface.drawCurrentStop(context.movePath.at(-1)!, switchCamp(context.currentCamp))
+      gameInterface.drawLastStop(context.movePath[0], switchCamp(context.currentCamp))
     }
 
     if (context.message.length > 0) {
