@@ -48,6 +48,10 @@ onBeforeUnmount(() => {
 })
 
 const socketHandler = (socket: Socket) => {
+  socket.on('connect_error', err => {
+    message.error(err.message)
+  })
+
   socket.on(events.client.connect, () => {
     // 用户信息更新
     socket.on(events.user.update, (user) => {

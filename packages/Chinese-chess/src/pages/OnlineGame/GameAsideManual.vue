@@ -41,6 +41,7 @@ watch(() => manual?.value, () => {
 <style lang="scss" scoped>
 .manual-wrapper {
   height: 100%;
+  background-color: #fff;
   overflow-y: auto;
 
   .list {

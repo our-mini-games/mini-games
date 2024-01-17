@@ -56,6 +56,7 @@ import { message } from 'ant-design-vue'
 import { Camp, createServer, createGameInterface, GameContext, GameStatus } from 'chinese-chess-service'
 
 import Drawer from '@/components/Drawer.vue'
+import { switchCamp } from '@/utils'
 
 const emits = defineEmits<(e: 'update:mode', mode: GameMode | null) => void>()
 
@@ -114,7 +115,7 @@ onMounted(() => {
 
 const handleContextChange = (value: GameContext) => {
   context.value = value
-  console.log(value)
+
   if (gameInterface.value) {
     gameInterface.value.clearAll()
     gameInterface.value.drawChessPieces(context.value.chessPieces)
@@ -131,8 +132,8 @@ const handleContextChange = (value: GameContext) => {
     }
 
     if (context.value.movePath.length > 0) {
-      gameInterface.value.drawCurrentStop(context.value.movePath.at(-1)!)
-      gameInterface.value.drawLastStop(context.value.movePath[0])
+      gameInterface.value.drawCurrentStop(context.value.movePath.at(-1)!, switchCamp(context.value.currentCamp))
+      gameInterface.value.drawLastStop(context.value.movePath[0], switchCamp(context.value.currentCamp))
     }
 
     if (context.value.message.length > 0) {

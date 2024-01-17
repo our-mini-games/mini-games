@@ -87,6 +87,7 @@ const handleBack = () => {
   justify-content: center;
   align-items: center;
   gap: 32px;
+  margin-top: 32px;
 
   .room {
     display: flex;
@@ -96,11 +97,17 @@ const handleBack = () => {
     gap: 8px;
     width: 108px;
     height: 108px;
-    box-shadow: 0 0 1px #666;
+    border-radius: 8px;
+    background-color: #f1f1f1;
+    box-shadow: 0 0 1px var(--dark);
     cursor: pointer;
 
     .title {
       margin: 0;
+    }
+
+    &:hover {
+      box-shadow: 0 0 8px var(--red);
     }
   }
 }
