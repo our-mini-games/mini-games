@@ -41,11 +41,10 @@
 <script setup lang="ts">
 import { theme } from 'ant-design-vue'
 import { GameMode, NICKNAME_KEY } from './definitions'
-import { loadResources } from './libs/Resource'
 import OnlineGame from './pages/OnlineGame/index.vue'
+import { loadResources } from '@/libs/Resource'
 
 const OfflineGame = defineAsyncComponent(() => import('./pages/OfflineGame.vue'))
-// const OnlineGame = defineAsyncComponent(() => import('./pages/OnlineGame/index.vue'))
 
 const currentMode = ref<GameMode | null>(null)
 

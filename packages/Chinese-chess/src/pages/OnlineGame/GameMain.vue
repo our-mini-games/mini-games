@@ -113,12 +113,11 @@
 <script setup lang="ts">
 import events from '@/definitions/events'
 import { Room } from '@/types'
-import { createGameInterface, GameStatus, Camp, type GameContext, type UserLike } from 'chinese-chess-service'
+import { createGameInterface, GameStatus, Camp, switchCamp, type GameContext, type UserLike } from 'chinese-chess-service/client'
 import { Socket } from 'socket.io-client'
 import { Modal, message } from 'ant-design-vue'
 import GameAside from './GameAside.vue'
 import Drawer from '@/components/Drawer.vue'
-import { switchCamp } from '@/utils'
 
 defineProps<{
   handleRoomLeave: (roomId?: number | string) => void
@@ -161,7 +160,9 @@ onMounted(async () => {
       })
     })
     gameInterface.value.on('animation:finished', type => {
-      gameInterface.value?.animations.clear()
+      if (type !== 'win') {
+        gameInterface.value?.animations.clear()
+      }
 
       if (context.value!.message.length > 0) {
         const msg = context.value!.message.shift()
