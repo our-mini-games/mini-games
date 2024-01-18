@@ -53,10 +53,9 @@
 <script setup lang="ts">
 import { GameMode, colorMapper } from '@/definitions'
 import { message } from 'ant-design-vue'
-import { Camp, createServer, createGameInterface, GameContext, GameStatus } from 'chinese-chess-service'
+import { Camp, createServer, createGameInterface, GameContext, GameStatus, switchCamp } from 'chinese-chess-service'
 
 import Drawer from '@/components/Drawer.vue'
-import { switchCamp } from '@/utils'
 
 const emits = defineEmits<(e: 'update:mode', mode: GameMode | null) => void>()
 
@@ -87,8 +86,10 @@ onMounted(() => {
       server.moveOrSelect(server.context.players![server.context.currentCamp]!, gameInterface.value!.getPointer(e))
     })
 
-    gameInterface.value.on('animation:finished', () => {
-      gameInterface.value?.animations.clear()
+    gameInterface.value.on('animation:finished', type => {
+      if (type !== 'win') {
+        gameInterface.value?.animations.clear()
+      }
 
       if (context.value!.message.length > 0) {
         const msg = context.value!.message.shift()
@@ -108,6 +109,7 @@ onMounted(() => {
     server.on('piece:select', ({ context }) => { handleContextChange(context) })
 
     server.on('piece:select:cancel', ({ context }) => { handleContextChange(context) })
+    server.on('game:over', context => { handleContextChange(context) })
 
     server.start()
   }
@@ -132,13 +134,13 @@ const handleContextChange = (value: GameContext) => {
     }
 
     if (context.value.movePath.length > 0) {
+      console.log(switchCamp(context.value.currentCamp))
       gameInterface.value.drawCurrentStop(context.value.movePath.at(-1)!, switchCamp(context.value.currentCamp))
       gameInterface.value.drawLastStop(context.value.movePath[0], switchCamp(context.value.currentCamp))
     }
 
     if (context.value.message.length > 0) {
       const msg = context.value.message.shift()
-      console.log(context.value.message)
       if (msg.type === 'animation') {
         runAnimation(msg.content)
       } else if (msg.type === 'tips') {
@@ -180,6 +182,8 @@ const runTips = (content: string) => {
 }
 
 const handleRestart = () => {
+  server.readyOrCancelReady(user1, true)
+  server.readyOrCancelReady(user2, true)
   server.restart()
 }
 
