@@ -22,8 +22,8 @@ import { GameMode } from '../definitions'
 const emits = defineEmits<(e: 'update:mode', value: GameMode) => void>()
 
 const modes = [
-  { value: GameMode.OFFLINE, label: 'Offline' },
-  { value: GameMode.ONLINE, label: 'Online' }
+  { value: GameMode.OFFLINE, label: '单机游戏' },
+  { value: GameMode.ONLINE, label: '在线对战' }
 ]
 
 const handleChangeMode = (mode: GameMode): void => {
@@ -44,10 +44,25 @@ const handleChangeMode = (mode: GameMode): void => {
 
   .modes {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 16px;
     padding: 16px 0;
+
+    .btn-mode {
+      width: 240px;
+      height: 64px;
+      padding-left: 0;
+      border: 0;
+      font-size: 24px;
+      box-shadow: unset;
+      background: url(@/assets/imgs/btn1.png) no-repeat center center / 100% 100%;
+
+      &:hover {
+        color: var(--red);
+      }
+    }
   }
 }
 </style>

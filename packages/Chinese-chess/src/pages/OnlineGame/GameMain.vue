@@ -61,6 +61,7 @@
         <template v-if="[GameStatus.Init, GameStatus.Finished].includes(gameStatus)">
           <a-button
             :type="selfPlayer?.isReady ? 'primary' : 'default'"
+            class="btn"
             @click="handleReadyBtnClick"
           >
             {{ selfPlayer?.isReady ? '取消准备' : '准备' }}
@@ -76,6 +77,7 @@
           />
 
           <a-button
+            class="btn"
             type="warning"
             @click="handleSwitchCamp"
           >
@@ -85,6 +87,7 @@
 
         <template v-else>
           <a-button
+            class="btn"
             type="warning"
             :disabled="context?.currentCamp === currentUserCamp"
             @click="handleRequestUndo"
@@ -93,6 +96,7 @@
           </a-button>
 
           <a-button
+            class="btn"
             type="warning"
             @click="handleGiveUp"
           >
@@ -145,7 +149,7 @@ const manual = computed(() => context.value?.manual ?? [])
 
 onMounted(async () => {
   if (gameMainRef.value) {
-    gameInterface.value = createGameInterface(resources)
+    gameInterface.value = createGameInterface(resources.value)
     gameInterface.value.mount(gameMainRef.value as Element)
 
     if (currentUserCamp.value === Camp.BLACK) {
@@ -247,7 +251,7 @@ watch(resources, () => {
       handleContextChange(context.value, gameInterface.value as ReturnType<typeof createGameInterface>)
     }
   }
-})
+}, { immediate: true })
 
 const handleContextChange = (context: GameContext, gameInterface: ReturnType<typeof createGameInterface>) => {
   if (context.status === GameStatus.Playing || context.status === GameStatus.Finished) {
@@ -442,6 +446,54 @@ provide('manual', manual)
       display: flex;
       justify-content: space-between;
       padding: 8px 16px;
+
+      .btn {
+        width: 120px;
+        height: 32px;
+        padding-left: 0;
+        border: 0;
+        color: #fff;
+        font-size: 20px;
+        box-shadow: unset;
+        background: url(@/assets/imgs/btn1.png) no-repeat center center / 120px 32px;
+
+        &:hover {
+          color: var(--red);
+        }
+      }
+
+      :deep(.ant-radio-group) {
+        .ant-radio-wrapper {
+          position: relative;
+          width: 32px;
+          height: 32px;
+          background: url(@/assets/imgs/btn2.png) no-repeat center center / 100% 100%;
+
+          .ant-radio {
+            opacity: 0;
+          }
+
+          > span:last-of-type {
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            line-height: 32px;
+            padding: 0;
+            font-size: 12px;
+            color: #fff;
+          }
+
+          &.ant-radio-wrapper-checked {
+            > span:last-of-type {
+              color: var(--red);
+            }
+          }
+        }
+      }
     }
   }
 
