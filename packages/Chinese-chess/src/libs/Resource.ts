@@ -4,7 +4,8 @@ export const loadResources = async () => {
     import('/resources/FZLSFT.ttf'),
     import('/resources/STXINGKAI.ttf'),
     import('/resources/sword.png'),
-    import('/resources/win.png')
+    import('/resources/win.png'),
+    import('/resources/pattern.png')
   ])
 
   const result: any = {}
