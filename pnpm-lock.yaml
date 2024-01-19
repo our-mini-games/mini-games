@@ -106,8 +106,8 @@ importers:
         specifier: 4.1.0
         version: 4.1.0(vue@3.2.45)
       chinese-chess-service:
-        specifier: ^0.0.33
-        version: 0.0.33
+        specifier: ^0.0.35
+        version: 0.0.35
       lodash.clonedeep:
         specifier: ^4.5.0
         version: 4.5.0
@@ -1676,8 +1676,8 @@ packages:
     resolution: {integrity: sha512-BrgHpW9NURQgzoNyjfq0Wu6VFO6D7IZEmJNdtgNqpzGG8RuNFHt2jQxWlAs4HMe119chBnv+34syEZtc6IhLtA==}
     dev: true
 
-  /chinese-chess-service@0.0.33:
-    resolution: {integrity: sha512-7RZaTFP6p8siPn2cvnvhKqkg+7ue+T6mBKKOIDnIXaQgxXe13gTGGyw0P1mSKaCTP1TJQJFGuABnOxhFepmwUQ==}
+  /chinese-chess-service@0.0.35:
+    resolution: {integrity: sha512-zaZvPyM9OdWvwdh/W/UIODs8cIp7CBw3TtvUX099OVQCONzwNZCVmq3k8y86ezO7uhpg+itVFXl9rckinr9D5w==}
     dependencies:
       mitt: 3.0.1
     dev: false
