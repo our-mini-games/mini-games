@@ -16,7 +16,7 @@ export const createGameList = (games: GameConfig[], members: MemberConfig[], roo
   games.forEach(game => {
     const oLi = Object.assign(document.createElement('li'), {
       className: 'game-item',
-      innerHTML: `<a href="${game.path}" title="${game.name}">
+      innerHTML: `<a href="${game.path}" title="${game.name}" target="_blank">
         ${game.cover ? `<img class="game-cover" src="${rootPath}${game.cover}" />` : ''}
         <span>${game.name}</span>
       </a>`
@@ -37,7 +37,7 @@ export const createGameList = (games: GameConfig[], members: MemberConfig[], roo
   members.forEach(member => {
     const oLi = Object.assign(document.createElement('li'), {
       className: 'member-item',
-      innerHTML: `<img src=${member.avatar} title=${member.name} />`
+      innerHTML: `<a href="${member.homepage}" target="_blank" title="${member.name}"><img src=${member.avatar} alt=${member.name} /></a>`
     })
 
     MemberList.appendChild(oLi)
