@@ -12,7 +12,7 @@ export const members: MemberConfig[] = [
   },
   {
     avatar: 'https://avatars.githubusercontent.com/u/47918504?v=4',
-    name: 'Chestnut',
+    name: 'Libon',
     homepage: 'https://github.com/libondev'
   },
   {
