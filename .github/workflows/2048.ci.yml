@@ -33,9 +33,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Checkout pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@vv
         with:
-          version: 7.13.4
+          version: 9.1.4
 
       - name: Install dependencies
         run: |
