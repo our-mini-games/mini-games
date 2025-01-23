@@ -35,17 +35,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '19'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Install dependencies
         run: |
           cd ./packages/2048
           rm -rf node_modules
-          npm install
+          pnpm install
 
       - name: Build 2048 Page
         run: |
           cd ./packages/2048
-          npm run build
+          pnpm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
