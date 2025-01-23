@@ -34,15 +34,14 @@ jobs:
         uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '19'
-      - uses: pnpm/action-setup@v4
+          node-version: '16.8.1'
+      - uses: pnpm/action-setup@v2
         with:
-          version: 10
+          version: 7.13.4
 
       - name: Install dependencies
         run: |
           cd ./packages/2048
-          rm -rf node_modules
           pnpm install
 
       - name: Build 2048 Page
