@@ -39,6 +39,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd ./packages/2048
+          rm -rf node_modules
           npm install
 
       - name: Build 2048 Page
