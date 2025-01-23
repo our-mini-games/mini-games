@@ -33,7 +33,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Checkout pnpm
-        uses: pnpm/action-setup@vv
+        uses: pnpm/action-setup@v4
         with:
           version: 9.1.4
 
