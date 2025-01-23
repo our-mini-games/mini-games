@@ -41,12 +41,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd packages/2048
+          cd ./packages/2048
           pnpm install
 
       - name: Build 2048 Page
         run: |
-          cd packages/2048
+          cd ./packages/2048
           pnpm run build
 
       - name: Setup Pages
@@ -56,7 +56,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload entire repository
-          path: packages/2048/dist
+          path: ./packages/2048/dist
 
       - name: Deploy to GitHub Pages
         id: deployment
