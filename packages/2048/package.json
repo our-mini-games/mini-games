@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "hammerjs": "^2.0.8",
+    "lodash": "^4.17.21",
     "lodash.clonedeep": "^4.5.0",
     "vue": "^3.2.41"
   },
