@@ -25,9 +25,9 @@ concurrency:
 jobs:
   # Single deploy job since we're just deploying
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    #environment:
+    #  name: github-pages
+    #  url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -51,64 +51,10 @@ jobs:
           mkdir dist/games
           cp dist/index.html dist/404.html
 
-      - name: Build 2048 Page
-        run: |
-          cd ./packages/2048
-          pnpm install
-          pnpm run build
-          mv dist ../entry/dist/games/2048
 
-      - name: Build Chinese-chess Page
-        run: |
-          cd ./packages/Chinese-chess
-          pnpm install
-          pnpm run build
-          mv dist ../entry/dist/games/Chinese-chess
-
-      - name: Build Tetris Page
-        run: |
-          cd ./packages/tetris
-          pnpm install
-          pnpm run build
-          mv dist ../entry/dist/games/tetris
-
-      - name: Build Spider-solitaire Page
-        run: |
-          cd ./packages/spider-solitaire
-          pnpm install
-          pnpm run build
-          mv dist ../entry/dist/games/spider-solitaire
-
-      - name: Build Mine-sweeper Page
-        run: |
-          cd ./packages/mine-sweeper
-          pnpm install
-          pnpm run build
-          mv dist ../entry/dist/games/mine-sweeper
-
-      - name: Build Link-game Page
-        run: |
-          cd ./packages/link-game
-          pnpm install
-          pnpm run build
-          mv dist ../entry/dist/games/link-game
-
-      - name: Build Greed-snake Page
-        run: |
-          cd ./packages/greed-snake
-          pnpm install
-          pnpm run build
-          mv dist ../entry/dist/games/greed-snake
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+      - name: Deploy entry to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          # Upload entire repository
-          path: packages/entry/dist
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: packages/entry/dist
+          destination_dir: "/entry"
