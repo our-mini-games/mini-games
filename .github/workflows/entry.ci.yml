@@ -48,6 +48,8 @@ jobs:
         run: |
           cd ./packages/entry
           pnpm run build
+          mkdir dist/games
+          cp dist/index.html dist/404.html
 
       - name: Build 2048 Page
         run: |
