@@ -25,28 +25,27 @@ concurrency:
 jobs:
   # Single deploy job since we're just deploying
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Checkout pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+      - uses: pnpm/action-setup@v2
         with:
           version: 7.13.4
 
       - name: Install dependencies
         run: |
-          cd packages/link-game
+          cd ./packages/link-game
           pnpm install
 
       - name: Build link-game Page
         run: |
-          cd packages/link-game
+          cd ./packages/link-game
           pnpm run build
+          mv dist ../entry/dist/games/link-game
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
@@ -55,8 +54,5 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload entire repository
-          path: packages/link-game/dist
+          path: ./packages/link-game/dist
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
