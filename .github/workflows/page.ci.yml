@@ -28,9 +28,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - name: Checkout pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+      - uses: pnpm/action-setup@v2
         with:
           version: 7.13.4
       # 构建入口项目
