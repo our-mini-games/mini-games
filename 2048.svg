@@ -1,0 +1,19 @@
+<svg width="142" height="142" viewBox="0 0 142 142" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: rgb(252, 249, 223)">
+  <g transform="translate(4, 4)">
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" rx="4" ry="4" width="64" height="64" stroke="transparent" fill="rgb(249, 225, 173)" />
+      <text text-anchor="middle" dominant-baseline="central" font-size="32" transform="translate(32, 32)" fill="#333" font-weight="700">2</text>
+    </g>
+    <g transform="translate(68, 0)">
+      <rect x="0" y="0" rx="4" ry="4" width="64" height="64" stroke="transparent" fill="rgb(250, 229, 184)" />
+    </g>
+    <g transform="translate(0, 68)">
+      <rect x="0" y="0" rx="4" ry="4" width="64" height="64" stroke="transparent" fill="rgb(252, 223, 160)" />
+      <text text-anchor="middle" dominant-baseline="central" font-size="32" transform="translate(32, 32)" fill="#333" font-weight="700">4</text>
+    </g>
+    <g transform="translate(68, 68)">
+      <rect x="0" y="0" rx="4" ry="4" width="64" height="64" stroke="transparent" fill="rgb(247, 186, 121)" />
+      <text class="grid-text" text-anchor="middle" dominant-baseline="central" font-size="32" transform="translate(32, 32)" fill="#333" font-weight="700">8</text>
+    </g>
+  </g>
+</svg>
