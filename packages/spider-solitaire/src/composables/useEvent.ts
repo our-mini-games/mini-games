@@ -1,21 +1,22 @@
-import { Ref } from 'vue'
+import { ComputedRef, Ref } from 'vue'
 import { canICollectIt, canIDropIt, canSolitairesMove } from '../lib/validator'
-import { SolitaireGroupItem } from '../types'
-import { solitaireSize } from '../config'
+import { SolitaireGroupItem, WindowSize } from '../types'
 import { MovingGroupRecord, SolitaireGroup, SolitaireReturnType } from './useSolitaire'
+import { getIntersectionRate } from '../lib/helper'
 
 export interface UseEventReturnType {
-  isDraging: Ref<boolean>
+  isDragging: Ref<boolean>
   handleMousedown: (e: MouseEvent, solitaires: SolitaireGroupItem[], index: number) => void
 }
 
 export default (
   dropTargetClassName: string,
   svgRef: Ref<SVGAElement | undefined>,
-  movingSolitaireRef: Ref<SVGAElement[]>,
+  movingSolitaireRef: Ref<any[]>,
   activeGroup: Ref<SolitaireGroup>,
   movingGroup: Ref<MovingGroupRecord>,
   inAnimation: Ref<boolean>,
+  windowSize: ComputedRef<WindowSize>,
   dropIt: SolitaireReturnType['dropIt'],
   collectIt: SolitaireReturnType['collectIt']
 ): UseEventReturnType => {
@@ -30,18 +31,18 @@ export default (
   // 被移动牌组处于 activateGroup 中的索引位置
   let sourceIdx = -1
 
-  const isDraging = ref(false)
+  const isDragging = ref(false)
 
   const handleMousedown = (e: MouseEvent, solitaires: SolitaireGroupItem[], index: number): void => {
     if (!inAnimation.value && canSolitairesMove(solitaires, index)) {
-      startPosition.left = e.clientX
-      startPosition.top = e.clientY
+      startPosition.left = windowSize.value.isRotate ? e.clientY : e.clientX
+      startPosition.top = windowSize.value.isRotate ? (windowSize.value.width - e.clientX) : e.clientY
 
       targetSolitaire = solitaires[index]
 
       movingGroup.value = {
         index: activeGroup.value.indexOf(solitaires),
-        sIndex: index,
+        subIndex: index,
         source: solitaires,
         solitaires: solitaires.slice(index)
       }
@@ -50,7 +51,7 @@ export default (
 
       sourceIdx = activeGroup.value.indexOf(solitaires)
 
-      isDraging.value = true
+      isDragging.value = true
 
       window.addEventListener('mousemove', handleMousemove, false)
       window.addEventListener('mouseup', handleMouseup, false)
@@ -67,33 +68,37 @@ export default (
       clientY
     } = e
 
+    const x = windowSize.value.isRotate ? clientY : clientX
+    const y = windowSize.value.isRotate ? (windowSize.value.width - clientX) : clientY
+
     movingSolitaireRef.value.forEach(target => {
-      target.style.transform = `translate(${clientX - startPosition.left}px, ${clientY - startPosition.top}px)`
+      target.style.transform = `translate(${(x - startPosition.left) / windowSize.value.scale}px, ${(y - startPosition.top) / windowSize.value.scale}px)`
     })
   }
 
   const handleMouseup = (e: MouseEvent): void => {
+    window.removeEventListener('mousemove', handleMousemove, false)
+    window.removeEventListener('mouseup', handleMouseup, false)
     // 获取鼠标最后所在位置是否在牌组区域（每组牌最后一张的位置）
-    const {
-      clientX,
-      clientY
-    } = e
-
-    const { width, height } = solitaireSize
-
     const dropTargets = document.querySelectorAll<SVGAElement>(`.${dropTargetClassName}`)
+
+    const movingRect = movingSolitaireRef.value[0].getBoundingClientRect()
 
     let isDrop = false
     let collectableIndex = -1
 
     for (let i = 0; i < dropTargets.length; i++) {
-      const { left, top } = dropTargets[i].getBoundingClientRect()
+      // 跳过当前牌组
+      if (i === sourceIdx) {
+        continue
+      }
 
-      if (
-        clientX >= left && clientX <= (left + width) &&
-        clientY >= top && clientY <= (top + height) &&
-        canIDropIt(activeGroup.value[i], targetSolitaire!)
-      ) {
+      const intersectionRate = getIntersectionRate(movingRect, dropTargets[i].getBoundingClientRect())
+
+      if (intersectionRate > 0.5) {
+        if (!canIDropIt(activeGroup.value[i], targetSolitaire!)) {
+          break
+        }
         dropIt(i, sourceIdx, movingGroup.value.solitaires)
         isDrop = true
 
@@ -104,7 +109,7 @@ export default (
       }
     }
 
-    isDraging.value = false
+    isDragging.value = false
 
     if (!isDrop) {
       // 没有放置成功，需要把临时被移动的数据都还原回去
@@ -118,13 +123,10 @@ export default (
     if (collectableIndex !== -1) {
       collectIt(collectableIndex)
     }
-
-    window.removeEventListener('mousemove', handleMousemove, false)
-    window.removeEventListener('mouseup', handleMouseup, false)
   }
 
   return {
-    isDraging,
+    isDragging,
     handleMousedown
   }
 }

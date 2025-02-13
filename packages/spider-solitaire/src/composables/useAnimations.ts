@@ -1,8 +1,8 @@
 import UnitPath from 'unit-path'
-import { Ref } from 'vue'
-import { gap, SolitaireNumber, solitaireSize, SolitaireSuits } from '../config'
+import { ComputedRef, Ref } from 'vue'
+import { SolitaireNumber, solitaireSize, SolitaireSuits } from '../config'
 import { getOpenedSolitaireTop } from '../lib/helper'
-import { SolitaireGroupItem } from '../types'
+import { SolitaireGroupItem, WindowSize } from '../types'
 import { SolitaireGroup } from './useSolitaire'
 
 interface UseAnimationsReturnType {
@@ -22,10 +22,20 @@ export interface AnimationSolitaire {
 
 export default (
   activeGroup: Ref<SolitaireGroup>,
-  deactiveGroup: Ref<SolitaireGroup>,
-  collectedGroup: Ref<SolitaireGroup>
+  inactiveGroup: Ref<SolitaireGroup>,
+  collectedGroup: Ref<SolitaireGroup>,
+  windowSize: ComputedRef<WindowSize>
 ): UseAnimationsReturnType => {
   const unitPath = new UnitPath()
+
+  const {
+    unopenedGroupGap,
+    openedGroupGap,
+    padding,
+    viewBoxHeight,
+    activeAreaSize,
+    inactiveAreaSize
+  } = windowSize.value
 
   const animationSolitaire = ref<AnimationSolitaire>({
     visible: false,
@@ -47,16 +57,20 @@ export default (
      */
     // eslint-disable-next-line @typescript-eslint/promise-function-async
     const runDealAnimation = (index: number): Promise<void> => {
-      const sourceSolitaires = deactiveGroup.value.at(-1)![index]
-      const { length } = deactiveGroup.value
+      const sourceSolitaires = inactiveGroup.value.at(-1)![index]
+      const { length } = inactiveGroup.value
 
       const targetSolitaire = activeGroup.value[index]
 
-      const targetLeft = 17 + index * (gap.group + solitaireSize.width)
-      const targetTop = getOpenedSolitaireTop(targetSolitaire, targetSolitaire.length)
+      const targetLeft = index * (activeAreaSize.gap + solitaireSize.width)
+      const targetTop = getOpenedSolitaireTop(targetSolitaire, targetSolitaire.length, unopenedGroupGap, openedGroupGap)
 
-      const sourceLeft = 800 - 17 - solitaireSize.width * 5 - gap.unopened * 4 + (solitaireSize.width + gap.unopened) * (5 - length)
-      const sourceTop = 600 - 20 - solitaireSize.height
+      const sourceLeft = Math.floor(activeAreaSize.width - inactiveAreaSize.width) +
+        (5 - length) * (inactiveAreaSize.gap + solitaireSize.width)
+      const sourceTop =
+        viewBoxHeight -
+        padding.top * 2 -
+        solitaireSize.height
 
       animationSolitaire.value = {
         visible: true,
@@ -104,21 +118,19 @@ export default (
   } = (() => {
     let requestId = 0
 
-    // collectedGroup.value.push(activeGroup.value[index].splice(-13, 13))
-
     // eslint-disable-next-line @typescript-eslint/promise-function-async
     const runCollectAnimation = async (index: number): Promise<void> => {
       const sourceSolitaires = activeGroup.value[index]
       const { length } = collectedGroup.value
 
-      const targetLeft = 17 + gap.opened * length
-      const targetTop = 600 - 20 - solitaireSize.height
+      const targetLeft = openedGroupGap * length
+      const targetTop = viewBoxHeight - solitaireSize.height
 
       let last: SolitaireGroupItem
 
       for (let i = 0; i < 13; i++) {
-        const sourceLeft = 17 + index * (gap.group + solitaireSize.width)
-        const sourceTop = getOpenedSolitaireTop(sourceSolitaires, sourceSolitaires.length - 1)
+        const sourceLeft = padding.left + index * (activeAreaSize.gap + solitaireSize.width)
+        const sourceTop = getOpenedSolitaireTop(sourceSolitaires, sourceSolitaires.length - 1, unopenedGroupGap, openedGroupGap)
 
         last = sourceSolitaires.pop()!
 
