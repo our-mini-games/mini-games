@@ -1,4 +1,4 @@
-import { GameMode, gap, SolitaireNumber, SolitaireSuits } from '../config'
+import { GameMode, SolitaireNumber, SolitaireSuits } from '../config'
 import { SolitaireGroupItem } from '../types'
 
 /**
@@ -25,7 +25,7 @@ export function shuffle <T extends any[] = []> (input: T): T {
 
 export const initializeTheGame = (mode: GameMode): {
   activeGroup: SolitaireGroupItem[][]
-  deactiveGroup: SolitaireGroupItem[][]
+  inactiveGroup: SolitaireGroupItem[][]
 } => {
   let suits: SolitaireSuits[] = []
 
@@ -46,7 +46,7 @@ export const initializeTheGame = (mode: GameMode): {
     return prev.concat(getNumbers(suit))
   }, []))
 
-  const { activeGroup, deactiveGroup } = groupedSolitaire(items)
+  const { activeGroup, inactiveGroup } = groupedSolitaire(items)
 
   // 打开活跃牌组中每一叠中的最后一张牌
   activeGroup.forEach(item => {
@@ -55,7 +55,7 @@ export const initializeTheGame = (mode: GameMode): {
 
   return {
     activeGroup,
-    deactiveGroup
+    inactiveGroup
   }
 }
 
@@ -85,10 +85,10 @@ const getNumbers = (suit: SolitaireSuits): SolitaireGroupItem[] => {
 
 const groupedSolitaire = (items: SolitaireGroupItem[]): {
   activeGroup: SolitaireGroupItem[][]
-  deactiveGroup: SolitaireGroupItem[][]
+  inactiveGroup: SolitaireGroupItem[][]
 } => {
   const activeGroup: SolitaireGroupItem[][] = []
-  const deactiveGroup: SolitaireGroupItem[][] = []
+  const inactiveGroup: SolitaireGroupItem[][] = []
 
   // 前四叠每叠6张，后六叠每叠5张
   for (let i = 0; i < 10; i++) {
@@ -100,12 +100,12 @@ const groupedSolitaire = (items: SolitaireGroupItem[]): {
   }
 
   for (let i = 0; i < 5; i++) {
-    deactiveGroup.push(items.splice(0, 10))
+    inactiveGroup.push(items.splice(0, 10))
   }
 
   return {
     activeGroup,
-    deactiveGroup
+    inactiveGroup
   }
 }
 
@@ -118,7 +118,30 @@ const arrayRepeat = <T = unknown>(arr: T[], times: number): T[] => {
   return newArr
 }
 
-export const getOpenedSolitaireTop = (group: SolitaireGroupItem[], index: number): number => {
+export const getOpenedSolitaireTop = (group: SolitaireGroupItem[], index: number, unopenedGroupGap: number, openedGroupGap: number): number => {
   const unopenedLength = group.filter(item => !item.isOpen).length
-  return (unopenedLength) * gap.unopened + (index - unopenedLength) * gap.opened
+  return (unopenedLength) * unopenedGroupGap + (index - unopenedLength) * openedGroupGap
+}
+
+// 计算两个矩形的交叉率
+export const getIntersectionRate = (rect1: { x: number, y: number, width: number, height: number }, rect2: { x: number, y: number, width: number, height: number }): number => {
+  // 计算交叉区域的左上角和右下角
+  const xLeft = Math.max(rect1.x, rect2.x)
+  const yTop = Math.max(rect1.y, rect2.y)
+  const xRight = Math.min(rect1.x + rect1.width, rect2.x + rect2.width)
+  const yBottom = Math.min(rect1.y + rect1.height, rect2.y + rect2.height)
+
+  // 判断是否有交叉
+  const intersectionWidth = Math.max(0, xRight - xLeft)
+  const intersectionHeight = Math.max(0, yBottom - yTop)
+
+  // 计算交叉面积
+  const intersectionArea = intersectionWidth * intersectionHeight
+
+  // 计算矩形1和矩形2的面积
+  const area1 = rect1.width * rect1.height
+  const area2 = rect2.width * rect2.height
+
+  // 交叉面积和两个矩形面积的比值（交叉率）
+  return intersectionArea / Math.min(area1, area2)
 }

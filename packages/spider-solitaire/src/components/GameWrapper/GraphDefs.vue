@@ -1,48 +1,154 @@
 <template>
   <svg class="defs">
     <defs>
+      <!-- 渐变 -->
+      <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:rgb(255,0,255);stop-opacity:1" /> <!-- 紫色 -->
+        <stop offset="25%" style="stop-color:rgb(0,255,255);stop-opacity:1" /> <!-- 青色 -->
+        <stop offset="50%" style="stop-color:rgb(255,165,0);stop-opacity:1" /> <!-- 橙色 -->
+        <stop offset="75%" style="stop-color:rgb(255,0,0);stop-opacity:1" /> <!-- 红色 -->
+        <stop offset="100%" style="stop-color:rgb(255,20,147);stop-opacity:1" /> <!-- 深粉色 -->
+      </linearGradient>
+
+      <!-- 外部裁剪 -->
+      <clipPath id="clip-path-solitaire">
+        <rect
+          :x="0"
+          :y="0"
+          :width="solitaireSize.width"
+          :height="solitaireSize.height"
+          :rx="solitaireSize.radius"
+          :ry="solitaireSize.radius"
+        />
+      </clipPath>
+
+      <!-- 内部裁剪 -->
+      <clipPath id="inner-clip-path-solitaire">
+        <rect
+          :x="solitaireSize.radius / 2"
+          :y="solitaireSize.radius / 2"
+          :width="solitaireSize.width - solitaireSize.radius"
+          :height="solitaireSize.height - solitaireSize.radius"
+          :rx="solitaireSize.radius"
+          :ry="solitaireSize.radius"
+        />
+      </clipPath>
+
+      <!-- 空牌面 -->
       <rect
         id="empty-solitaire"
         x="0"
         y="0"
         :width="solitaireSize.width"
         :height="solitaireSize.height"
-        rx="4"
-        ry="4"
-        stroke="#0088ff"
-        fill="none"
+        :rx="solitaireSize.radius"
+        :ry="solitaireSize.radius"
+        :stroke="colors.border"
+        :fill="colors.background"
       />
 
+      <!-- 可放置区域 -->
       <rect
         id="drop-target"
         x="0"
         y="0"
         :width="solitaireSize.width"
         :height="solitaireSize.height"
-        rx="4"
-        ry="4"
-        stroke="none"
-        fill="rgba(200, 50, 50, .1)"
-      />
+        :rx="solitaireSize.radius"
+        :ry="solitaireSize.radius"
+        stroke-dasharray="20 5"
+        stroke="url(#grad1)"
+        fill="none"
+      >
+        <animate
+          attributeName="stroke-dashoffset"
+          from="0"
+          to="25"
+          dur="0.5s"
+          repeatCount="indefinite"
+        />
+      </rect>
 
       <!-- 未开启牌面 -->
       <g id="unopened-solitaire">
         <rect
-          x="0"
-          y="0"
+          :x="0"
+          :y="0"
           :width="solitaireSize.width"
           :height="solitaireSize.height"
-          rx="4"
-          ry="4"
-          fill="#0088ff"
-          stroke="#333"
+          :rx="solitaireSize.radius"
+          :ry="solitaireSize.radius"
+          fill="none"
+          :stroke="colors.border"
+        />
+        <g clip-path="url(#inner-clip-path-solitaire)">
+          <rect
+            :x="0"
+            :y="0"
+            :width="solitaireSize.width"
+            :height="solitaireSize.height"
+            :rx="solitaireSize.radius"
+            :ry="solitaireSize.radius"
+            :fill="colors.primary"
+            :stroke="colors.border"
+          />
+          <g v-for="i of Math.floor((solitaireSize.width + solitaireSize.height) / solitaireSize.radius)" :key="i">
+            <line
+              :x1="i * solitaireSize.radius < solitaireSize.width ? i * solitaireSize.radius : solitaireSize.width"
+              :y1="i * solitaireSize.radius < solitaireSize.width ? 0 : (i * solitaireSize.radius - solitaireSize.width)"
+              :x2="i * solitaireSize.radius < solitaireSize.height ? 0 : (i * solitaireSize.radius - solitaireSize.height)"
+              :y2="i * solitaireSize.radius < solitaireSize.height ? i * solitaireSize.radius : solitaireSize.height"
+              :stroke="'#fff'"
+            />
+          </g>
+          <g
+            v-for="j of Math.floor((solitaireSize.width + solitaireSize.height) / solitaireSize.radius)"
+            :key="j"
+          >
+            <line
+              :x1="j * solitaireSize.radius < solitaireSize.height ? 0 : (j * solitaireSize.radius - solitaireSize.height)"
+              :y1="j * solitaireSize.radius < solitaireSize.height ? (solitaireSize.height - j * solitaireSize.radius) : 0"
+              :x2="j * solitaireSize.radius < solitaireSize.width ? j * solitaireSize.radius : solitaireSize.width"
+              :y2="j * solitaireSize.radius < solitaireSize.width ? solitaireSize.height : (solitaireSize.height - (j * solitaireSize.radius - solitaireSize.width))"
+              :stroke="'#fff'"
+            />
+          </g>
+          <!-- <g
+            v-for="m of 2"
+            :key="m"
+            :transform="`rotate(${180 * (m - 1)}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+          >
+            <g v-for="n of Math.floor((solitaireSize.width + solitaireSize.height) / solitaireSize.radius)" :key="j">
+              <line
+                :x1="0"
+                :y1="n * solitaireSize.radius"
+                :x2="n * solitaireSize.radius"
+                :y2="solitaireSize.height"
+                :stroke="'#fff'"
+              />
+            </g>
+          </g> -->
+        </g>
+        <circle
+          :cx="solitaireSize.width / 2"
+          :cy="solitaireSize.height / 2"
+          :r="solitaireSize.width * 0.3"
+          :fill="colors.primary"
+        />
+        <circle
+          :cx="solitaireSize.width / 2"
+          :cy="solitaireSize.height / 2"
+          :r="solitaireSize.width * 0.25"
+          fill="none"
+          stroke="#fff"
+          stroke-width="2"
         />
         <image
           :xlink:href="`${PATHNAME}spider.svg`"
-          width="40"
-          height="40"
-          :x="(solitaireSize.width - 40) / 2"
-          :y="(solitaireSize.height - 40) / 2"
+          :width="solitaireSize.width * 0.36"
+          :height="solitaireSize.height * 0.36"
+          :x="(solitaireSize.width - solitaireSize.width * 0.36) / 2"
+          :y="(solitaireSize.height - solitaireSize.height * 0.36) / 2"
         />
       </g>
 
@@ -53,24 +159,24 @@
         y="0"
         :width="solitaireSize.width"
         :height="solitaireSize.height"
-        rx="4"
-        ry="4"
+        :rx="solitaireSize.radius"
+        :ry="solitaireSize.radius"
         fill="#fff"
-        stroke="#333"
+        :stroke="colors.border"
       />
 
       <!-- 花色 -->
       <svg id="suit-spade" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
-        <path d="M109.787429 607.36c0 101.997714 78.848 181.284571 181.284571 181.284571 56.996571 0 115.291429-18.852571 140.562286-68.992h4.297143c0 56.996571-62.573714 104.137143-87.862858 130.706286-30.866286 32.146286-11.995429 76.708571 27.849143 76.708572h272.146286c39.424 0 58.294857-44.562286 27.428571-76.708572-25.289143-26.569143-87.844571-73.709714-87.844571-130.706286h4.699429c24.868571 50.139429 83.565714 68.992 140.16 68.992 102.418286 0 181.705143-79.286857 181.705142-181.284571 0-192-255.433143-273.005714-357.851428-479.579429-8.576-17.554286-21.869714-30.848-44.580572-30.848-22.710857 0-35.565714 13.275429-44.562285 30.848C364.781714 334.354286 109.787429 415.36 109.787429 607.36z" />
+        <path d="M540.672 73.728c-16.384-15.701333-41.642667-15.701333-58.026667 0-84.650667 80.554667-326.314667 313.344-364.544 355.669333-34.133333 37.546667-55.978667 86.698667-55.978666 141.312 0 123.562667 96.256 221.866667 217.088 222.549334 64.170667 0 122.197333-27.306667 162.474666-71.68 0 64.170667-1.365333 92.16-92.16 132.437333-24.576 10.922667-38.912 38.229333-32.768 64.170667 5.461333 25.258667 28.672 43.690667 54.613334 43.690666h279.893333c27.306667 0 51.2-19.114667 56.661333-45.738666 4.778667-25.941333-8.192-51.2-32.085333-62.122667-90.794667-40.277333-92.842667-66.901333-92.842667-133.12 40.96 45.056 101.034667 73.728 167.253334 71.68 118.784-2.730667 212.309333-98.986667 212.309333-217.770667 0-56.661333-21.162667-107.861333-55.978667-146.090666-38.912-41.642667-281.258667-274.432-365.909333-354.986667z"></path>
       </svg>
       <svg id="suit-heart" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
-        <path d="M923 283.6c-13.4-31.1-32.6-58.9-56.9-82.8-24.3-23.8-52.5-42.4-84-55.5-32.5-13.5-66.9-20.3-102.4-20.3-49.3 0-97.4 13.5-139.2 39-10 6.1-19.5 12.8-28.5 20.1-9-7.3-18.5-14-28.5-20.1-41.8-25.5-89.9-39-139.2-39-35.5 0-69.9 6.8-102.4 20.3-31.4 13-59.7 31.7-84 55.5-24.4 23.9-43.5 51.7-56.9 82.8-13.9 32.3-21 66.6-21 101.9 0 33.3 6.8 68 20.3 103.3 11.3 29.5 27.5 60.1 48.2 91 32.8 48.9 77.9 99.9 133.9 151.6 92.8 85.7 184.7 144.9 188.6 147.3l23.7 15.2c10.5 6.7 24 6.7 34.5 0l23.7-15.2c3.9-2.5 95.7-61.6 188.6-147.3 56-51.7 101.1-102.7 133.9-151.6 20.7-30.9 37-61.5 48.2-91 13.5-35.3 20.3-70 20.3-103.3 0.1-35.3-7-69.6-20.9-101.9z" />
+        <path d="M735.232 104.448C641.706667 104.448 554.325333 177.493333 512 219.136 469.674667 177.493333 382.293333 104.448 288.768 104.448 129.706667 104.448 34.133333 197.290667 34.133333 352.938667 34.133333 480.597333 151.552 587.093333 155.648 590.506667L484.010667 907.946667c15.701333 15.018667 40.277333 15.018667 55.296 0l327.68-316.757334c4.778667-4.778667 122.197333-111.274667 122.197333-238.933333 0.682667-154.965333-94.890667-247.808-253.952-247.808z"></path>
       </svg>
       <svg id="suit-club" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
-        <path d="M753.56 407.204c-51.876 0-98.514 21.618-131.706 56.862-14.058 14.922-38.466 32.616-64.872 48.168 12.402-47.34 51.57-106.956 78.768-133.11 34.848-33.552 56.232-80.712 56.232-133.146 0-100.98-80.406-182.898-179.982-183.978-99.594 1.08-180 82.998-180 183.978 0 52.452 21.402 99.612 56.232 133.146 27.198 26.154 66.366 85.77 78.768 133.11-26.406-15.552-50.814-33.246-64.872-48.168-33.192-35.244-79.83-56.862-131.706-56.862-100.53 0-181.998 82.314-181.998 183.978 0 101.628 81.468 183.996 181.998 183.996 51.894 0 98.514-22.284 131.706-57.528 14.778-15.714 40.824-35.28 68.814-51.534-2.646 129.816-64.62 225.144-127.728 262.71l0 33.174 337.518 0 0-33.174c-63.09-37.566-125.082-132.912-127.728-262.71 27.99 16.254 54.036 35.838 68.814 51.534 33.192 35.244 79.812 57.528 131.706 57.528 100.53 0 181.998-82.35 181.998-183.996 0-101.664-81.468-183.978-181.998-183.978z" />
+        <path d="M714.752 359.082667C770.730667 217.770667 666.282667 62.122667 512 62.122667S253.952 217.770667 309.248 359.082667C177.493333 342.016 62.122667 443.733333 62.122667 575.488c0 120.149333 97.621333 217.770667 217.770666 217.770667 64.170667 0 121.514667-27.989333 161.792-71.68 0 64.170667-1.365333 92.16-92.842666 133.12-24.576 10.922667-37.546667 36.864-32.085334 62.805333 5.461333 25.941333 28.672 44.373333 55.296 44.373333h281.258667c26.624 0 49.834667-18.432 55.296-44.373333 5.461333-25.941333-8.192-51.882667-32.085333-62.805333-90.794667-40.277333-92.842667-66.901333-92.842667-133.12 39.594667 44.373333 97.621333 71.68 161.792 71.68 120.149333 0 217.770667-97.621333 217.770667-217.770667-1.365333-131.754667-117.418667-233.472-248.490667-216.405333z"></path>
       </svg>
       <svg id="suit-diamond" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
-        <path d="M512 62L230.75 512l281.25 450 281.25-450z" />
+        <path d="M544.085333 77.141333c-17.066667-19.797333-47.104-19.797333-64.170666 0L128.341333 484.693333c-13.653333 15.701333-13.653333 38.912 0 55.296l351.573334 407.552c17.066667 19.797333 47.104 19.797333 64.170666 0L895.658667 539.306667c13.653333-15.701333 13.653333-38.912 0-55.296L544.085333 77.141333z"></path>
       </svg>
 
       <!-- 牌型 -->
@@ -89,365 +195,180 @@
           <use
             xlink:href="#opened-solitaire"
           />
+          <!-- 图案 -->
           <g name="suits">
             <!-- Ace -->
             <g v-if="number === SolitaireNumber.ace">
               <use
                 :xlink:href="`#suit-${suit}`"
-                width="32"
-                height="32"
-                :x="(solitaireSize.width - 32) / 2"
-                :y="(solitaireSize.height - 32) / 2"
+                :x="solitaireSize.patternArea.center.x - solitaireSize.patternSize.xxl / 2"
+                :y="solitaireSize.patternArea.center.y - solitaireSize.patternSize.xxl / 2"
+                :width="solitaireSize.patternSize.xxl"
+                :height="solitaireSize.patternSize.xxl"
               />
             </g>
-            <!-- 2 -->
-            <g v-else-if="number === SolitaireNumber.two">
+            <!-- 2, 3 -->
+            <g v-else-if="[SolitaireNumber.two, SolitaireNumber.three].includes(number)">
               <use
                 v-for="n in 2"
                 :key="n"
                 :xlink:href="`#suit-${suit}`"
-                width="16"
-                height="16"
-                :x="(solitaireSize.width - 16) / 2"
-                :y="8"
-                :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-              />
-            </g>
-            <!-- 3 -->
-            <g v-else-if="number === SolitaireNumber.three">
-              <use
-                v-for="n in 2"
-                :key="n"
-                :xlink:href="`#suit-${suit}`"
-                width="16"
-                height="16"
-                :x="(solitaireSize.width - 16) / 2"
-                :y="8"
-                :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                :x="solitaireSize.patternArea.center.x - solitaireSize.patternSize.xl / 2"
+                :y="solitaireSize.padding.top"
+                :width="solitaireSize.patternSize.xl"
+                :height="solitaireSize.patternSize.xl"
+                :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.patternArea.center.x}, ${solitaireSize.patternArea.center.y})`"
               />
               <use
+                v-if="number === SolitaireNumber.three"
                 :xlink:href="`#suit-${suit}`"
-                width="16"
-                height="16"
-                :x="(solitaireSize.width - 16) / 2"
-                :y="(solitaireSize.height - 16) / 2"
-              />
+                :x="solitaireSize.patternArea.center.x - solitaireSize.patternSize.xl / 2"
+                :y="solitaireSize.patternArea.center.y -  solitaireSize.patternSize.xl / 2"
+                :width="solitaireSize.patternSize.xl"
+                :height="solitaireSize.patternSize.xl"
+                />
             </g>
-            <!-- 4 -->
-            <g v-else-if="number === SolitaireNumber.four">
-              <template
+            <!-- 4, 5 -->
+            <g v-else-if="[SolitaireNumber.four, SolitaireNumber.five].includes(number)">
+              <g
                 v-for="n in 2"
                 :key="n"
+                :transform="`rotate(${180 * (n - 1)}, ${solitaireSize.patternArea.center.x}, ${solitaireSize.patternArea.center.y})`"
+              >
+                <g v-for="j in 2" :key="j">
+                  <use
+                    :xlink:href="`#suit-${suit}`"
+                    :x="solitaireSize.padding.left + (j - 1) * (solitaireSize.patternGaps.lg2x + solitaireSize.patternSize.lg)"
+                    :y="solitaireSize.padding.top"
+                    :width="solitaireSize.patternSize.lg"
+                    :height="solitaireSize.patternSize.lg"
+                  />
+                </g>
+              </g>
+              <use
+                v-if="number === SolitaireNumber.five"
+                :xlink:href="`#suit-${suit}`"
+                :x="solitaireSize.patternArea.center.x - solitaireSize.patternSize.lg / 2"
+                :y="solitaireSize.patternArea.center.y -  solitaireSize.patternSize.lg / 2"
+                :width="solitaireSize.patternSize.lg"
+                :height="solitaireSize.patternSize.lg"
+              />
+            </g>
+
+            <!-- 6, 7, 8 -->
+            <g v-else-if="[SolitaireNumber.six, SolitaireNumber.seven, SolitaireNumber.eight].includes(number)">
+              <!-- 上2/下2 -->
+              <g
+                v-for="i in 2" :key="i"
+                :transform="`rotate(${180 * (i - 1)}, ${solitaireSize.patternArea.center.x}, ${solitaireSize.patternArea.center.y})`"
+              >
+                <g v-for="j in 2" :key="j">
+                  <use
+                    :xlink:href="`#suit-${suit}`"
+                    :x="solitaireSize.padding.left + (j - 1) * (solitaireSize.patternGaps.lg2x + solitaireSize.patternSize.lg)"
+                    :y="solitaireSize.padding.top"
+                    :width="solitaireSize.patternSize.lg"
+                    :height="solitaireSize.patternSize.lg"
+                  />
+                </g>
+              </g>
+
+              <!-- x中2 -->
+              <g v-for="k in 2" :key="k">
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  :x="solitaireSize.padding.left + (k - 1) * (solitaireSize.patternGaps.lg2x + solitaireSize.patternSize.lg)"
+                  :y="solitaireSize.patternArea.center.y -  solitaireSize.patternSize.lg / 2"
+                  :width="solitaireSize.patternSize.lg"
+                  :height="solitaireSize.patternSize.lg"
+                />
+              </g>
+
+              <!-- y中2 -->
+              <g v-for="i in (number === SolitaireNumber.seven ? 1 : number === SolitaireNumber.eight ? 2 : 0)" :key="i">
+                <use
+                  :xlink:href="`#suit-${suit}`"
+                  :x="solitaireSize.patternArea.center.x - solitaireSize.patternSize.lg / 2"
+                  :y="solitaireSize.padding.top + ((solitaireSize.patternArea.height - 2 * solitaireSize.patternSize.lg) / 3)"
+                  :width="solitaireSize.patternSize.lg"
+                  :height="solitaireSize.patternSize.lg"
+                  :transform="`rotate(${180 * (i - 1)}, ${solitaireSize.patternArea.center.x}, ${solitaireSize.patternArea.center.y})`"
+                />
+              </g>
+            </g>
+
+            <!-- 9, 10 -->
+            <g v-else-if="[SolitaireNumber.nine, SolitaireNumber.ten].includes(number)">
+              <!-- 上四/下四 -->
+              <g
+                v-for="i in 2"
+                :key="i"
+                :transform="`rotate(${180 * (i - 1)}, ${solitaireSize.patternArea.center.x}, ${solitaireSize.patternArea.center.y})`"
+              >
+                <g v-for="j in 4" :key="j">
+                  <use
+                    :xlink:href="`#suit-${suit}`"
+                    :x="solitaireSize.padding.left + (solitaireSize.patternSize.md + solitaireSize.patternGaps.md2x) * (j % 2 === 0 ? 1 : 0)"
+                    :y="solitaireSize.padding.top + (solitaireSize.patternGaps.md4y + solitaireSize.patternSize.md) * (j / 2 > 1 ? 1 : 0)"
+                    :width="solitaireSize.patternSize.md"
+                    :height="solitaireSize.patternSize.md"
+                  />
+                </g>
+              </g>
+
+              <!-- 9 中一 -->
+              <use
+                v-if="number === SolitaireNumber.nine"
+                :xlink:href="`#suit-${suit}`"
+                :x="solitaireSize.patternArea.center.x - solitaireSize.patternSize.md / 2"
+                :y="solitaireSize.patternArea.center.y -  solitaireSize.patternSize.md / 2"
+                :width="solitaireSize.patternSize.md"
+                :height="solitaireSize.patternSize.md"
+              />
+
+              <!-- 10 中二 -->
+              <g
+                v-else
+                v-for="i in 2"
+                :key="i"
               >
                 <use
                   :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="12"
-                  :y="8"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
+                  :x="solitaireSize.patternArea.center.x - solitaireSize.patternSize.md / 2"
+                  :y="solitaireSize.padding.top + (solitaireSize.patternGaps.md4y + solitaireSize.patternSize.md * 2) / 2 - solitaireSize.patternSize.md / 2"
+                  :width="solitaireSize.patternSize.md"
+                  :height="solitaireSize.patternSize.md"
+                  :transform="`rotate(${180 * (i - 1)}, ${solitaireSize.patternArea.center.x}, ${solitaireSize.patternArea.center.y})`"
                 />
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="solitaireSize.width - 12 - 16"
-                  :y="8"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-              </template>
+              </g>
             </g>
-            <!-- 5 -->
-            <g v-else-if="number === SolitaireNumber.five">
-              <template
-                v-for="n in 2"
-                :key="n"
-              >
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="12"
-                  :y="8"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="solitaireSize.width - 12 - 16"
-                  :y="8"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-              </template>
-              <use
-                :xlink:href="`#suit-${suit}`"
-                width="16"
-                height="16"
-                :x="(solitaireSize.width - 16) / 2"
-                :y="(solitaireSize.height - 16) / 2"
-              />
-            </g>
-            <!-- 6 -->
-            <g v-else-if="number === SolitaireNumber.six">
-              <template
-                v-for="n in 2"
-                :key="n"
-              >
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="12"
-                  :y="8"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="solitaireSize.width - 12 - 16"
-                  :y="8"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-              </template>
-              <use
-                :xlink:href="`#suit-${suit}`"
-                width="16"
-                height="16"
-                :x="12"
-                :y="(solitaireSize.height - 16) / 2"
-              />
-              <use
-                :xlink:href="`#suit-${suit}`"
-                width="16"
-                height="16"
-                :x="solitaireSize.width - 16 - 12"
-                :y="(solitaireSize.height - 16) / 2"
-              />
-            </g>
-            <!-- 7 -->
-            <g v-else-if="number === SolitaireNumber.seven">
-              <template
-                v-for="n in 2"
-                :key="n"
-              >
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="12"
-                  :y="8"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="solitaireSize.width - 12 - 16"
-                  :y="8"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-              </template>
-              <use
-                :xlink:href="`#suit-${suit}`"
-                width="16"
-                height="16"
-                :x="(solitaireSize.width - 16) / 2"
-                :y="(solitaireSize.height - 16) / 2 - 14"
-              />
-              <use
-                :xlink:href="`#suit-${suit}`"
-                width="16"
-                height="16"
-                :x="12"
-                :y="(solitaireSize.height - 16) / 2"
-              />
-              <use
-                :xlink:href="`#suit-${suit}`"
-                width="16"
-                height="16"
-                :x="solitaireSize.width - 16 - 12"
-                :y="(solitaireSize.height - 16) / 2"
-              />
-            </g>
-            <!-- 8 -->
-            <g v-else-if="number === SolitaireNumber.eight">
-              <template
-                v-for="n in 2"
-                :key="n"
-              >
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="12"
-                  :y="8"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="solitaireSize.width - 12 - 16"
-                  :y="8"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-              </template>
-              <use
-                v-for="n in 2"
-                :key="n"
-                :xlink:href="`#suit-${suit}`"
-                width="16"
-                height="16"
-                :x="(solitaireSize.width - 16) / 2"
-                :y="(solitaireSize.height - 16) / 2 - 14"
-                :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-              />
-              <use
-                :xlink:href="`#suit-${suit}`"
-                width="16"
-                height="16"
-                :x="12"
-                :y="(solitaireSize.height - 16) / 2"
-              />
-              <use
-                :xlink:href="`#suit-${suit}`"
-                width="16"
-                height="16"
-                :x="solitaireSize.width - 16 - 12"
-                :y="(solitaireSize.height - 16) / 2"
-              />
-            </g>
-            <!-- 9 -->
-            <g v-else-if="number === SolitaireNumber.nine">
-              <template
-                v-for="n in 2"
-                :key="n"
-              >
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="12"
-                  :y="8"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="solitaireSize.width - 12 - 16"
-                  :y="8"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-              </template>
-              <template
-                v-for="n in 2"
-                :key="n"
-              >
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="12"
-                  :y="26"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="solitaireSize.width - 12 - 16"
-                  :y="26"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-              </template>
-              <use
-                :xlink:href="`#suit-${suit}`"
-                width="16"
-                height="16"
-                :x="(solitaireSize.width - 16) / 2"
-                :y="(solitaireSize.height - 16) / 2"
-              />
-            </g>
-            <!-- 10 -->
-            <g v-else-if="number === SolitaireNumber.ten">
-              <template
-                v-for="n in 2"
-                :key="n"
-              >
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="12"
-                  :y="8"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="solitaireSize.width - 12 - 16"
-                  :y="8"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-              </template>
-              <template
-                v-for="n in 2"
-                :key="n"
-              >
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="12"
-                  :y="27"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-                <use
-                  :xlink:href="`#suit-${suit}`"
-                  width="16"
-                  height="16"
-                  :x="solitaireSize.width - 12 - 16"
-                  :y="27"
-                  :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-                />
-              </template>
-              <use
-                v-for="n in 2"
-                :key="n"
-                :xlink:href="`#suit-${suit}`"
-                width="16"
-                height="16"
-                :x="(solitaireSize.width - 16) / 2"
-                :y="(solitaireSize.height - 16) / 2 - 18"
-                :transform="`rotate(${n === 1 ? 0 : 180}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-              />
-            </g>
+
+            <!-- Jack, Queen, King -->
             <g v-else>
               <image
                 :xlink:href="`${PATHNAME}${suit}-${number}.png`"
-                x="11"
-                y="8"
-                width="41"
-                height="72"
+                :x="solitaireSize.padding.left"
+                :y="solitaireSize.padding.top"
+                :width="solitaireSize.patternArea.width"
+                :height="solitaireSize.patternArea.height"
               />
             </g>
           </g>
 
+          <!-- 数字和花色 -->
           <g
             v-for="index in 2"
             :key="index"
             :transform="index !== 2 ? '' : `rotate(180, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
           >
             <text
-              x="4"
-              y="4"
+              :x="solitaireSize.fontMargin.left"
+              :y="solitaireSize.fontMargin.top"
+              lengthAdjust="spacingAndGlyphs"
+              :textLength="solitaireSize.font.textLength"
+              :font-size="solitaireSize.font.size"
               dominant-baseline="hanging"
-              text-anchor="auto"
-              :font-size="number === SolitaireNumber.ten ? 9 : 12"
+              text-anchor="start"
               font-weight="bold"
               font-family="Card Characters, Gill Sans, serif"
             >
@@ -455,10 +376,10 @@
             </text>
             <use
               :xlink:href="`#suit-${suit}`"
-              x="4"
-              y="14"
-              :width="suit === SolitaireSuits.diamond ? 10 : 8"
-              :height="suit === SolitaireSuits.diamond ? 10 : 8"
+              :x="solitaireSize.fontMargin.left"
+              :y="solitaireSize.fontMargin.top + solitaireSize.font.size + solitaireSize.fontMargin.bottom"
+              :width="solitaireSize.font.textLength"
+              :height="solitaireSize.font.textLength"
             />
           </g>
         </g>
@@ -468,7 +389,7 @@
 </template>
 
 <script setup lang="ts">
-import { solitaireSize, SolitaireSuits, SolitaireNumber, fillColors } from '../../config'
+import { solitaireSize, SolitaireSuits, SolitaireNumber, fillColors, colors } from '../../config'
 
 const PATHNAME = import.meta.env.VITE_APP_PATHNAME
 
