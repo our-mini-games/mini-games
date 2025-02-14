@@ -1,6 +1,11 @@
 <template>
   <Teleport to="body">
-    <div class="choose-mode-modal">
+    <div
+      class="choose-mode-modal"
+      :style="{
+        transform: windowSize.isRotate ? 'translate(-50%, -50%) rotate(90deg)' : 'translate(-50%, -50%) rotate(0deg)'
+      }"
+    >
       <header class="header">
         <h2 class="title">选择模式</h2>
         <div
@@ -13,7 +18,7 @@
 
       <ul class="mode-list">
         <li
-          v-for="item of list"
+          v-for="item of gameModes"
           :key="item.value"
           class="item"
           :class="{
@@ -29,17 +34,14 @@
 </template>
 
 <script setup lang="ts">
-import { GameMode } from '../../config'
+import { GameMode, gameModes } from '../../config'
+import { useWindow } from '../../composables/useWindow'
 
 const emit = defineEmits<(e: 'close') => void>()
 
-const mode = inject('mode', ref(GameMode.easy))
+const windowSize = useWindow()
 
-const list = [
-  { value: GameMode.easy, label: '简单（单色）' },
-  { value: GameMode.normal, label: '普通（双色）' },
-  { value: GameMode.hard, label: '困难（四色）' }
-]
+const mode = inject('mode', ref(GameMode.easy))
 
 const handleSelect = (m: GameMode): void => {
   if (mode.value === m) {
@@ -64,7 +66,7 @@ const handleClose = (): void => {
   border-radius: 8px;
   background-color: #fff;
   transform: translate(-50%, -50%);
-
+  transform-origin: center;
   .header {
     display: flex;
     align-items: center;

@@ -135,3 +135,18 @@ export const numbers = [
   SolitaireNumber.queen,
   SolitaireNumber.king
 ]
+
+export const gameModes = [
+  {
+    value: GameMode.easy,
+    label: '简单（单色）'
+  },
+  {
+    value: GameMode.normal,
+    label: '普通（双色）'
+  },
+  {
+    value: GameMode.hard,
+    label: '困难（四色）'
+  }
+]
