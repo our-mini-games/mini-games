@@ -66,7 +66,7 @@ export const useWindow = (): ComputedRef<WindowSize> => {
 
   // 已开启的牌叠加间隙
   const openedGroupGap = computed(() => {
-    return Math.floor(viewBoxHeight.value * 0.02)
+    return Math.floor(viewBoxHeight.value * 0.03)
   })
 
   const handleResize = (): void => {

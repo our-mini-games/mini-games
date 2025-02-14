@@ -58,6 +58,7 @@
         :ry="solitaireSize.radius"
         stroke-dasharray="20 5"
         stroke="url(#grad1)"
+        stroke-width="4"
         fill="none"
       >
         <animate

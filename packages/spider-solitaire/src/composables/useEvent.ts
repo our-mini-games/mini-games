@@ -100,7 +100,7 @@ export default (
 
       const intersectionRate = getIntersectionRate(movingRect, dropTargets[i].getBoundingClientRect())
 
-      if (intersectionRate > 0.5) {
+      if (intersectionRate > 0.4) {
         if (!canIDropIt(activeGroup.value[i], targetSolitaire!)) {
           break
         }

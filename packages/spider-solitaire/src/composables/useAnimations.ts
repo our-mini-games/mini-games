@@ -1,7 +1,6 @@
 import UnitPath from 'unit-path'
 import { ComputedRef, Ref } from 'vue'
 import { SolitaireNumber, solitaireSize, SolitaireSuits } from '../config'
-import { getOpenedSolitaireTop } from '../lib/helper'
 import { SolitaireGroupItem, WindowSize } from '../types'
 import { SolitaireGroup } from './useSolitaire'
 
@@ -29,12 +28,9 @@ export default (
   const unitPath = new UnitPath()
 
   const {
-    unopenedGroupGap,
-    openedGroupGap,
-    padding,
     viewBoxHeight,
-    activeAreaSize,
-    inactiveAreaSize
+    isRotate,
+    scale
   } = windowSize.value
 
   const animationSolitaire = ref<AnimationSolitaire>({
@@ -57,31 +53,28 @@ export default (
      */
     // eslint-disable-next-line @typescript-eslint/promise-function-async
     const runDealAnimation = (index: number): Promise<void> => {
+      const oDropTargets = document.querySelectorAll<SVGAElement>('.drop-target')
+      const oSourceGroup = document.querySelector<SVGAElement>(`.inactive-solitaire-${inactiveGroup.value.length - 1}`)!
+
       const sourceSolitaires = inactiveGroup.value.at(-1)![index]
-      const { length } = inactiveGroup.value
 
-      const targetSolitaire = activeGroup.value[index]
-
-      const targetLeft = index * (activeAreaSize.gap + solitaireSize.width)
-      const targetTop = getOpenedSolitaireTop(targetSolitaire, targetSolitaire.length, unopenedGroupGap, openedGroupGap)
-
-      const sourceLeft = Math.floor(activeAreaSize.width - inactiveAreaSize.width) +
-        (5 - length) * (inactiveAreaSize.gap + solitaireSize.width)
-      const sourceTop =
-        viewBoxHeight -
-        padding.top * 2 -
-        solitaireSize.height
+      const targetRect = oDropTargets[index].getBoundingClientRect()
+      const sourceRect = oSourceGroup.getBoundingClientRect()
 
       animationSolitaire.value = {
         visible: true,
-        x: sourceLeft,
-        y: sourceTop,
+        x: 0,
+        y: 0,
         suit: sourceSolitaires.suit,
         number: sourceSolitaires.number
       }
 
-      const points = unitPath.setPath('LINE', { x: sourceLeft, y: sourceTop }, { x: targetLeft, y: targetTop })
+      const points = unitPath.setPath('LINE', { x: sourceRect.left, y: sourceRect.top }, { x: targetRect.left, y: targetRect.top })
         .getPoints(10)
+        .map(point => ({
+          x: point.x / scale,
+          y: point.y / scale
+        }))
 
       return new Promise(resolve => {
         const run = (): void => {
@@ -91,9 +84,9 @@ export default (
             return
           }
 
-          const { x, y } = points.shift()
-          animationSolitaire.value.x = x
-          animationSolitaire.value.y = y
+          const { x, y } = points.shift()!
+          animationSolitaire.value.x = isRotate ? y : x
+          animationSolitaire.value.y = isRotate ? (viewBoxHeight - solitaireSize.height - x) : y
 
           requestId = requestAnimationFrame(run)
         }
@@ -123,27 +116,34 @@ export default (
       const sourceSolitaires = activeGroup.value[index]
       const { length } = collectedGroup.value
 
-      const targetLeft = openedGroupGap * length
-      const targetTop = viewBoxHeight - solitaireSize.height
+      collectedGroup.value.push([])
+      await nextTick()
+
+      const oTargetGroup = document.querySelector<SVGAElement>(`.receive-group-${length}`)!
+      const targetRect = oTargetGroup.getBoundingClientRect()
 
       let last: SolitaireGroupItem
 
       for (let i = 0; i < 13; i++) {
-        const sourceLeft = padding.left + index * (activeAreaSize.gap + solitaireSize.width)
-        const sourceTop = getOpenedSolitaireTop(sourceSolitaires, sourceSolitaires.length - 1, unopenedGroupGap, openedGroupGap)
+        const oSourceSolitaire = document.querySelector<SVGAElement>(`.active-solitaire-${index}-${sourceSolitaires.length - 1}`)!
+        const sourceRect = oSourceSolitaire.getBoundingClientRect()
 
         last = sourceSolitaires.pop()!
 
         animationSolitaire.value = {
           visible: true,
-          x: sourceLeft,
-          y: sourceTop,
+          x: 0,
+          y: 0,
           suit: last.suit,
           number: last.number
         }
 
-        const points = unitPath.setPath('LINE', { x: sourceLeft, y: sourceTop }, { x: targetLeft, y: targetTop })
+        const points = unitPath.setPath('LINE', { x: sourceRect.left, y: sourceRect.top }, { x: targetRect.left, y: targetRect.top })
           .getPoints(10)
+          .map(point => ({
+            x: point.x / scale,
+            y: point.y / scale
+          }))
 
         await (async () => {
           return await new Promise(resolve => {
@@ -154,9 +154,9 @@ export default (
                 return
               }
 
-              const { x, y } = points.shift()
-              animationSolitaire.value.x = x
-              animationSolitaire.value.y = y
+              const { x, y } = points.shift()!
+              animationSolitaire.value.x = isRotate ? y : x
+              animationSolitaire.value.y = isRotate ? (viewBoxHeight - solitaireSize.height - x) : y
 
               requestId = requestAnimationFrame(run)
             }
@@ -165,9 +165,6 @@ export default (
           })
         })()
 
-        if (i === 0) {
-          collectedGroup.value.push([])
-        }
         collectedGroup.value[length].push(last)
       }
     }
