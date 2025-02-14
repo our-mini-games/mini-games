@@ -85,7 +85,6 @@ export default (windowSize: ComputedRef<WindowSize>): SolitaireReturnType => {
     // 添加被移动的牌到目标牌组
     activeGroup.value[targetGroupIdx].push(...movingSolitaires)
     // // 移除源牌组中的牌
-    // activeGroup.value[sourceIdx] = activeGroup.value[sourceIdx].slice(0, targetIdx)
     // 打开源牌组最后一张牌
     const last = activeGroup.value[sourceIdx].at(-1)
     if (last) {
@@ -95,13 +94,11 @@ export default (windowSize: ComputedRef<WindowSize>): SolitaireReturnType => {
 
   /**
    * 收集牌
-   * @todo 收集动画
    * @todo 完成动画
    */
   const collectIt = async (index: number): Promise<void> => {
     // 收集
     await runCollectAnimation(index)
-    // collectedGroup.value.push(activeGroup.value[index].splice(-13, 13))
     // 打开被收集牌组最后一张牌
     const last = activeGroup.value[index].at(-1)
     if (last) {
@@ -125,8 +122,8 @@ export default (windowSize: ComputedRef<WindowSize>): SolitaireReturnType => {
 
     // 所有牌组中都得有牌
     if (activeGroup.value.some(item => item.length === 0)) {
-      // @todo
-      alert('请先放置牌')
+      alert('所有可放置牌组中都必须有牌')
+      return
     }
 
     const solitaires = inactiveGroup.value.at(-1)!

@@ -1,4 +1,4 @@
-import { GameMode, SolitaireNumber, SolitaireSuits } from '../config'
+import { GameMode, numbers, SolitaireSuits } from '../config'
 import { SolitaireGroupItem } from '../types'
 
 /**
@@ -60,21 +60,7 @@ export const initializeTheGame = (mode: GameMode): {
 }
 
 const getNumbers = (suit: SolitaireSuits): SolitaireGroupItem[] => {
-  return [
-    SolitaireNumber.ace,
-    SolitaireNumber.two,
-    SolitaireNumber.three,
-    SolitaireNumber.four,
-    SolitaireNumber.five,
-    SolitaireNumber.six,
-    SolitaireNumber.seven,
-    SolitaireNumber.eight,
-    SolitaireNumber.nine,
-    SolitaireNumber.ten,
-    SolitaireNumber.jack,
-    SolitaireNumber.queen,
-    SolitaireNumber.king
-  ].map(number => {
+  return numbers.map(number => {
     return {
       suit,
       number,

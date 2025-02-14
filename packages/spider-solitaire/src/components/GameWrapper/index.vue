@@ -15,6 +15,7 @@
       <!-- 活跃区 -->
       <g
         name="active-group"
+        transform="translate(0, 0)"
       >
         <g name="bg">
           <g
@@ -47,6 +48,7 @@
               />
               <use
                 v-else
+                :class="`active-solitaire-${index}-${subIndex}`"
                 :xlink:href="`#${solitaire.suit}-${solitaire.number}`"
                 :y="getOpenedSolitaireTop(item, subIndex, windowSize.unopenedGroupGap, windowSize.openedGroupGap)"
                 @pointerdown="(e: MouseEvent) => handleMousedown(e, item, subIndex)"
@@ -54,8 +56,10 @@
             </template>
 
             <use
-              v-if="isDragging"
               class="drop-target"
+              :style="{
+                visibility: isDragging ? 'visible' : 'hidden'
+              }"
               xlink:href="#drop-target"
               fill="blue"
               :y="getOpenedSolitaireTop(item, item.length, windowSize.unopenedGroupGap, windowSize.openedGroupGap)"
@@ -79,8 +83,9 @@
               :key="`receive-group-bg-${index}`"
             >
               <use
-                :xlink:href="`#${item.at(-1)!.suit}-${item.at(-1)!.number}`"
-                :x="(index - 1) * (windowSize.receiveAreaSize.gap + solitaireSize.width)"
+                :class="`receive-group-${index}`"
+                :xlink:href="item.at(-1) ? `#${item.at(-1)!.suit}-${item.at(-1)!.number}` : '#empty-solitaire'"
+                :x="index * (windowSize.receiveAreaSize.gap + solitaireSize.width)"
                 y="0"
               />
             </template>
@@ -177,6 +182,7 @@
           <use
             v-for="(_, index) in inactiveGroup"
             :key="`inactive-group-bg-${index}`"
+            :class="`inactive-solitaire-${index}`"
             xlink:href="#unopened-solitaire"
             :x="(5 - index) * (windowSize.inactiveAreaSize.gap + solitaireSize.width)"
             y="0"
@@ -201,18 +207,18 @@
           />
         </g>
       </g>
+    </g>
 
-      <!-- 动画中的牌 -->
-      <g
-        v-if="animationSolitaire.visible"
-        name="animation-solitaire"
-      >
-        <use
-          :xlink:href="`#${animationSolitaire.suit}-${animationSolitaire.number}`"
-          :x="animationSolitaire.x"
-          :y="animationSolitaire.y"
-        />
-      </g>
+    <!-- 动画中的牌 -->
+    <g
+      v-if="animationSolitaire.visible"
+      name="animation-solitaire"
+    >
+      <use
+        :xlink:href="`#${animationSolitaire.suit}-${animationSolitaire.number}`"
+        :x="animationSolitaire.x"
+        :y="animationSolitaire.y"
+      />
     </g>
   </svg>
 
