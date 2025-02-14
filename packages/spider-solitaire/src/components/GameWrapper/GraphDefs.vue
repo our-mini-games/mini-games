@@ -78,8 +78,8 @@
           :height="solitaireSize.height"
           :rx="solitaireSize.radius"
           :ry="solitaireSize.radius"
-          fill="none"
           :stroke="colors.border"
+          :fill="colors.background"
         />
         <g clip-path="url(#inner-clip-path-solitaire)">
           <rect
@@ -161,7 +161,7 @@
         :height="solitaireSize.height"
         :rx="solitaireSize.radius"
         :ry="solitaireSize.radius"
-        fill="#fff"
+        :fill="colors.background"
         :stroke="colors.border"
       />
 

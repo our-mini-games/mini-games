@@ -158,7 +158,7 @@
               </text>
               <text
                 dominant-baseline="middle"
-                text-anchor="middle"
+                text-anchor="start"
                 :font-size="solitaireSize.height / 8"
                 :transform="`translate(${solitaireSize.height / 4}, 0)`"
                 :fill="colors.red"
@@ -223,7 +223,7 @@
 </template>
 
 <script setup lang="ts">
-import { solitaireSize, colors } from '../../config'
+import { solitaireSize, colors, gameModes } from '../../config'
 import { getOpenedSolitaireTop } from '../../lib/helper'
 
 import GraphDefs from './GraphDefs.vue'
@@ -240,7 +240,7 @@ const buttons = ['重新开始', '选择难度']
 // 统计
 const statistics = computed(() => {
   return [
-    { name: '难度', value: mode.value },
+    { name: '难度', value: gameModes.find(item => item.value === mode.value)?.label },
     { name: '步数', value: 0 },
     { name: '用时', value: 0 },
     { name: '分数', value: 0 }

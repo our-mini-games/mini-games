@@ -34,6 +34,7 @@ export default (
   const isDragging = ref(false)
 
   const handleMousedown = (e: MouseEvent, solitaires: SolitaireGroupItem[], index: number): void => {
+    e.preventDefault()
     if (!inAnimation.value && canSolitairesMove(solitaires, index)) {
       startPosition.left = windowSize.value.isRotate ? e.clientY : e.clientX
       startPosition.top = windowSize.value.isRotate ? (windowSize.value.width - e.clientX) : e.clientY
@@ -55,10 +56,12 @@ export default (
 
       window.addEventListener('pointermove', handleMousemove, false)
       window.addEventListener('pointerup', handleMouseup, false)
+      window.addEventListener('pointercancel', handleMouseup, false)
     }
   }
 
   const handleMousemove = (e: MouseEvent): void => {
+    e.preventDefault()
     if (!svgRef.value) {
       return
     }
@@ -77,8 +80,10 @@ export default (
   }
 
   const handleMouseup = (e: MouseEvent): void => {
+    e.preventDefault()
     window.removeEventListener('pointermove', handleMousemove, false)
     window.removeEventListener('pointerup', handleMouseup, false)
+    window.removeEventListener('pointercancel', handleMouseup, false)
     // 获取鼠标最后所在位置是否在牌组区域（每组牌最后一张的位置）
     const dropTargets = document.querySelectorAll<SVGAElement>(`.${dropTargetClassName}`)
 
