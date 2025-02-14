@@ -49,7 +49,7 @@
                 v-else
                 :xlink:href="`#${solitaire.suit}-${solitaire.number}`"
                 :y="getOpenedSolitaireTop(item, subIndex, windowSize.unopenedGroupGap, windowSize.openedGroupGap)"
-                @mousedown="(e: MouseEvent) => handleMousedown(e, item, subIndex)"
+                @pointerdown="(e: MouseEvent) => handleMousedown(e, item, subIndex)"
               />
             </template>
 

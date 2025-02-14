@@ -53,8 +53,8 @@ export default (
 
       isDragging.value = true
 
-      window.addEventListener('mousemove', handleMousemove, false)
-      window.addEventListener('mouseup', handleMouseup, false)
+      window.addEventListener('pointermove', handleMousemove, false)
+      window.addEventListener('pointerup', handleMouseup, false)
     }
   }
 
@@ -77,8 +77,8 @@ export default (
   }
 
   const handleMouseup = (e: MouseEvent): void => {
-    window.removeEventListener('mousemove', handleMousemove, false)
-    window.removeEventListener('mouseup', handleMouseup, false)
+    window.removeEventListener('pointermove', handleMousemove, false)
+    window.removeEventListener('pointerup', handleMouseup, false)
     // 获取鼠标最后所在位置是否在牌组区域（每组牌最后一张的位置）
     const dropTargets = document.querySelectorAll<SVGAElement>(`.${dropTargetClassName}`)
 
