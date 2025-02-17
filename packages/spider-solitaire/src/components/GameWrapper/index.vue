@@ -21,7 +21,7 @@
           <g
             v-for="item in 10"
             :key="`active-group-bg-${item}`"
-            :transform="`translate(${(item - 1) * (windowSize.activeAreaSize.gap + solitaireSize.width)}, 0)`"
+            :transform="`translate(${(item - 1) * (windowSize.activeAreaSize.gap + windowSize.solitaireSize.width)}, 0)`"
           >
             <use
               xlink:href="#empty-solitaire"
@@ -35,7 +35,7 @@
           <g
             v-for="(item, index) of activeGroup"
             :key="index"
-            :transform="`translate(${index * (windowSize.activeAreaSize.gap + solitaireSize.width)}, 0)`"
+            :transform="`translate(${index * (windowSize.activeAreaSize.gap + windowSize.solitaireSize.width)}, 0)`"
           >
             <template
               v-for="(solitaire, subIndex) of item"
@@ -48,10 +48,12 @@
               />
               <use
                 v-else
+                class="active-solitaire"
+                :data-index="index"
+                :data-sub-index="subIndex"
                 :class="`active-solitaire-${index}-${subIndex}`"
                 :xlink:href="`#${solitaire.suit}-${solitaire.number}`"
                 :y="getOpenedSolitaireTop(item, subIndex, windowSize.unopenedGroupGap, windowSize.openedGroupGap)"
-                @pointerdown="(e: MouseEvent) => handleMousedown(e, item, subIndex)"
               />
             </template>
 
@@ -85,7 +87,7 @@
               <use
                 :class="`receive-group-${index}`"
                 :xlink:href="item.at(-1) ? `#${item.at(-1)!.suit}-${item.at(-1)!.number}` : '#empty-solitaire'"
-                :x="index * (windowSize.receiveAreaSize.gap + solitaireSize.width)"
+                :x="index * (windowSize.receiveAreaSize.gap + windowSize.solitaireSize.width)"
                 y="0"
               />
             </template>
@@ -120,28 +122,28 @@
               v-for="(button, index) of buttons"
               :key="button"
               class="btn"
-              :transform="`translate(0, ${index * (windowSize.controlAreaSize.height * 0.8 - (solitaireSize.height / 4))})`"
+              :transform="`translate(0, ${index * (windowSize.controlAreaSize.height * 0.8 - (windowSize.solitaireSize.height / 4))})`"
               style="cursor: pointer;"
               @click="handleButtonClick(button)"
             >
               <rect
                 x="0"
                 y="0"
-                :width="solitaireSize.width"
-                :height="solitaireSize.height / 4"
+                :width="windowSize.solitaireSize.width"
+                :height="windowSize.solitaireSize.height / 4"
                 :stroke="colors.border"
                 fill="transparent"
-                :rx="solitaireSize.radius / 2"
-                :ry="solitaireSize.radius / 2"
+                :rx="windowSize.solitaireSize.radius / 2"
+                :ry="windowSize.solitaireSize.radius / 2"
               />
               <text
                 dominant-baseline="middle"
                 text-anchor="middle"
-                :font-size="solitaireSize.height / 8"
+                :font-size="windowSize.solitaireSize.height / 8"
                 font-weight="bold"
                 font-family="Gill Sans, serif"
-                :x="solitaireSize.width / 2"
-                :y="solitaireSize.height / 8"
+                :x="windowSize.solitaireSize.width / 2"
+                :y="windowSize.solitaireSize.height / 8"
                 :fill="colors.primary"
               >
                 {{ button }}
@@ -151,12 +153,12 @@
             <g
               v-for="(item, index) of statistics"
               :key="item.name"
-              :transform="`translate(${windowSize.controlAreaSize.width / 2}, ${solitaireSize.height / 8 + index * (windowSize.controlAreaSize.height / (statistics.length + 1))})`"
+              :transform="`translate(${windowSize.controlAreaSize.width / 2}, ${windowSize.solitaireSize.height / 8 + index * (windowSize.controlAreaSize.height / (statistics.length + 1))})`"
             >
               <text
                 dominant-baseline="middle"
                 text-anchor="middle"
-                :font-size="solitaireSize.height / 8"
+                :font-size="windowSize.solitaireSize.height / 8"
                 :fill="colors.black"
               >
                 {{ item.name }}：
@@ -164,8 +166,8 @@
               <text
                 dominant-baseline="middle"
                 text-anchor="start"
-                :font-size="solitaireSize.height / 8"
-                :transform="`translate(${solitaireSize.height / 4}, 0)`"
+                :font-size="windowSize.solitaireSize.height / 8"
+                :transform="`translate(${windowSize.solitaireSize.height / 4}, 0)`"
                 :fill="colors.red"
                 font-weight="bold"
               >
@@ -184,7 +186,7 @@
             :key="`inactive-group-bg-${index}`"
             :class="`inactive-solitaire-${index}`"
             xlink:href="#unopened-solitaire"
-            :x="(5 - index) * (windowSize.inactiveAreaSize.gap + solitaireSize.width)"
+            :x="(5 - index) * (windowSize.inactiveAreaSize.gap + windowSize.solitaireSize.width)"
             y="0"
             @click="dealCards"
           />
@@ -198,7 +200,7 @@
         <g
           v-for="(item, index) of movingGroup.solitaires"
           :key="index"
-          :transform="`translate(${movingGroup.index * (windowSize.activeAreaSize.gap + solitaireSize.width)}, 0)`"
+          :transform="`translate(${movingGroup.index * (windowSize.activeAreaSize.gap + windowSize.solitaireSize.width)}, 0)`"
         >
           <use
             ref="movingSolitaireRef"
@@ -229,7 +231,7 @@
 </template>
 
 <script setup lang="ts">
-import { solitaireSize, colors, gameModes } from '../../config'
+import { colors, gameModes } from '../../config'
 import { getOpenedSolitaireTop } from '../../lib/helper'
 
 import GraphDefs from './GraphDefs.vue'
@@ -292,8 +294,7 @@ const handleButtonClick = (button: string): void => {
 }
 
 const {
-  isDragging,
-  handleMousedown
+  isDragging
 } = useEvent(
   'drop-target',
   svgRef,

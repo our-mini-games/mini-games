@@ -1,6 +1,6 @@
 import UnitPath from 'unit-path'
 import { ComputedRef, Ref } from 'vue'
-import { SolitaireNumber, solitaireSize, SolitaireSuits } from '../config'
+import { SolitaireNumber, SolitaireSuits } from '../config'
 import { SolitaireGroupItem, WindowSize } from '../types'
 import { SolitaireGroup } from './useSolitaire'
 
@@ -86,7 +86,7 @@ export default (
 
           const { x, y } = points.shift()!
           animationSolitaire.value.x = isRotate ? y : x
-          animationSolitaire.value.y = isRotate ? (viewBoxHeight - solitaireSize.height - x) : y
+          animationSolitaire.value.y = isRotate ? (viewBoxHeight - windowSize.value.solitaireSize.height - x) : y
 
           requestId = requestAnimationFrame(run)
         }
@@ -156,7 +156,7 @@ export default (
 
               const { x, y } = points.shift()!
               animationSolitaire.value.x = isRotate ? y : x
-              animationSolitaire.value.y = isRotate ? (viewBoxHeight - solitaireSize.height - x) : y
+              animationSolitaire.value.y = isRotate ? (viewBoxHeight - windowSize.value.solitaireSize.height - x) : y
 
               requestId = requestAnimationFrame(run)
             }

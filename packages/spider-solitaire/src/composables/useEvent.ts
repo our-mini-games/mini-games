@@ -1,4 +1,5 @@
 import { ComputedRef, Ref } from 'vue'
+import Hammer from 'hammerjs'
 import { canICollectIt, canIDropIt, canSolitairesMove } from '../lib/validator'
 import { SolitaireGroupItem, WindowSize } from '../types'
 import { MovingGroupRecord, SolitaireGroup, SolitaireReturnType } from './useSolitaire'
@@ -6,7 +7,6 @@ import { getIntersectionRate } from '../lib/helper'
 
 export interface UseEventReturnType {
   isDragging: Ref<boolean>
-  handleMousedown: (e: MouseEvent, solitaires: SolitaireGroupItem[], index: number) => void
 }
 
 export default (
@@ -33,43 +33,32 @@ export default (
 
   const isDragging = ref(false)
 
-  const handleMousedown = (e: MouseEvent, solitaires: SolitaireGroupItem[], index: number): void => {
-    e.preventDefault()
-    if (!inAnimation.value && canSolitairesMove(solitaires, index)) {
-      startPosition.left = windowSize.value.isRotate ? e.clientY : e.clientX
-      startPosition.top = windowSize.value.isRotate ? (windowSize.value.width - e.clientX) : e.clientY
+  const handleDragStart = (clientX: number, clientY: number, solitaires: SolitaireGroupItem[], subIndex: number): void => {
+    if (!inAnimation.value && canSolitairesMove(solitaires, subIndex)) {
+      startPosition.left = windowSize.value.isRotate ? clientY : clientX
+      startPosition.top = windowSize.value.isRotate ? (windowSize.value.width - clientX) : clientY
 
-      targetSolitaire = solitaires[index]
+      targetSolitaire = solitaires[subIndex]
 
       movingGroup.value = {
         index: activeGroup.value.indexOf(solitaires),
-        subIndex: index,
+        subIndex,
         source: solitaires,
-        solitaires: solitaires.slice(index)
+        solitaires: solitaires.slice(subIndex)
       }
       // 暂时移除当前牌组中被移动的元素
-      solitaires.splice(index)
+      solitaires.splice(subIndex)
 
       sourceIdx = activeGroup.value.indexOf(solitaires)
 
       isDragging.value = true
-
-      window.addEventListener('pointermove', handleMousemove, false)
-      window.addEventListener('pointerup', handleMouseup, false)
-      window.addEventListener('pointercancel', handleMouseup, false)
     }
   }
 
-  const handleMousemove = (e: MouseEvent): void => {
-    e.preventDefault()
-    if (!svgRef.value) {
+  const handleDragMove = (clientX: number, clientY: number): void => {
+    if (!svgRef.value || !movingGroup.value.solitaires.length) {
       return
     }
-
-    const {
-      clientX,
-      clientY
-    } = e
 
     const x = windowSize.value.isRotate ? clientY : clientX
     const y = windowSize.value.isRotate ? (windowSize.value.width - clientX) : clientY
@@ -79,11 +68,10 @@ export default (
     })
   }
 
-  const handleMouseup = (e: MouseEvent): void => {
-    e.preventDefault()
-    window.removeEventListener('pointermove', handleMousemove, false)
-    window.removeEventListener('pointerup', handleMouseup, false)
-    window.removeEventListener('pointercancel', handleMouseup, false)
+  const handleDragEnd = (): void => {
+    if (!svgRef.value || !movingGroup.value.solitaires.length) {
+      return
+    }
     // 获取鼠标最后所在位置是否在牌组区域（每组牌最后一张的位置）
     const dropTargets = document.querySelectorAll<SVGAElement>(`.${dropTargetClassName}`)
 
@@ -129,9 +117,28 @@ export default (
       collectIt(collectableIndex)
     }
   }
+  const initHammer = (): void => {
+    const mc = new Hammer(svgRef.value!)
+    mc.on('panstart', (e: HammerInput) => {
+      if (e.target.matches('.active-solitaire')) {
+        const index = Number(e.target.dataset.index!)
+        const subIndex = Number(e.target.dataset.subIndex!)
+        handleDragStart(e.deltaX, e.deltaY, activeGroup.value[index], subIndex)
+      }
+    })
+    mc.on('panmove', (e: HammerInput) => {
+      handleDragMove(e.deltaX, e.deltaY)
+    })
+    mc.on('panend', () => {
+      handleDragEnd()
+    })
+  }
+
+  onMounted(() => {
+    initHammer()
+  })
 
   return {
-    isDragging,
-    handleMousedown
+    isDragging
   }
 }
