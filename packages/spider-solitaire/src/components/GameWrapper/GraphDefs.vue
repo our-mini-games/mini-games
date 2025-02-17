@@ -56,18 +56,18 @@
         :height="solitaireSize.height"
         :rx="solitaireSize.radius"
         :ry="solitaireSize.radius"
-        stroke-dasharray="20 5"
         stroke="url(#grad1)"
         stroke-width="4"
         fill="none"
       >
-        <animate
+        <!-- stroke-dasharray="20 5" -->
+        <!-- <animate
           attributeName="stroke-dashoffset"
           from="0"
           to="25"
           dur="0.5s"
           repeatCount="indefinite"
-        />
+        /> -->
       </rect>
 
       <!-- 未开启牌面 -->
@@ -390,7 +390,7 @@
 </template>
 
 <script setup lang="ts">
-import { solitaireSize, SolitaireSuits, SolitaireNumber, fillColors, colors } from '../../config'
+import { SolitaireSuits, SolitaireNumber, fillColors, colors } from '../../config'
 
 const PATHNAME = import.meta.env.VITE_APP_PATHNAME
 
@@ -410,6 +410,10 @@ const numbers = [
   SolitaireNumber.queen,
   SolitaireNumber.king
 ]
+
+const windowSize = useWindow()
+
+const solitaireSize = computed(() => windowSize.value.solitaireSize)
 </script>
 
 <style lang="scss" scoped>
