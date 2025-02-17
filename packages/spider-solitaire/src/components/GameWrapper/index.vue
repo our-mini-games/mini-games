@@ -48,10 +48,12 @@
               />
               <use
                 v-else
+                class="active-solitaire"
+                :data-index="index"
+                :data-sub-index="subIndex"
                 :class="`active-solitaire-${index}-${subIndex}`"
                 :xlink:href="`#${solitaire.suit}-${solitaire.number}`"
                 :y="getOpenedSolitaireTop(item, subIndex, windowSize.unopenedGroupGap, windowSize.openedGroupGap)"
-                @pointerdown="(e: MouseEvent) => handleMousedown(e, item, subIndex)"
               />
             </template>
 
@@ -292,8 +294,7 @@ const handleButtonClick = (button: string): void => {
 }
 
 const {
-  isDragging,
-  handleMousedown
+  isDragging
 } = useEvent(
   'drop-target',
   svgRef,
