@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { GameStatus } from '../../config';
+import { GameStatus } from '../../config'
 
 defineEmits<{
   (e: 'set-level'): void
@@ -43,39 +43,41 @@ defineEmits<{
 
 const gameStatus = inject('gameStatus', ref(GameStatus.finished))
 
-const handlePauseOrPlay = () => {
+const handlePauseOrPlay = (): void => {
   gameStatus.value = gameStatus.value === GameStatus.playing
     ? GameStatus.paused
     : GameStatus.playing
 }
 
-const handleBack = () => {
+const handleBack = (): void => {
   window.location.href = '/mini-games'
 }
 </script>
 
 <style lang="scss" scoped>
+.header {
+  width: 100%;
+}
 .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 600px;
-  padding: 8px 16px;
-  border-radius: 4px;
-  background-color: #0088ff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  background-color: var(--primary-color);
 
   .btn {
     border: 0;
     background-color: transparent;
-    height: 32px;
-    padding: 0 8px;
+    height: 1.5rem;
+    padding: 0 0.5rem;
 
     &:not(:disabled) {
       cursor: pointer;
     }
 
     &:hover:not(:disabled) {
-      color: #fff;
+      color: var(--white);
     }
   }
 }

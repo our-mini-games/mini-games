@@ -15,7 +15,7 @@
         <div class="wrapper">
           <ul class="list">
             <li
-              v-for="item of gameConfig"
+              v-for="item of gameLevels"
               :key="item.level"
               class="item"
               :class="{
@@ -72,12 +72,14 @@
 </template>
 
 <script setup lang="ts">
-import { gameConfig, GameStatus, Level, LINK_GAME_LEVEL } from '../../config'
+import { GameStatus, Level, LINK_GAME_LEVEL } from '../../config'
+import { LevelInfo } from '../../types'
 // eslint-disable-next-line @typescript-eslint/prefer-function-type
 const emit = defineEmits<{ (e: 'close'): void }>()
 
 const currentLevel = inject('currentLevel', ref(Level.easy))
 const gameStatus = inject('gameStatus', ref(GameStatus.finished))
+const gameLevels = inject('gameLevels', ref<LevelInfo[]>([]))
 
 const handleItemClick = (level: Level): void => {
   gameStatus.value = GameStatus.finished
@@ -108,22 +110,24 @@ const handleItemClick = (level: Level): void => {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 500px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 4px #888;
+    width: min(30rem, 90vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    background-color: var(--white);
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0.25rem var(--shadow-color);
     transform: translate(-50%, -50%);
 
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 44px;
-      padding: 0 16px;
-      border-bottom: 1px solid #f1f1f1;
+      height: 2.75rem;
+      padding: 0 1rem;
+      border-bottom: 1px solid var(--border-color);
 
       .title {
-        font-size: 18px;
+        font-size: 1rem;
       }
 
       .btn {
@@ -134,39 +138,39 @@ const handleItemClick = (level: Level): void => {
     }
 
     .wrapper {
-      padding: 32px;
+      padding: 1.5rem;
 
       .list {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 32px;
+        gap: 1.5rem;
         margin: 0;
         list-style: none;
 
         .item {
-          width: 160px;
-          padding: 16px;
-          border-radius: 8px;
-          border: 1px solid #f1f1f1;
+          width: 10rem;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          border: 1px solid var(--border-color);
           cursor: pointer;
 
           &.current {
-            border-color: #0088ff;
-            background-color: #0088ff;
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
 
             .row {
               .label {
-                color: #e1e1e1;
+                color: var(--disabled-color);
               }
               .value {
-                color: #fff;
+                color: var(--white);
               }
             }
           }
 
           &:hover {
-            border-color: #0088ff;
+            border-color: var(--primary-color);
           }
 
           .row {
@@ -175,11 +179,11 @@ const handleItemClick = (level: Level): void => {
             line-height: 2;
 
             .label {
-              color: #5c5c5c;
+              color: var(--secondary-text-color);
             }
 
             .value {
-              color: #333;
+              color: var(--primary-text-color);
               font-weight: 700;
             }
           }

@@ -50,6 +50,7 @@ declare global {
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
   const useEvent: typeof import('./src/composables/useEvent')['default']
+  const useGameConfig: typeof import('./src/composables/useGameConfig')['useGameConfig']
   const useGameProps: typeof import('./src/composables/useGameProps')['default']
   const useImgPreload: typeof import('./src/composables/useImgPreload')['default']
   const useSlots: typeof import('vue')['useSlots']

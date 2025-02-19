@@ -5,7 +5,9 @@
       @refresh="handleRefresh"
     />
 
-    <LinkGame />
+    <main class="link-game-main">
+      <LinkGame v-if="isInitialized && boxes.length" />
+    </main>
 
     <PageFooter />
 
@@ -27,47 +29,30 @@
 </template>
 
 <script setup lang="ts">
-import { gameConfig, GameStatus, Level, LINK_GAME_LEVEL } from './config'
+import { GameStatus } from './config'
 
 import PageHeader from './components/header/index.vue'
 import LinkGame from './components/LinkGame.vue'
 import PageFooter from './components/footer/index.vue'
-import { getBoxes } from './lib/utils'
 
 // eslint-disable-next-line @typescript-eslint/promise-function-async
 const GameSettingModal = defineAsyncComponent(() => import('./components/modal/GameSetting.vue'))
 // eslint-disable-next-line @typescript-eslint/promise-function-async
 const CompleteModal = defineAsyncComponent(() => import('./components/modal/Finished.vue'))
 
-let initialLevel = Level.easy
-
-try {
-  initialLevel = JSON.parse(localStorage.getItem(LINK_GAME_LEVEL) ?? '0')
-} catch {}
-
-const currentLevel = ref(initialLevel)
 const gameStatus = ref(GameStatus.finished)
 
-const levelInfo = computed(() => gameConfig[currentLevel.value])
+const { isInitialized, levelInfo, currentLevel, areaSize, gameLevels } = useGameConfig()
 
 const gameSettingModalVisible = ref(false)
 const completeModalVisible = ref(false)
 
-const scale = ref(1)
-
-const boxes = useBoxes(levelInfo, gameStatus)
-const ipl = useImgPreload()
+const { boxes, initBoxes } = useBoxes(levelInfo, gameStatus)
 
 const handleRefresh = async (): Promise<void> => {
   gameStatus.value = GameStatus.finished
 
-  ipl.mockRender(54)
-
-  boxes.value = await getBoxes(levelInfo.value)
-
-  nextTick(() => {
-    ipl.reload()
-  })
+  await initBoxes(levelInfo.value)
 
   Promise.resolve().then(() => {
     gameStatus.value = GameStatus.playing
@@ -86,21 +71,8 @@ watch(gameStatus, () => {
 
 provide('currentLevel', currentLevel)
 provide('gameStatus', gameStatus)
+provide('gameLevels', gameLevels)
 provide('levelInfo', levelInfo)
 provide('boxes', boxes)
-
-provide('scale', scale)
+provide('areaSize', areaSize)
 </script>
-
-<style lang="scss" scoped>
-.link-game {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  gap: 32px;
-  min-height: 100%;
-  padding: 32px;
-  box-sizing: border-box;
-}
-</style>

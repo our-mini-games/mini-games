@@ -18,7 +18,6 @@ export default (
   const tips = ref(0)
 
   watch(gameStatus, (newValue, oldValue) => {
-    console.log(newValue, oldValue)
     if (newValue === GameStatus.playing && (oldValue === GameStatus.finished || !oldValue)) {
       rearrangement.value = levelInfo.value.rearrangement
       tips.value = levelInfo.value.tips

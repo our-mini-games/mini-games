@@ -5,13 +5,13 @@ import { canIRemoveThem, isEmpty } from './pathFinding'
 
 export const getBoxes = async (levelInfo: LevelInfo): Promise<Box[]> => {
   const { row, column, totalOfItems } = levelInfo
-  const _items = shuffle([...itemSequences]).slice(0, totalOfItems)
+  const materials = shuffle([...itemSequences]).slice(0, totalOfItems)
   const max = row * column
   let items: number[] = []
   let repeat = max / totalOfItems
 
   while (repeat) {
-    items = items.concat(shuffle(_items))
+    items = items.concat(shuffle(materials))
     repeat--
   }
 
@@ -19,7 +19,7 @@ export const getBoxes = async (levelInfo: LevelInfo): Promise<Box[]> => {
     return <Box>{
       seq: item,
       x: index % column + 1,
-      y: index % column === 0 ? Math.ceil(index / column) + 1 : Math.ceil(index / column),
+      y: Math.floor(index / column) + 1,
       status: 'default'
     }
   })
@@ -114,39 +114,39 @@ const fullSolutionTest = (boxes: Box[], levelInfo: LevelInfo, solutionLength = 0
   )
 }
 
-export const getPosition = (val: number, size: number, useBoundary: boolean): number => {
-  return (!useBoundary ? val : (val - 1)) * size
+export const getPosition = (val: number, { size }: LevelInfo): number => {
+  return (val - 1) * size
 }
 
-export const getFromPosition = (from: Box, to: Box, { size, useBoundary }: LevelInfo): number[] => {
-  const halfSize = size / 2
+export const getFromPosition = (from: Box, to: Box, levelInfo: LevelInfo): number[] => {
+  const halfSize = levelInfo.size / 2
 
   if (from.x === to.x) {
     return [
-      getPosition(from.x, size, useBoundary) + halfSize,
-      getPosition(from.y, size, useBoundary) + (from.y > to.y ? 0 : size)
+      getPosition(from.x, levelInfo) + halfSize,
+      getPosition(from.y, levelInfo) + (from.y > to.y ? 0 : levelInfo.size)
     ]
   } else if (from.y === to.y) {
     return [
-      getPosition(from.x, size, useBoundary) + (from.x > to.x ? 0 : size),
-      getPosition(from.y, size, useBoundary) + halfSize
+      getPosition(from.x, levelInfo) + (from.x > to.x ? 0 : levelInfo.size),
+      getPosition(from.y, levelInfo) + halfSize
     ]
   }
   return []
 }
 
-export const getToPosition = (from: Box, to: Box, { size, useBoundary }: LevelInfo): number[] => {
-  const halfSize = size / 2
+export const getToPosition = (from: Box, to: Box, levelInfo: LevelInfo): number[] => {
+  const halfSize = levelInfo.size / 2
 
   if (from.x === to.x) {
     return [
-      getPosition(from.x, size, useBoundary) + halfSize,
-      getPosition(to.y, size, useBoundary) + (from.y > to.y ? size : 0)
+      getPosition(from.x, levelInfo) + halfSize,
+      getPosition(to.y, levelInfo) + (from.y > to.y ? levelInfo.size : 0)
     ]
   } else if (from.y === to.y) {
     return [
-      getPosition(to.x, size, useBoundary) + (from.x > to.x ? size : 0),
-      getPosition(to.y, size, useBoundary) + halfSize
+      getPosition(to.x, levelInfo) + (from.x > to.x ? levelInfo.size : 0),
+      getPosition(to.y, levelInfo) + halfSize
     ]
   }
   return []
@@ -161,3 +161,36 @@ export const sleep = async (delay: number): Promise<unknown> => {
 }
 
 export const isComplete = (boxes: Box[]): boolean => boxes.every(box => box.seq === 0)
+
+/**
+   * 获取元素大小
+   * @param row 行
+   * @param column 列
+   * @param width 宽度
+   * @param height 高度
+   * @returns 元素大小
+   */
+export const getSize = (row: number, column: number, width: number, height: number): number => {
+  const xCount = column + 1
+  const yCount = row + 1
+  const w = Math.floor(width / xCount)
+  const h = Math.floor(height / yCount)
+
+  const min = Math.min(w, h)
+  const max = Math.max(w, h)
+
+  console.log({
+    min,
+    max
+  })
+
+  if (min === max) {
+    return min
+  }
+
+  if (max * xCount > width || max * yCount > height) {
+    return min
+  }
+
+  return max
+}
