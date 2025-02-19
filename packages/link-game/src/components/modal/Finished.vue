@@ -80,18 +80,18 @@ const handleRefresh = (): void => {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 360px;
-    padding: 56px 16px 38px 16px;
-    background-color: #cdcee5;
-    border-radius: 16px;
-    box-shadow: 0 4px 16px #888;
+    width: 18rem;
+    padding: 2.5rem 0.5rem 1.5rem 0.5rem;
+    background-color: var(--finished-color-bg);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.5rem var(--shadow-color);
     transform: translate(-50%, -50%);
 
     .head-pic {
       position: absolute;
       left: 50%;
       top: 0;
-      transform: translate(-50%, -60px);
+      transform: translate(-50%, -4.5rem);
     }
 
     .btn-close {
@@ -99,7 +99,7 @@ const handleRefresh = (): void => {
       left: 50%;
       bottom: 0;
       cursor: pointer;
-      transform: translate(-50%, 22px);
+      transform: translate(-50%, 1.25rem);
     }
 
     .level {
@@ -110,9 +110,9 @@ const handleRefresh = (): void => {
       gap: 8px;
 
       .value {
-        font-size: 20px;
+        font-size: 1rem;
         font-weight: 700;
-        color: #0088ff;
+        color: var(--primary-color);
       }
     }
 
@@ -120,20 +120,20 @@ const handleRefresh = (): void => {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 32px;
-      margin-top: 32px;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
 
       .btn {
-        padding: 6px 16px;
-        border-radius: 4px;
-        border: 1px solid #f1f1f1;
-        background-color: #f1f1f1;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        border: 1px solid var(--border-color);
+        background-color: var(--border-color);
         cursor: pointer;
 
         &.btn-refresh {
-          color: #fff;
-          border-color: #0088ff;
-          background-color: #0088ff;
+          color: var(--white);
+          border-color: var(--primary-color);
+          background-color: var(--primary-color);
         }
       }
     }

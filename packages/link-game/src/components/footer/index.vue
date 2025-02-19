@@ -56,55 +56,55 @@ const {
 .game-props {
   display: flex;
   align-items: center;
-  gap: 32px;
-  padding: 8px 16px;
-  border: 1px solid #0088ff;
-  border-radius: 8px;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--primary-color);
+  border-radius: 0.5rem;
   user-select: none;
 
   .title {
-    font-size: 18px;
-    color: #0088ff;
+    font-size: 1rem;
+    color: var(--primary-color);
   }
 
   .list {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 1rem;
     margin: 0;
     list-style: none;
 
     .item {
       position: relative;
-      padding: 4px 12px;
-      background-color: #0088ff;
-      font-size: 14px;
-      color: #fff;
-      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      background-color: var(--primary-color);
+      font-size: 0.75rem;
+      color: var(--white);
+      border-radius: 0.25rem;
 
       &:not(.disabled) {
         cursor: pointer;
 
         &:hover {
-          background-color: rgba($color: #0088ff, $alpha: 0.8);
+          background-color: var(--primary-color-hover);
         }
       }
 
       &.disabled {
         cursor: not-allowed;
-        background-color: #e1e1e1;
+        background-color: var(--disabled-color);
       }
 
       .value {
         position: absolute;
-        right: -10px;
-        top: -10px;
-        width: 20px;
-        height: 20px;
+        right: -0.5rem;
+        top: -0.5rem;
+        width: 1rem;
+        height: 1rem;
         text-align: center;
-        line-height: 20px;
+        line-height: 1rem;
         border-radius: 50%;
-        background-color: #f40;
+        background-color: var(--red);
       }
     }
   }

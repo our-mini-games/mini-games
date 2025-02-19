@@ -5,21 +5,31 @@ import { Box, LevelInfo } from '../types'
 
 const ipl = useImgPreload()
 
-export default (levelInfo: Ref<LevelInfo>, gameStatus: Ref<GameStatus>): Ref<Box[]> => {
+export default (levelInfo: Ref<LevelInfo>, gameStatus: Ref<GameStatus>): {
+  boxes: Ref<Box[]>
+  initBoxes: (level: LevelInfo) => Promise<void>
+} => {
   const boxes = ref<Box[]>([])
+
+  const initBoxes = async (level: LevelInfo): Promise<void> => {
+    ipl.mockRender(66)
+    boxes.value = await getBoxes(level)
+    nextTick(() => {
+      ipl.reload()
+    })
+  }
 
   watch(levelInfo, async (newVal) => {
     if (newVal) {
-      ipl.mockRender(66)
-      boxes.value = await getBoxes(newVal)
-      nextTick(() => {
-        ipl.reload()
-      })
+      await initBoxes(newVal)
     } else {
       boxes.value = []
       gameStatus.value = GameStatus.finished
     }
-  }, { immediate: true })
+  })
 
-  return boxes
+  return {
+    boxes,
+    initBoxes
+  }
 }

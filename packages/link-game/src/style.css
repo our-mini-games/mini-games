@@ -3,14 +3,53 @@
   padding: 0;
 }
 
-html,
-body,
-#app {
-  width: 100%;
-  height: 100%;
+html {
+  font-size: 16px;
+
+  @media (max-width: 768px) {
+    font-size: 4vw;
+  }
+
+  --primary-color: #0088ff;
+  --primary-color-hover: rgba(0, 136, 255, 0.8);
+  --primary-text-color: #333;
+  --secondary-text-color: #666;
+  --tertiary-text-color: #999;
+
+  --border-color: #f1f1f1;
+  --disabled-color: #e1e1e1;
+
+  --shadow-color: #888;
+  --finished-color-bg: #cdcee5;
+
+  --white: #fff;
+  --black: #000;
+  --red: #f40;
 }
 
 body {
-  font-size: 16px !important;
+  font-size: 1rem !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+.link-game {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3vh;
+  width: 100vw;
+  height: 100vh;
+  padding: 1vw 3vh;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  .link-game-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
 }
