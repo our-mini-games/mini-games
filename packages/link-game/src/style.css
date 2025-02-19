@@ -25,6 +25,10 @@ html {
   --white: #fff;
   --black: #000;
   --red: #f40;
+  --green: #4CAF50;
+  --green-hover: #45a049;
+  --orange: #ff9800;
+  --orange-hover: #fb8c00;
 }
 
 body {
@@ -32,16 +36,19 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+html,
+body,
+#app,
+.link-game {
+  width: 100%;
+  height: 100%;
+}
+
 .link-game {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 3vh;
-  width: 100vw;
-  height: 100vh;
-  padding: 1vw 3vh;
-  box-sizing: border-box;
   overflow: hidden;
 
   .link-game-main {
