@@ -78,9 +78,8 @@ export const useGameConfig = (): {
   const levelInfo = computed(() => gameLevels.value.find(item => item.level === currentLevel.value)!)
 
   const handleResize = (): void => {
-    const rect = document.querySelector('.link-game-main')!.getBoundingClientRect()
-    width.value = Math.floor(rect.width)
-    height.value = Math.floor(rect.height)
+    width.value = Math.floor(window.innerWidth)
+    height.value = Math.floor(window.innerHeight - 88)
   }
 
   onMounted(() => {

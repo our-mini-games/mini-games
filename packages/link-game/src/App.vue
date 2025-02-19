@@ -1,15 +1,20 @@
 <template>
   <div class="link-game">
-    <PageHeader
-      @set-level="gameSettingModalVisible = true"
-      @refresh="handleRefresh"
+    <Home
+      v-if="homeVisible"
+      @start="gameStatus = GameStatus.playing"
+      @settings="gameSettingModalVisible = true"
     />
+    <template v-else>
+      <PageHeader
+        @set-level="gameSettingModalVisible = true"
+        @refresh="handleRefresh"
+      />
 
-    <main class="link-game-main">
-      <LinkGame v-if="isInitialized && boxes.length" />
-    </main>
-
-    <PageFooter />
+      <main class="link-game-main">
+        <LinkGame v-if="isInitialized && boxes.length" />
+      </main>
+    </template>
 
     <GameSettingModal
       v-if="gameSettingModalVisible"
@@ -33,7 +38,7 @@ import { GameStatus } from './config'
 
 import PageHeader from './components/header/index.vue'
 import LinkGame from './components/LinkGame.vue'
-import PageFooter from './components/footer/index.vue'
+import Home from './components/Home.vue'
 
 // eslint-disable-next-line @typescript-eslint/promise-function-async
 const GameSettingModal = defineAsyncComponent(() => import('./components/modal/GameSetting.vue'))
@@ -59,8 +64,8 @@ const handleRefresh = async (): Promise<void> => {
   })
 }
 
-onMounted(() => {
-  gameStatus.value = GameStatus.playing
+const homeVisible = computed(() => {
+  return gameStatus.value === GameStatus.finished
 })
 
 watch(gameStatus, () => {
