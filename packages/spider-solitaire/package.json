@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@stan_bk/img-preload": "^1.0.8",
+    "@stan_bk/img-preload": ">=1.0.10",
     "hammerjs": "^2.0.8",
     "unit-path": "^0.0.4",
     "vue": "^3.2.45"
