@@ -112,14 +112,14 @@
             type="primary"
             html-type="submit"
           >
-            Submit
+            确定
           </a-button>
 
           <a-button
             type="default"
             @click="$emit('close')"
           >
-            Cancel
+            取消
           </a-button>
         </a-space>
       </a-form-item>

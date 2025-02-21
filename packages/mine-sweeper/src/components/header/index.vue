@@ -1,111 +1,107 @@
 <template>
   <header class="header">
-    <div class="container">
-      <div class="btn btn-back" @click="handleBack">
-        返回
-      </div>
+    <a-button class="btn btn-back" @click="handleBack">
+      <template #icon>
+        <arrow-left-outlined />
+      </template>
+    </a-button>
 
-      <div
-        class="btn btn-setting"
-        @click="gameSettingVisible = true"
-      >
-        游戏设置
-      </div>
-
-      <GameControl />
-
-      <div
-        class="btn btn-setting"
-        @click="levelSettingVisible = true"
-      >
-        难度设置
-      </div>
-
-      <div
-        class="btn btn-record"
-        @click="statisticsVisible = true"
-      >
-        战绩统计
-      </div>
+    <div class="statistics-item time">
+      <clock-circle-outlined class="icon" />
+      {{ time }}
     </div>
 
-    <GameSettingModal
-      v-if="gameSettingVisible"
-      @close="gameSettingVisible = false"
-    />
+    <GameControl />
 
-    <LevelSettingModal
-      v-if="levelSettingVisible"
-      @close="levelSettingVisible = false"
-    />
-
-    <StatisticsModal
-      v-if="statisticsVisible"
-      @close="statisticsVisible = false"
-    />
+    <div class="statistics-item mines" :class="isNegative ? 'negative' : ''">
+      <div class="bg"></div>
+      {{ remainingFlags }}
+    </div>
+    <MoreMenu />
   </header>
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent, ref } from 'vue'
+import { ref, inject, computed, Ref } from 'vue'
+import { GameStatus } from '../../types'
 import GameControl from './GameControl.vue'
+import { formatTime } from '../../lib/utils'
 
-const GameSettingModal = defineAsyncComponent(async () => await import('../modal/GameSetting.vue'))
-const LevelSettingModal = defineAsyncComponent(async () => await import('../modal/LevelSetting.vue'))
-const StatisticsModal = defineAsyncComponent(async () => await import('../modal/Statistics.vue'))
+const gameStatus = inject<Ref<GameStatus>>('gameStatus')!
+const gameTime = inject('gameTime', ref(0))
+const remainingFlags = inject('remainingFlags', ref(0))
 
-const gameSettingVisible = ref(false)
-const levelSettingVisible = ref(false)
-const statisticsVisible = ref(false)
+const isNegative = computed(() => remainingFlags.value < 0)
+const time = computed(() => formatTime(gameTime.value))
 
 const handleBack = (): void => {
-  window.location.href = '/mini-games'
+  gameStatus.value = 'finished'
 }
 </script>
 
 <style lang="scss" scoped>
 .header {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-}
-
-.container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 32px;
-  width: 960px;
-  max-width: 90%;
-  height: 64px;
-  margin: 32px auto;
-  padding: 0 16px;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  height: 4rem;
+  padding: 0 1rem;
   box-sizing: border-box;
-  border-radius: 32px;
-  background-color: #0088ff;
+  background: var(--bg-cell-color-flag);
+  border: 2px solid var(--border-color);
+  border-radius: 0.5rem;
 
-  .btn {
+  :deep(.btn) {
+    all: unset;
     display: flex;
     align-items: center;
-    height: 36px;
+    height: 2rem;
     color: #fff;
-    padding: 0 16px;
-    border-radius: 18px;
+    padding: 0 .5rem;
+    border-radius: 0.5rem;
     border: 1px solid transparent;
     cursor: pointer;
 
+    &.active,
     &:hover {
-      border-color: #fff;
+      background: var(--bg-cell-color-flag);
+      box-shadow: 0 0 15px var(--border-color), 0 0 30px var(--border-color);
+    }
+  }
+
+  .statistics-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2rem;
+    padding: 0 0.5rem;
+    border-radius: 0.5rem;
+    color: var(--primary-color);
+    font-size: 1rem;
+    background-color: var(--bg-cell-color-revealed);
+
+    .icon {
+      color: var(--bg-cell-color);
+      font-size: 0.8rem;
     }
 
-    &.btn-back {
-      margin-right: auto;
+    &.mines {
+      .bg {
+        width: 1rem;
+        height: 1rem;
+        background-image: url('@/assets/img/mine-1.png');
+        background-size: cover;
+        background-position: center;
+      }
     }
+  }
 
-    &.btn-record {
-      margin-left: auto;
-    }
+  .negative {
+    color: #f40;
+    transition: color .4s;
+    animation: twinkle linear infinite 1s;
   }
 }
 </style>
