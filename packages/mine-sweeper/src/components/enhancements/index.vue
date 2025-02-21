@@ -3,18 +3,22 @@
     <h2 class="title">
       左键功能
     </h2>
-    <div class="behavious">
-      <div
-        v-for="item of behavious"
+    <div class="behaviors">
+      <a-tooltip
+        v-for="item of behaviors"
         :key="item.type"
-        class="item"
-        :class="{
-          current: leftButtonBehavious === item.type
-        }"
-        @click="leftButtonBehavious = item.type"
+        :title="item.label"
+        placement="top"
       >
-        <img :src="item.pic" width="44" />
-      </div>
+        <div
+          class="item"
+          :class="{
+            current: leftButtonBehaviors === item.type,
+            [item.type]: true
+          }"
+          @click="leftButtonBehaviors = item.type"
+        ></div>
+      </a-tooltip>
     </div>
   </section>
 </template>
@@ -25,15 +29,15 @@ import { ref, computed, inject } from 'vue'
 import OpenPic from '../../assets/img/open.png'
 import DoubtfulPic from '../../assets/img/doubtful.png'
 import BugPic from '../../assets/img/bug.png'
-import { LeftButtonBehavious } from '../../types'
+import { LeftButtonBehaviors } from '../../types'
 
 const useDoubtful = inject('useDoubtful', ref(false))
 
-const leftButtonBehavious = inject('leftButtonBehavious', ref<LeftButtonBehavious>('open'))
+const leftButtonBehaviors = inject('leftButtonBehaviors', ref<LeftButtonBehaviors>('open'))
 
-const behavious = computed(() => <Array<{
+const behaviors = computed(() => <Array<{
   label: string
-  type: LeftButtonBehavious
+  type: LeftButtonBehaviors
   pic: string
 }>>[
   {
@@ -43,7 +47,7 @@ const behavious = computed(() => <Array<{
   },
   ...(useDoubtful.value
     ? [{
-        label: '问号',
+        label: '可疑的',
         type: 'doubtful',
         pic: DoubtfulPic
       }]
@@ -60,42 +64,58 @@ const behavious = computed(() => <Array<{
 .enhancements-wrapper {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 1rem;
 
   .title {
-    width: 60px;
-    height: 44px;
+    width: 5em;
+    height: 2.2rem;
     margin: 0;
-    padding: 0 8px;
-    line-height: 22px;
-    font-size: 16px;
+    padding: 0 0.5em;
+    line-height: 2.2rem;
+    font-size: 1rem;
     text-align: center;
-    color: #fff;
-    background-color: #0088ff;
+    color: var(--white);
+    background-color: var(--bg-cell-color);
+    border-radius: 0.25rem;
     box-sizing: border-box;
   }
 
-  .behavious {
+  .behaviors {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.5rem;
     min-width: 0;
     flex: 1;
 
     .item {
-      border: 1px solid #fff;
+      width: 2.2rem;
+      height: 2.2rem;
+      border: 1px solid var(--bg-color-1);
+      background-color: var(--bg-cell-color-revealed);
+      background-size: cover;
+      background-position: center;
+      border-radius: 0.25rem;
       cursor: pointer;
 
       &:hover {
-        border-color: #f1f1f1;
+        border-color: var(--white);
       }
 
       &.current {
-        border-color: #0088ff;
+        background-color: var(--bg-cell-color);
+        border-color: var(--primary-color);
       }
 
-      img {
-        display: block;
+      &.open {
+        background-image: url('@/assets/img/revealed-1.png');
+      }
+
+      &.doubtful {
+        background-image: url('@/assets/img/doubtful-1.png');
+      }
+
+      &.marked {
+        background-image: url('@/assets/img/flag-1.png');
       }
     }
   }

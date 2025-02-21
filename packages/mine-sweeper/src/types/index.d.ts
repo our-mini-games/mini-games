@@ -21,4 +21,4 @@ export interface LevelInfo extends CustomSetting {
 
 export type GameStatus = 'finished' | 'playing' | 'defeat' | 'complete'
 
-export type LeftButtonBehavious = Extract<BoxStatus, 'open' | 'doubtful' | 'marked'>
+export type LeftButtonBehaviors = Extract<BoxStatus, 'open' | 'doubtful' | 'marked'>

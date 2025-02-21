@@ -1,8 +1,8 @@
 <template>
+  <Bg />
   <div class="mine-sweeper">
-    <PageHeader />
-
-    <MineSweeper />
+    <Home v-if="gameStatus === 'finished'" />
+    <MineSweeper v-else />
 
     <FinishedModal />
   </div>
@@ -13,9 +13,10 @@ import { ref, computed, provide, watch } from 'vue'
 import { levels } from './config'
 import { createStatistics, getBoxes } from './lib/utils'
 import { MINE_SWEEPER_SETTING } from './config/constants'
-import type { Box, CustomSetting, GameStatus, LeftButtonBehavious, LevelInfo } from './types'
+import type { Box, CustomSetting, GameStatus, LeftButtonBehaviors, LevelInfo } from './types'
 
-import PageHeader from './components/header/index.vue'
+import Bg from './components/Bg.vue'
+import Home from './components/Home.vue'
 import MineSweeper from './components/MineSweeper.vue'
 import FinishedModal from './components/modal/Finished.vue'
 
@@ -39,13 +40,13 @@ const customSetting = ref<CustomSetting>(defaultSetting.customSetting || {
 
 const boxes = ref<Box[]>([])
 // 游戏运行状态
-const gameStatus = ref<GameStatus>('playing')
+const gameStatus = ref<GameStatus>('finished')
 // 游戏时长
 const gameTime = ref(0)
 // 剩余旗子数
 const remainingFlags = ref(0)
 // 左键行为
-const leftButtonBehavious = ref<LeftButtonBehavious>('open')
+const leftButtonBehaviors = ref<LeftButtonBehaviors>('open')
 
 let startTime = 0
 let requestId = 0
@@ -127,11 +128,5 @@ provide('customSetting', customSetting)
 
 provide('gameTime', gameTime)
 provide('remainingFlags', remainingFlags)
-provide('leftButtonBehavious', leftButtonBehavious)
+provide('leftButtonBehaviors', leftButtonBehaviors)
 </script>
-
-<style lang="scss" scoped>
-.mine-sweeper {
-  height: 100%;
-}
-</style>

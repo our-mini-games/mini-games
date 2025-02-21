@@ -1,4 +1,4 @@
-import { Box, BoxStatus, GameStatus, LeftButtonBehavious } from '../types'
+import { Box, BoxStatus, GameStatus, LeftButtonBehaviors } from '../types'
 import { Ref, inject, onBeforeUnmount, onMounted, ref } from 'vue'
 import { countMines, isLeftButton, isRightButton } from '../lib/utils'
 
@@ -16,7 +16,7 @@ export default (
 ): EventReturnType => {
   const firstClick = inject('firstClick', ref(true))
   const useLeftClickEnhancements = inject('useLeftClickEnhancements', ref(false))
-  const leftButtonBehavious = inject('leftButtonBehavious', ref<LeftButtonBehavious>('open'))
+  const leftButtonBehaviors = inject('leftButtonBehaviors', ref<LeftButtonBehaviors>('open'))
 
   let clickTimes = 0
 
@@ -27,13 +27,7 @@ export default (
 
   let isPause = false
 
-  const rect = ref<DOMRect>()
-
   onMounted(() => {
-    if (el.value) {
-      rect.value = el.value.getBoundingClientRect()
-    }
-
     document.addEventListener('mouseup', handleDocumentMouseup)
   })
 
@@ -151,7 +145,7 @@ export default (
 
     // 左键增强处理
     if (useLeftClickEnhancements.value) {
-      switch (leftButtonBehavious.value) {
+      switch (leftButtonBehaviors.value) {
         case 'open':
           if (status === 'active' && x === cachedPos.x && y === cachedPos.y) {
             setCurrentStatus(item, 'open')

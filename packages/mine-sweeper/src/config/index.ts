@@ -37,22 +37,3 @@ export const levels: LevelInfo[] = [
     totalOfMines: 99
   }
 ]
-
-/**
- * 区域尺寸
- */
-export const areaSize = 32
-
-export const gap = 0
-
-export const numberColors = [
-  'transparent',
-  '#0088ff', /** 1 */
-  '#10b20a', /** 2 */
-  '#f40', /** 3 */
-  '#0511f1', /** 4 */
-  '#972727', /** 5 */
-  '#1bdab5', /** 6 */
-  '#333', /** 7 */
-  '#777' /** 8 */
-]

@@ -8,9 +8,55 @@ body,
 #app {
   width: 100%;
   height: 100%;
+  overflow: hidden;
+}
+
+html {
+  font-size: 16px;
+
+  @media (max-width: 768px) {
+    font-size: 4vw;
+  }
+
+  --primary-color: #00ffff;
+  --primary-text-color: #333;
+  --secondary-text-color: #666;
+  --tertiary-text-color: #999;
+
+  --bg-color-1: rgba(0, 78, 146, 0.8);
+  --bg-color-2: rgba(0, 4, 40, 0.9);
+
+  --bg-cell-color: rgba(0, 255, 255, 0.6);
+  --bg-cell-color-hover: rgba(0, 255, 255, 0.8);
+  --bg-cell-color-revealed: rgba(0, 255, 255, 0.1);
+  --bg-cell-color-flag: rgba(0, 255, 255, 0.2);
+  --bg-cell-color-doubtful: rgba(0, 255, 255, 0.3);
+  --bg-cell-color-mine: rgba(255, 0, 0, 0.2);
+  --bg-cell-color-number: rgba(0, 255, 255, 0.2);
+
+  --border-color: #00ffff;
+
+  --white: #fff;
+  --black: #000;
+  --red: #f40;
+
+  --number-color-1: #ffffff;
+  --number-color-2: #0fff07;
+  --number-color-3: #f40;
+  --number-color-4: #0511f1;
+  --number-color-5: #972727;
+  --number-color-6: #00fac8;
+  --number-color-7: #ff00f2;
+  --number-color-8: #eaff04;
+  
 }
 
 body {
-  font-size: 16px !important;
+  font-size: 1rem !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+.mine-sweeper {
+  width: 100%;
+  height: 100%;
 }

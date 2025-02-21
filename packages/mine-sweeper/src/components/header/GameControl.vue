@@ -1,10 +1,17 @@
 <template>
-  <div
-    class="game-control"
-    @click="handleClick"
+  <a-tooltip
+    :title="title"
+    placement="bottom"
   >
-    {{ text }}
-  </div>
+    <a-button
+      class="btn game-control"
+      @click="handleClick"
+    >
+      <template #icon>
+        <PlayCircleFilled class="icon" />
+      </template>
+    </a-button>
+  </a-tooltip>
 </template>
 
 <script setup lang="ts">
@@ -13,7 +20,7 @@ import { GameStatus } from '../../types'
 
 const gameStatus = inject<Ref<GameStatus>>('gameStatus')!
 
-const text = computed(() => {
+const title = computed(() => {
   return gameStatus.value === 'playing'
     ? '重新开始'
     : '开始游戏'
@@ -33,21 +40,8 @@ const handleClick = (): void => {
 </script>
 
 <style lang="scss" scoped>
-.game-control {
-  display: flex;
-  align-items: center;
-  width: 96px;
-  height: 96px;
-  padding: 20px;
-  font-size: 20px;
-  font-weight: 700;
-  text-align: center;
-  color: #fff;
-  outline: 2px solid #fff;
-  outline-offset: -16px;
-  border-radius: 50%;
-  box-sizing: border-box;
-  background-color: #0088ff;
-  cursor: pointer;
+.game-control .icon {
+  font-size: 1.2rem;
+  color: var(--primary-color);
 }
 </style>

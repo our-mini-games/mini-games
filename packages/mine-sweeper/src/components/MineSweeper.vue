@@ -1,54 +1,53 @@
 <template>
   <div class="mine-sweeper-container" @contextmenu.prevent="() => false">
-    <svg
-      ref="svgRef"
-      :width="viewBoxSize.width"
-      :height="viewBoxSize.height"
-      :viewBox="`0 0 ${viewBoxSize.width} ${viewBoxSize.height}`"
-      :style="{
-        transform: `scale(${scale})`
-      }"
-    >
-      <g>
-        <g
-          v-for="item of boxes"
-          :key="`${item.x}-${item.y}`"
-          :transform="`translate(${(item.x - 1) * areaSize + item.x * gap}, ${(item.y - 1) * areaSize + item.y * gap})`"
-
-          @mousedown="(e: any) => handleMousedown(item, e)"
-          @mouseup="(e: any) => handleMouseup(item, e)"
-        >
-          <!-- <rect
-            x="0"
-            y="0"
-            :width="areaSize"
-            :height="areaSize"
-            :fill="getRectFillColor(item, gameStatus)"
-            stroke="transparent"
-            rx="1"
-            ry="1"
-          /> -->
-          <image
-            v-if="item.status !== 'open'"
-            data-name="bg"
-            x="0"
-            y="0"
-            :width="areaSize"
-            :height="areaSize"
-            :xlink:href="bgPic"
-            :style="{
-              filter: item.status === 'active' ? 'brightness(.8)' : 'unset'
-            }"
-          />
-          <image
-            v-if="item.status === 'open'"
-            data-name="bg-open"
-            x="0"
-            y="0"
-            :width="areaSize"
-            :height="areaSize"
-            :xlink:href="bgOpenPic"
-          />
+    <PageHeader />
+    <main class="mine-sweeper-main">
+      <svg
+        ref="svgRef"
+        :width="viewBoxSize.width"
+        :height="viewBoxSize.height"
+        :viewBox="`0 0 ${viewBoxSize.width} ${viewBoxSize.height}`"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <g>
+          <g
+            v-for="item of boxes"
+            :key="`${item.x}-${item.y}`"
+            :transform="`translate(${(item.x - 1) * areaSize + item.x * gap}, ${(item.y - 1) * areaSize + item.y * gap})`"
+            @mousedown="(e: any) => handleMousedown(item, e)"
+            @mouseup="(e: any) => handleMouseup(item, e)"
+          >
+            <rect
+              class="mine-cell"
+              :class="{
+                revealed: item.status === 'open',
+                marked: item.status === 'marked',
+                doubtful: item.status === 'doubtful',
+                mine: item.type === 'mine' && item.status === 'open'
+              }"
+              x="1"
+              y="1"
+              :width="areaSize - 2"
+              :height="areaSize - 2"
+              stroke-width="2"
+              rx="4"
+              ry="4"
+            />
+            <template v-if="typeof item.type === 'number'">
+              <text
+                v-if="item.type !== 0 && item.status === 'open'"
+                :x="areaSize / 2"
+                :y="areaSize / 2"
+                font-weight="bold"
+                font-family="Verdana"
+                :font-size="areaSize / 1.5"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                :class="`number-${item.type}`"
+              >
+                {{ item.type }}
+              </text>
+            </template>
           <image
             v-if="item.type === 'mine' && item.status === 'open'"
             data-name="mine"
@@ -76,21 +75,6 @@
             :height="areaSize"
             :xlink:href="bugPic"
           />
-          <template v-if="typeof item.type === 'number'">
-            <text
-              v-if="item.type !== 0 && item.status === 'open'"
-              :x="areaSize / 2"
-              :y="areaSize / 2 + 2"
-              font-weight="bold"
-              font-family="Verdana"
-              :font-size="areaSize / 1.5"
-              text-anchor="middle"
-              dominant-baseline="middle"
-              :fill="numberColors[item.type]"
-            >
-              {{ item.type }}
-            </text>
-          </template>
 
           <g v-if="
             gameStatus === 'defeat' &&
@@ -99,69 +83,47 @@
           ">
             <path
               :d="`
-                M ${gap} ${gap}
-                L ${areaSize - gap} ${areaSize - gap}
+                M ${gap + 4} ${gap + 4}
+                L ${areaSize - gap - 4} ${areaSize - gap - 4}
               `"
-              :stroke-width="gap"
+              stroke-width="3"
               stroke="#f40"
             />
             <path
               :d="`
-                M ${areaSize - gap} ${gap}
-                L ${gap} ${areaSize - gap}
+                M ${areaSize - gap - 4} ${gap + 4}
+                L ${gap + 4} ${areaSize - gap - 4}
               `"
-              :stroke-width="gap"
+              stroke-width="3"
               stroke="#f40"
             />
           </g>
         </g>
-      </g>
-    </svg>
+        </g>
+      </svg>
+    </main>
 
-    <Statistics />
-
-    <Enhancements
-      v-if="useLeftClickEnhancements"
-    />
-
-    <Teleport to="body">
-      <div class="scale-wrapper">
-        <div
-          class="btn zoom-in"
-          @click="handleZoom('in')"
-        >
-          <plus-outlined />
-        </div>
-        <div class="scale">
-          {{ percentage }}
-        </div>
-        <div
-          class="btn zoom-out"
-          @click="handleZoom('out')"
-        >
-          <minus-outlined />
-        </div>
-      </div>
-    </Teleport>
+    <footer class="mine-sweeper-footer">
+      <Enhancements
+        v-if="useLeftClickEnhancements"
+      />
+    </footer>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, inject, watch, Ref, defineAsyncComponent } from 'vue'
-import { areaSize, gap, numberColors } from '../config'
-import { /* getRectFillColor,  */checkGameStatus } from '../lib/utils'
-import useEvent from '../composables/event'
+import { ref, inject, watch, Ref, defineAsyncComponent } from 'vue'
+import { checkGameStatus } from '../lib/utils'
+import useEvent from '../composables/useEvent'
+import { useSize } from '../composables/useSize'
 
 import { LevelInfo, Box, GameStatus } from '../types'
 
-import Statistics from '../components/statistics/index.vue'
+import PageHeader from '../components/header/index.vue'
 
-import minePic from '../assets/img/mine.png'
-import bugPic from '../assets/img/bug.png'
-import doubtfulPic from '../assets/img/doubtful.png'
-
-import bgPic from '../assets/img/bg.png'
-import bgOpenPic from '../assets/img/open-bg.png'
+import minePic from '../assets/img/mine-1.png'
+import bugPic from '../assets/img/flag-1.png'
+import doubtfulPic from '../assets/img/doubtful-1.png'
 
 const Enhancements = defineAsyncComponent(async () => await import('../components/enhancements/index.vue'))
 
@@ -174,24 +136,16 @@ const useLeftClickEnhancements = inject('useLeftClickEnhancements', ref(false))
 
 const svgRef = ref<HTMLElement>()
 
-const scale = ref(1)
-const percentage = computed(() => (scale.value * 100).toFixed(0) + '%')
-const handleZoom = (type: 'in' | 'out'): void => {
-  scale.value = Math.max(0.1, Math.min(3, type === 'in' ? scale.value + 0.1 : scale.value - 0.1))
-}
+const {
+  areaSize,
+  gap,
+  viewBoxSize
+} = useSize(svgRef, levelInfo)
 
 const {
   handleMousedown,
   handleMouseup
 } = useEvent(svgRef, boxes, useDoubtful, gameStatus, remainingFlags)
-
-const viewBoxSize = computed(() => {
-  const { column, row } = levelInfo.value
-  return {
-    width: column * areaSize + (column + 1) * gap,
-    height: row * areaSize + (row + 1) * gap
-  }
-})
 
 watch(boxes, (newBoxes) => {
   gameStatus.value = checkGameStatus(newBoxes, levelInfo.value)
@@ -207,40 +161,52 @@ watch(boxes, (newBoxes) => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 16px;
+  gap: 1rem;
+  position: relative;
+  padding: 0.5rem 1rem;
   height: 100%;
   user-select: none;
-}
 
-.scale-wrapper {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 999;
-  background-color: #0088ff;
-  border-radius: 16px;
-  user-select: none;
+  .mine-sweeper-main {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
 
-  .btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 32px;
-    height: 32px;
-    color: #fff;
-    cursor: pointer;
+    .mine-cell {
+      fill: var(--bg-cell-color);
+      stroke: var(--border-color);
+      background-size: cover;
+      background-position: center;
 
-    * {
-      pointer-events: none;
+      &.revealed {
+        fill: var(--bg-cell-color-revealed);
+      }
+
+      &.mine {
+        fill: var(--bg-cell-color-mine);
+        stroke: var(--red);
+        background-image: url('@/assets/img/mine-1.png');
+      }
+
+      &.marked {
+        background-image: url('@/assets/img/flag-1.png');
+      }
+
+      &.doubtful {
+        background-image: url('@/assets/img/doubtful-1.png');
+      }
+    }
+
+    @for $i from 1 through 8 {
+      .number-#{$i} {
+        fill: var(--number-color-#{$i});
+      }
     }
   }
 
-  .scale {
-    font-size: 12px;
-    text-align: center;
-    margin: 4px 0;
-    color: #fff;
-    transform: scale(0.8);
+  .mine-sweeper-footer {
+    height: 2.5rem;
   }
 }
 </style>
