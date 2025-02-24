@@ -20,7 +20,7 @@
             <rect
               class="mine-cell"
               :class="{
-                revealed: item.status === 'open',
+                revealed: item.status === 'open' || item.status === 'active',
                 marked: item.status === 'marked',
                 doubtful: item.status === 'doubtful',
                 mine: item.type === 'mine' && item.status === 'open'
