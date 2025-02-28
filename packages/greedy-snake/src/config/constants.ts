@@ -8,3 +8,5 @@ export const LENGTH_CHANGE = 'LENGTH_CHANGE'
 
 export const DRAW = 'DRAW'
 export const EXIT = 'EXIT'
+
+export const RESTART = 'RESTART'

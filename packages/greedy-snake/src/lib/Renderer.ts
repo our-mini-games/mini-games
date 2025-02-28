@@ -3,7 +3,7 @@ import { Coordinate, Snake, SnakePart } from '../types'
 import { createCanvas, getControlPoints, getOrientation } from './utils'
 import { createVirtualRocker, RockerDirection } from './VirtualRocker'
 import { GreedySnakeContext } from './GreedySnake'
-import { DRAW, EXIT, LENGTH_CHANGE, STATUS_CHANGE } from '../config/constants'
+import { DRAW, EXIT, LENGTH_CHANGE, RESTART, STATUS_CHANGE } from '../config/constants'
 
 export const renderHome = (el: string | HTMLElement, startGame: () => void): {
   mount: () => void
@@ -490,7 +490,7 @@ export const renderInfo = (context: GreedySnakeContext): {
       x: width * 3 / 4,
       y: height / 4,
       fontSize: Math.min(14, height / 8),
-      color: status === GameStatus.paused ? '#ff0' : status === GameStatus.finished ? '#00ff88' : '#0088ff',
+      color: status === GameStatus.paused ? '#ff0' : status === GameStatus.finished ? '#f40' : '#0088ff',
       textAlign: 'left',
       textBaseline: 'middle'
     })
@@ -546,7 +546,11 @@ export const renderInfo = (context: GreedySnakeContext): {
       if (x > button.cx - button.width / 2 && x < button.cx + button.width / 2 && y > button.cy - button.height / 2 && y < button.cy + button.height / 2) {
         console.log(button.name)
         if (button.name === 'ctrl') {
-          context.emitter.emit(STATUS_CHANGE, context.status === GameStatus.paused || context.status === GameStatus.finished ? GameStatus.playing : GameStatus.paused)
+          if (context.status === GameStatus.finished) {
+            context.emitter.emit(RESTART)
+          } else {
+            context.emitter.emit(STATUS_CHANGE, context.status === GameStatus.paused ? GameStatus.playing : GameStatus.paused)
+          }
         } else if (button.name === 'esc') {
           context.emitter.emit(EXIT)
         }
