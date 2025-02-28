@@ -15,10 +15,10 @@ export enum Directions {
 }
 
 export enum Orientation {
-  top,
-  right,
-  bottom,
-  left
+  top = 'top',
+  right = 'right',
+  bottom = 'bottom',
+  left = 'left'
 }
 
 export enum GameStatus {

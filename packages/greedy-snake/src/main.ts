@@ -1,61 +1,56 @@
-import GameCanvas from './lib/GameCanvas'
-import { wrapperSize, snakeSize } from './config'
-
+import { renderGameArea, renderHome, renderInfo, renderRocker } from './lib/Renderer'
+import { EXIT } from './config/constants'
+import { createContext, createGreedySnake } from './lib/GreedySnake'
 import './style.css'
-import GreedySnake from './lib/GreedySnake'
-import { GAME_OVER, PAUSED, PLAYING } from './config/constants'
+
+const startGame = (): void => {
+  const context = createContext()
+
+  const mainAreaSize = context.mainAreaSize
+
+  const footerAreaSize = context.footerAreaSize
+
+  const oRoot = document.querySelector<HTMLElement>('#app')!
+  const oFooter = document.createElement('footer')
+  oFooter.style.cssText = `
+    display: flex;
+    align-items: center;
+    width: ${mainAreaSize.width}px;
+    height: ${footerAreaSize.height}px;
+  `
+
+  const gameCanvas = renderGameArea(context)
+
+  const rockerCanvas = renderRocker(context)
+  const infoCanvas = renderInfo(context)
+
+  gameCanvas.mount(oRoot)
+  rockerCanvas.mount(oFooter)
+  infoCanvas.mount(oFooter)
+  oRoot.appendChild(oFooter)
+
+  const { init, destroy } = createGreedySnake(context)
+  init()
+
+  context.emitter.on(EXIT, () => {
+    destroy()
+    rockerCanvas.unmount()
+    infoCanvas.unmount()
+    gameCanvas.unmount()
+    oRoot.removeChild(oFooter)
+
+    const home = renderHome('#app', () => {
+      home.unmount()
+      startGame()
+    })
+    home.mount()
+  })
+}
 
 window.addEventListener('DOMContentLoaded', () => {
-  const { width, height } = wrapperSize
-  const gameCanvas = new GameCanvas('#app', {
-    width: width * snakeSize,
-    height: height * snakeSize,
-    snakeSize
+  const home = renderHome('#app', () => {
+    home.unmount()
+    startGame()
   })
-
-  const greedySnake = new GreedySnake(gameCanvas, width, height)
-
-  const oFinished = document.querySelector<HTMLDivElement>('#J_finished')
-  const oPaused = document.querySelector<HTMLDivElement>('#J_paused')
-
-  greedySnake.on(GAME_OVER, (len: number) => {
-    if (oFinished) {
-      oFinished.style.display = 'block'
-
-      const oLength = oFinished.querySelector('#J_length')
-      const oBtnAgain = oFinished.querySelector<HTMLElement>('.btn-again')
-
-      if (oLength) {
-        oLength.textContent = `${len}`
-      }
-
-      if (oBtnAgain) {
-        oBtnAgain.onclick = () => {
-          greedySnake.init()
-          oFinished.style.display = 'none'
-        }
-      }
-    }
-  })
-
-  greedySnake.on(PAUSED, () => {
-    if (oPaused) {
-      oPaused.style.display = 'block'
-
-      const oPlay = oPaused.querySelector<HTMLElement>('.btn-play')
-
-      if (oPlay) {
-        oPlay.onclick = () => {
-          oPaused.style.display = 'none'
-          greedySnake.play()
-        }
-      }
-    }
-  })
-
-  greedySnake.on(PLAYING, () => {
-    if (oPaused) {
-      oPaused.style.display = 'none'
-    }
-  })
+  home.mount()
 })

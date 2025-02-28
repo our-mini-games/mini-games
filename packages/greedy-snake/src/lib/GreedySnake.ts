@@ -1,131 +1,150 @@
-import { Directions, GameStatus } from '../config'
-import { GAME_OVER, PAUSED, PLAYING } from '../config/constants'
-import { Coordinate } from '../types'
+import { GameStatus, Directions, snakeSize } from '../config'
+import { DIRECTION_CHANGE, DRAW, EXIT, GAME_OVER, LENGTH_CHANGE, STATUS_CHANGE } from '../config/constants'
+import { Snake, SnakePart, Coordinate } from '../types'
 import EventEmitter from './EventEmitter'
-import type GameCanvas from './GameCanvas'
 import { rangeRandom } from './utils'
 import throttle from 'lodash.throttle'
-export interface Snake extends Coordinate {
-  part: 'HEAD' | 'BODY' | 'TAIL'
+
+export interface GreedySnakeContext {
+  columns: number
+  rows: number
+  mainAreaSize: {
+    width: number
+    height: number
+  }
+  footerAreaSize: {
+    width: number
+    height: number
+  }
+  speed: number
+  snake: Snake
+  food: Coordinate
+  status: GameStatus
+  direction: Directions
+  startTime: number
+  readonly length: number
+  readonly emitter: EventEmitter
 }
 
-export default class GreedySnake extends EventEmitter {
-  canvas: GameCanvas
-  width: number
-  height: number
+export const createContext = (): GreedySnakeContext => {
+  let _status = GameStatus.finished
+  let _direction = Directions.right
 
-  readonly speed = 100
+  const emitter = new EventEmitter()
 
-  #snake: Snake[] = []
-  #food: Coordinate = { x: 0, y: 0 }
+  const { innerWidth, innerHeight } = window
 
-  // 方向
-  #direction: Directions = Directions.right
-  // 游戏状态
-  #status: GameStatus = GameStatus.finished
-
-  requestId: number = 0
-  startTime: number = 0
-
-  get snake (): Snake[] {
-    return this.#snake
+  const mainAreaSize = {
+    width: innerWidth,
+    height: innerHeight * 0.8
   }
 
-  set snake (snake: Snake[]) {
-    this.#snake = snake
+  const footerAreaSize = {
+    width: innerWidth,
+    height: innerHeight * 0.2
   }
 
-  constructor (canvas: GameCanvas, width: number, height: number) {
-    super()
-
-    this.canvas = canvas
-    this.width = width
-    this.height = height
-
-    this.init()
-    this.initEvent()
-  }
-
-  init (): void {
-    this.snake = [
-      { part: 'HEAD', x: 2, y: 0 },
-      { part: 'BODY', x: 1, y: 0 },
-      { part: 'TAIL', x: 0, y: 0 }
-    ]
-    this.#food = this.#makeFood()
-    this.#direction = Directions.right
-    this.#status = GameStatus.playing
-
-    this.startTime = Date.now()
-    this.run()
-  }
-
-  initEvent (): void {
-    this.handleKeyDown = throttle(this.handleKeyDown.bind(this), this.speed)
-    document.addEventListener('keydown', this.handleKeyDown, false)
-  }
-
-  destroy (): void {
-    this.snake = []
-    this.#status = GameStatus.finished
-    document.removeEventListener('keydown', this.handleKeyDown, false)
-  }
-
-  run (): void {
-    if (this.#status !== GameStatus.playing) {
-      cancelAnimationFrame(this.requestId)
-      return
-    }
-
-    const nowTime = Date.now()
-    if (nowTime - this.startTime >= this.speed) {
-      this.getNextFrame()
-      this.startTime = nowTime
-    }
-
-    this.canvas.draw(this.snake, this.#food)
-
-    this.requestId = requestAnimationFrame(this.run.bind(this))
-  }
-
-  setStatus (newStatus: GameStatus, oldStatus?: GameStatus): void {
-    this.#status = newStatus
-
-    switch (newStatus) {
-      case GameStatus.finished:
-        this.emit(GAME_OVER, this.snake.length)
+  return {
+    columns: Math.floor(mainAreaSize.width / snakeSize),
+    rows: Math.floor(mainAreaSize.height / snakeSize),
+    mainAreaSize,
+    footerAreaSize,
+    speed: 100,
+    snake: [],
+    food: { x: 0, y: 0 },
+    get status () {
+      return _status
+    },
+    set status (newStatus: GameStatus) {
+      _status = newStatus
+      emitter.emit(STATUS_CHANGE, newStatus)
+    },
+    get direction () {
+      return _direction
+    },
+    set direction (newDirection: Directions) {
+      if (_status !== GameStatus.playing) {
         return
-      case GameStatus.paused:
-        this.emit(PAUSED)
-        break
-      case GameStatus.playing:
-        this.emit(PLAYING)
-        break
-    }
+      }
 
-    if (oldStatus === GameStatus.paused && newStatus === GameStatus.playing) {
-      this.run()
-    }
+      switch (_direction) {
+        case Directions.up:
+          if (newDirection !== Directions.down) {
+            _direction = newDirection
+          }
+          break
+        case Directions.right:
+          if (newDirection !== Directions.left) {
+            _direction = newDirection
+          }
+          break
+        case Directions.down:
+          if (newDirection !== Directions.up) {
+            _direction = newDirection
+          }
+          break
+        case Directions.left:
+          if (newDirection !== Directions.right) {
+            _direction = newDirection
+          }
+          break
+      }
+
+      emitter.emit(DIRECTION_CHANGE, newDirection)
+    },
+    get length () {
+      return this.snake.length
+    },
+    startTime: 0,
+    emitter
+  }
+}
+
+export const createGreedySnake = (context: GreedySnakeContext): {
+  init: () => void
+  destroy: () => void
+} => {
+  const { columns, rows } = context
+
+  let requestId: number = 0
+
+  const init = (): void => {
+    document.addEventListener('keydown', handleKeyDown, false)
+
+    context.emitter.on(STATUS_CHANGE, () => {
+      if (context.status === GameStatus.paused || context.status === GameStatus.finished) {
+        cancelAnimationFrame(requestId)
+      } else if (context.status === GameStatus.playing) {
+        run()
+      }
+    })
+
+    context.snake = [
+      { part: 'HEAD', x: Math.floor(columns / 2), y: Math.floor(rows / 2) },
+      { part: 'BODY', x: Math.floor(columns / 2) - 1, y: Math.floor(rows / 2) },
+      { part: 'TAIL', x: Math.floor(columns / 2) - 2, y: Math.floor(rows / 2) }
+    ]
+    context.food = generateFood()
+
+    context.direction = Directions.right
+    context.status = GameStatus.playing
+    context.startTime = performance.now()
   }
 
-  play (): void {
-    this.setStatus(GameStatus.playing, GameStatus.paused)
-  }
+  const generateFood = (): Coordinate => {
+    const snake = context.snake
+    const { columns, rows } = context
 
-  #makeFood (): Coordinate {
-    const snake = this.snake
-    const { width, height } = this
+    const x = rangeRandom(0, columns - 1)
+    const y = rangeRandom(0, rows - 1)
 
-    const x = rangeRandom(0, width - 1)
-    const y = rangeRandom(0, height - 1)
-
-    if (this.snake.length >= width * height) {
-      this.emit(GAME_OVER, this.snake.length)
+    if (context.snake.length >= columns * rows) {
+      context.emitter.emit(GAME_OVER, context.snake.length)
       return { x: 0, y: 0 }
     }
 
     if (snake.some(item => item.x === x && item.y === y)) {
-      return this.#makeFood()
+      return generateFood()
     }
 
     return {
@@ -134,16 +153,59 @@ export default class GreedySnake extends EventEmitter {
     }
   }
 
-  getNextFrame (): void {
-    const food = this.#food
+  const handleKeyDown = throttle((e: KeyboardEvent) => {
+    switch (e.code) {
+      case 'ArrowUp':
+      case 'KeyW':
+        if (context.direction !== Directions.down) {
+          context.direction = Directions.up
+        }
+        break
+      case 'ArrowRight':
+      case 'KeyD':
+        if (context.direction !== Directions.left) {
+          context.direction = Directions.right
+        }
+        break
+      case 'ArrowDown':
+      case 'KeyS':
+        if (context.direction !== Directions.up) {
+          context.direction = Directions.down
+        }
+        break
+      case 'ArrowLeft':
+      case 'KeyA':
+        if (context.direction !== Directions.right) {
+          context.direction = Directions.left
+        }
+        break
+      case 'Space':
+        if (context.status === GameStatus.finished) {
+          return
+        }
+        if (context.status === GameStatus.paused) {
+          context.status = GameStatus.playing
+          run()
+        } else {
+          context.status = GameStatus.paused
+        }
+        break
+      case 'Escape':
+        context.emitter.emit(EXIT)
+        break
+    }
+  }, context.speed)
 
-    const { width, height } = this
+  const getNextFrame = (): void => {
+    const food = context.food
 
-    const head = this.snake[0]
+    const { columns, rows } = context
 
-    const nextHead: Snake = { ...head }
+    const head = context.snake[0]
 
-    switch (this.#direction) {
+    const nextHead: SnakePart = { ...head }
+
+    switch (context.direction) {
       case Directions.up:
         nextHead.y -= 1
         break
@@ -159,73 +221,61 @@ export default class GreedySnake extends EventEmitter {
     }
 
     if (
-      nextHead.x < 0 || nextHead.x >= width ||
-      nextHead.y < 0 || nextHead.y >= height
+      nextHead.x < 0 || nextHead.x >= columns ||
+      nextHead.y < 0 || nextHead.y >= rows
     ) {
-      switch (this.#direction) {
-        case Directions.left: nextHead.x = width - 1; break
+      switch (context.direction) {
+        case Directions.left: nextHead.x = columns - 1; break
         case Directions.right: nextHead.x = 0; break
-        case Directions.up: nextHead.y = height - 1; break
+        case Directions.up: nextHead.y = rows - 1; break
         case Directions.down: nextHead.y = 0; break
       }
     }
 
-    if (this.snake.some(item => item.x === nextHead.x && item.y === nextHead.y)) {
-      this.setStatus(GameStatus.finished, GameStatus.playing)
+    if (context.snake.some(item => item.x === nextHead.x && item.y === nextHead.y)) {
+      context.status = GameStatus.finished
       return
     }
 
     // 吃到食物
     if (nextHead.x === food.x && nextHead.y === food.y) {
       head.part = 'BODY'
-      this.snake.unshift(nextHead)
-      this.#food = this.#makeFood()
+      context.snake.unshift(nextHead)
+      context.food = generateFood()
+      context.emitter.emit(LENGTH_CHANGE, context.snake.length)
       return
     }
 
     head.part = 'BODY'
-    this.snake.pop()
-    this.snake.unshift(nextHead)
-    this.snake.at(-1)!.part = 'TAIL'
+    context.snake.pop()
+    context.snake.unshift(nextHead)
+    context.snake.at(-1)!.part = 'TAIL'
   }
 
-  handleKeyDown (e: KeyboardEvent): void {
-    switch (e.code) {
-      case 'ArrowUp':
-      case 'KeyW':
-        if (this.#direction !== Directions.down) {
-          this.#direction = Directions.up
-        }
-        break
-      case 'ArrowRight':
-      case 'KeyD':
-        if (this.#direction !== Directions.left) {
-          this.#direction = Directions.right
-        }
-        break
-      case 'ArrowDown':
-      case 'KeyS':
-        if (this.#direction !== Directions.up) {
-          this.#direction = Directions.down
-        }
-        break
-      case 'ArrowLeft':
-      case 'KeyA':
-        if (this.#direction !== Directions.right) {
-          this.#direction = Directions.left
-        }
-        break
-      case 'Space':
-        if (this.#status === GameStatus.finished) {
-          return
-        }
-        this.setStatus(
-          this.#status === GameStatus.paused
-            ? GameStatus.playing
-            : GameStatus.paused,
-          this.#status
-        )
-        break
+  const run = (): void => {
+    if (context.status !== GameStatus.playing) {
+      cancelAnimationFrame(requestId)
+      return
     }
+
+    const nowTime = performance.now()
+    if (nowTime - context.startTime >= context.speed) {
+      getNextFrame()
+      context.startTime = nowTime
+    }
+
+    context.emitter.emit(DRAW)
+
+    requestId = requestAnimationFrame(run)
+  }
+
+  const destroy = (): void => {
+    cancelAnimationFrame(requestId)
+    document.removeEventListener('keydown', handleKeyDown, false)
+  }
+
+  return {
+    init,
+    destroy
   }
 }
