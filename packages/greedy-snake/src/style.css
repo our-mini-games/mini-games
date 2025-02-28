@@ -1,5 +1,24 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+html {
+  font-size: 16px;
+
+  @media (max-width: 768px) {
+    font-size: 4vw;
+  }
+}
+
+#app {
+  background: linear-gradient(135deg, #6f6f6f, #e1e1e1);
+}
+
 ul,
 ol {
   list-style: none;
@@ -7,14 +26,6 @@ ol {
 
 a {
   text-decoration: none;
-}
-
-.greedy-snake-canvas {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  border: 10px solid #0088ff;
-  transform: translate(-50%, -50%);
 }
 
 .modal {
@@ -65,4 +76,146 @@ a {
 .modal .wrapper .operations .btn.btn-back {
   color: #f40;
   font-size: 14px;
+}
+
+canvas {
+  display: block;
+}
+
+
+.home {
+  width: 100%;
+  height: 100%;
+
+  /* 全屏背景 */
+  .background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a1a1a, #000);
+    z-index: -2; /* 确保在最底层 */
+  }
+
+  /* 流动渐变背景 */
+  .flowing-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #00ff88, #00aaff, #ff0088, #00ff88);
+    background-size: 400% 400%;
+    animation: flowingBackground 10s ease infinite;
+    opacity: 0.5;
+    z-index: -1; /* 在背景之上，内容之下 */
+  }
+
+  /* 动态粒子效果 */
+  .particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0; /* 在内容和背景之间 */
+  }
+
+  .particles span {
+    position: absolute;
+    display: block;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    animation: float 5s infinite ease-in-out;
+  }
+
+  /* 内容居中 */
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* 开始游戏按钮 */
+  .btn-start {
+    /* display: inline-block; */
+    padding: 1rem 2rem;
+    font-size: 1.5em;
+    color: #fff;
+    background: linear-gradient(135deg, #00ff88, #0088ff);
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 0 1.2rem rgba(0, 255, 136, 0.5), 0 0 2.4rem rgba(0, 170, 255, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .btn-start:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 1.5rem rgba(0, 255, 136, 0.8), 0 0 3rem rgba(0, 170, 255, 0.8);
+  }
+
+  .btn-back {
+    padding: 1rem 2rem;
+    font-size: 1.5em;
+    color: #333;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+  }
+
+  /* 标题文字 */
+  .title {
+    font-size: 3em;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 1rem rgba(255, 255, 255, 0.8), 0 0 2rem rgba(255, 255, 255, 0.6);
+    animation: titleGlow 2s infinite alternate;
+  }
+}
+
+@keyframes flowingBackground {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(50vw);
+    opacity: 0;
+  }
+}
+
+@keyframes titleGlow {
+  0% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
+  }
+  100% {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 40px rgba(255, 255, 255, 0.8);
+  }
 }
