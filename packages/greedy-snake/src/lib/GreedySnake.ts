@@ -1,5 +1,5 @@
 import { GameStatus, Directions, snakeSize } from '../config'
-import { DIRECTION_CHANGE, DRAW, EXIT, GAME_OVER, LENGTH_CHANGE, STATUS_CHANGE } from '../config/constants'
+import { DIRECTION_CHANGE, DRAW, EXIT, GAME_OVER, LENGTH_CHANGE, RESTART, STATUS_CHANGE } from '../config/constants'
 import { Snake, SnakePart, Coordinate } from '../types'
 import EventEmitter from './EventEmitter'
 import { rangeRandom } from './utils'
@@ -119,6 +119,14 @@ export const createGreedySnake = (context: GreedySnakeContext): {
       }
     })
 
+    context.emitter.on(RESTART, () => {
+      start()
+    })
+
+    start()
+  }
+
+  const start = (): void => {
     context.snake = [
       { part: 'HEAD', x: Math.floor(columns / 2), y: Math.floor(rows / 2) },
       { part: 'BODY', x: Math.floor(columns / 2) - 1, y: Math.floor(rows / 2) },
