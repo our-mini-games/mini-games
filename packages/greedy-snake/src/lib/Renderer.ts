@@ -546,7 +546,7 @@ export const renderInfo = (context: GreedySnakeContext): {
       if (x > button.cx - button.width / 2 && x < button.cx + button.width / 2 && y > button.cy - button.height / 2 && y < button.cy + button.height / 2) {
         console.log(button.name)
         if (button.name === 'ctrl') {
-          context.emitter.emit(STATUS_CHANGE, context.status === GameStatus.paused ? GameStatus.playing : GameStatus.paused)
+          context.emitter.emit(STATUS_CHANGE, context.status === GameStatus.paused || context.status === GameStatus.finished ? GameStatus.playing : GameStatus.paused)
         } else if (button.name === 'esc') {
           context.emitter.emit(EXIT)
         }
