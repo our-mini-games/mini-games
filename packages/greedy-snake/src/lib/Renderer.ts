@@ -1,6 +1,6 @@
 import { Directions, GameStatus, Orientation, snakeSize } from '../config'
 import { Coordinate, Snake, SnakePart } from '../types'
-import { createCanvas, getControlPoints, getOrientation } from './utils'
+import { createCanvas, getControlPoints, getOrientation, roundRect } from './utils'
 import { createVirtualRocker, RockerDirection } from './VirtualRocker'
 import { GreedySnakeContext } from './GreedySnake'
 import { DRAW, EXIT, LENGTH_CHANGE, RESTART, STATUS_CHANGE } from '../config/constants'
@@ -443,7 +443,11 @@ export const renderInfo = (context: GreedySnakeContext): {
     ctx.save()
     ctx.beginPath()
     ctx.translate(button.cx, button.cy)
-    ctx.roundRect(-button.width / 2, -button.height / 2, button.width, button.height, height / 16)
+    if (ctx.roundRect) {
+      ctx.roundRect(-button.width / 2, -button.height / 2, button.width, button.height, height / 16)
+    } else {
+      roundRect(ctx, -button.width / 2, -button.height / 2, button.width, button.height, height / 16)
+    }
     ctx.strokeStyle = button.status === 'hover' ? 'transparent' : '#333'
     ctx.stroke()
 

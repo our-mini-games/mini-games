@@ -164,3 +164,19 @@ export const getControlPoints = (prev: Orientation, next: Orientation, startPoin
 
   return null
 }
+
+export const roundRect = (ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number): void => {
+  ctx.save()
+  ctx.translate(x, y)
+  ctx.beginPath()
+  ctx.moveTo(0, radius)
+  ctx.quadraticCurveTo(0, 0, radius, 0)
+  ctx.lineTo(width - radius, 0)
+  ctx.quadraticCurveTo(width, 0, width, radius)
+  ctx.lineTo(width, height - radius)
+  ctx.quadraticCurveTo(width, height, width - radius, height)
+  ctx.lineTo(radius, height)
+  ctx.quadraticCurveTo(0, height, 0, height - radius)
+  ctx.closePath()
+  ctx.restore()
+}

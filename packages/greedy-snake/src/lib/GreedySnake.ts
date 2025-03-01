@@ -44,6 +44,8 @@ export const createContext = (): GreedySnakeContext => {
     height: innerHeight * 0.2
   }
 
+  let startTime = performance.now()
+
   return {
     columns: Math.floor(mainAreaSize.width / snakeSize),
     rows: Math.floor(mainAreaSize.height / snakeSize),
@@ -66,6 +68,12 @@ export const createContext = (): GreedySnakeContext => {
       if (_status !== GameStatus.playing) {
         return
       }
+      // throttle
+      const currentTime = performance.now()
+      if (currentTime - startTime <= this.speed) {
+        return
+      }
+      startTime = currentTime
 
       switch (_direction) {
         case Directions.up:
