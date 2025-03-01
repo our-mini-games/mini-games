@@ -67,7 +67,7 @@ const behaviors = computed(() => <Array<{
   gap: 1rem;
 
   .title {
-    width: 5em;
+    width: 6em;
     height: 2.2rem;
     margin: 0;
     padding: 0 0.5em;
