@@ -147,7 +147,7 @@ export default (
     if (useLeftClickEnhancements.value) {
       switch (leftButtonBehaviors.value) {
         case 'open':
-          if (status === 'active' && x === cachedPos.x && y === cachedPos.y) {
+          if ((status === 'active' || status === 'doubtful') && x === cachedPos.x && y === cachedPos.y) {
             setCurrentStatus(item, 'open')
           } else {
             clearActiveStatus()
@@ -160,6 +160,8 @@ export default (
             if (status === 'marked') {
               remainingFlags.value++
             }
+          } else if (status === 'doubtful') {
+            setCurrentStatus(item, 'default')
           } else {
             clearActiveStatus()
           }
@@ -168,6 +170,8 @@ export default (
           if ((status === 'active' || status === 'doubtful') && x === cachedPos.x && y === cachedPos.y) {
             setCurrentStatus(item, 'marked')
             remainingFlags.value--
+          } else if (status === 'marked') {
+            setCurrentStatus(item, 'default')
           } else {
             clearActiveStatus()
           }
