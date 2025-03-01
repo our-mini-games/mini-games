@@ -22,7 +22,7 @@ import FinishedModal from './components/modal/Finished.vue'
 
 let defaultSetting: any = {}
 try {
-  defaultSetting = JSON.parse(localStorage.getItem(MINE_SWEEPER_SETTING) ?? '{}')
+  defaultSetting = JSON.parse(localStorage.getItem(MINE_SWEEPER_SETTING) ?? '{ "useLeftClickEnhancements": true }')
 } catch { }
 
 const firstClick = ref(true)

@@ -88,7 +88,7 @@ onMounted(() => {
   })
 })
 </script>
-<style>
+<style lang="scss">
 .home {
   display: flex;
   flex-direction: column;
