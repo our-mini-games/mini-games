@@ -29,6 +29,8 @@ const startGame = (): void => {
   infoCanvas.mount(oFooter)
   oRoot.appendChild(oFooter)
 
+  console.log(gameCanvas, rockerCanvas, infoCanvas)
+
   const { init, destroy } = createGreedySnake(context)
   init()
 
