@@ -2,7 +2,7 @@
   <div class="link-game">
     <Home
       v-if="homeVisible"
-      @start="gameStatus = GameStatus.playing"
+      @start="handleStart"
       @settings="gameSettingModalVisible = true"
     />
     <template v-else>
@@ -73,6 +73,14 @@ watch(gameStatus, () => {
     completeModalVisible.value = true
   }
 })
+
+const handleStart = async (): Promise<void> => {
+  await initBoxes(levelInfo.value)
+
+  Promise.resolve().then(() => {
+    gameStatus.value = GameStatus.playing
+  })
+}
 
 provide('currentLevel', currentLevel)
 provide('gameStatus', gameStatus)
