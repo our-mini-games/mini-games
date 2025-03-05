@@ -156,13 +156,51 @@ importers:
         version: 3.2.3(@types/node@14.18.33)(sass@1.56.0)
 
   packages/greedy-snake:
+    dependencies:
+      hammerjs:
+        specifier: ^2.0.8
+        version: 2.0.8
+      unit-path:
+        specifier: ^0.0.4
+        version: 0.0.4
     devDependencies:
       typescript:
         specifier: ^4.6.4
         version: 4.9.4
+      vconsole:
+        specifier: ^3.15.1
+        version: 3.15.1
       vite:
         specifier: ^3.2.0
         version: 3.2.3(@types/node@14.18.33)(sass@1.56.0)
+
+  packages/klotski:
+    dependencies:
+      hammerjs:
+        specifier: ^2.0.8
+        version: 2.0.8
+      vue:
+        specifier: ^3.2.41
+        version: 3.2.45
+    devDependencies:
+      '@vitejs/plugin-vue':
+        specifier: ^3.2.0
+        version: 3.2.0(vite@3.2.3)(vue@3.2.45)
+      '@vue/tsconfig':
+        specifier: ^0.7.0
+        version: 0.7.0(typescript@4.9.4)(vue@3.2.45)
+      typescript:
+        specifier: ^4.6.4
+        version: 4.9.4
+      unplugin-auto-import:
+        specifier: ^0.11.4
+        version: 0.11.4
+      vite:
+        specifier: ^3.2.3
+        version: 3.2.3(@types/node@14.18.33)(sass@1.56.0)
+      vue-tsc:
+        specifier: ^1.0.9
+        version: 1.0.17(typescript@4.9.4)
 
   packages/link-game:
     dependencies:
@@ -203,6 +241,9 @@ importers:
       '@ant-design/icons-vue':
         specifier: ^6.1.0
         version: 6.1.0(vue@3.2.45)
+      '@panzoom/panzoom':
+        specifier: ^4.6.0
+        version: 4.6.0
       ant-design-vue:
         specifier: ^3.2.15
         version: 3.2.15(vue@3.2.45)
@@ -3891,7 +3932,7 @@ snapshots:
 
   call-bind@1.0.2:
     dependencies:
-      function-bind: 1.1.1
+      function-bind: 1.1.2
       get-intrinsic: 1.1.3
 
   callsites@3.1.0: {}
@@ -4188,7 +4229,7 @@ snapshots:
     dependencies:
       call-bind: 1.0.2
       es-to-primitive: 1.2.1
-      function-bind: 1.1.1
+      function-bind: 1.1.2
       function.prototype.name: 1.1.5
       get-intrinsic: 1.1.3
       get-symbol-description: 1.0.0
@@ -4364,7 +4405,7 @@ snapshots:
   eslint-import-resolver-node@0.3.6:
     dependencies:
       debug: 3.2.7
-      resolve: 1.22.1
+      resolve: 1.22.8
     transitivePeerDependencies:
       - supports-color
 
@@ -4376,7 +4417,7 @@ snapshots:
       eslint-plugin-import: 2.26.0(@typescript-eslint/parser@5.41.0(eslint@8.26.0)(typescript@4.9.4))(eslint-import-resolver-typescript@3.5.2)(eslint@8.26.0)
       get-tsconfig: 4.2.0
       globby: 13.1.2
-      is-core-module: 2.11.0
+      is-core-module: 2.13.1
       is-glob: 4.0.3
       synckit: 0.8.4
     transitivePeerDependencies:
@@ -4522,8 +4563,8 @@ snapshots:
 
   espree@9.4.0:
     dependencies:
-      acorn: 8.8.1
-      acorn-jsx: 5.3.2(acorn@8.8.1)
+      acorn: 8.11.3
+      acorn-jsx: 5.3.2(acorn@8.11.3)
       eslint-visitor-keys: 3.3.0
 
   esquery@1.4.0:
@@ -4686,7 +4727,7 @@ snapshots:
 
   get-intrinsic@1.1.3:
     dependencies:
-      function-bind: 1.1.1
+      function-bind: 1.1.2
       has: 1.0.3
       has-symbols: 1.0.3
 
@@ -4752,7 +4793,7 @@ snapshots:
     dependencies:
       array-union: 2.1.0
       dir-glob: 3.0.1
-      fast-glob: 3.2.12
+      fast-glob: 3.3.2
       ignore: 5.3.0
       merge2: 1.4.1
       slash: 3.0.0
@@ -4760,7 +4801,7 @@ snapshots:
   globby@13.1.2:
     dependencies:
       dir-glob: 3.0.1
-      fast-glob: 3.2.12
+      fast-glob: 3.3.2
       ignore: 5.3.0
       merge2: 1.4.1
       slash: 4.0.0
@@ -4793,7 +4834,8 @@ snapshots:
 
   has@1.0.3:
     dependencies:
-      function-bind: 1.1.1
+      function-bind: 1.1.2
+    dev: true
 
   hasown@2.0.0:
     dependencies:
@@ -4889,6 +4931,7 @@ snapshots:
   is-core-module@2.11.0:
     dependencies:
       has: 1.0.3
+    dev: true
 
   is-core-module@2.13.1:
     dependencies:
@@ -5170,7 +5213,7 @@ snapshots:
 
   mlly@0.5.16:
     dependencies:
-      acorn: 8.8.1
+      acorn: 8.11.3
       pathe: 0.3.9
       pkg-types: 0.3.6
       ufo: 0.8.6
@@ -5199,14 +5242,14 @@ snapshots:
   normalize-package-data@2.5.0:
     dependencies:
       hosted-git-info: 2.8.9
-      resolve: 1.22.1
+      resolve: 1.22.8
       semver: 5.7.1
       validate-npm-package-license: 3.0.4
 
   normalize-package-data@3.0.3:
     dependencies:
       hosted-git-info: 4.1.0
-      is-core-module: 2.11.0
+      is-core-module: 2.13.1
       semver: 7.3.8
       validate-npm-package-license: 3.0.4
 
@@ -5433,7 +5476,7 @@ snapshots:
 
   resolve@1.22.1:
     dependencies:
-      is-core-module: 2.11.0
+      is-core-module: 2.13.1
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
@@ -5709,7 +5752,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 14.18.33
-      acorn: 8.8.1
+      acorn: 8.11.3
       acorn-walk: 8.2.0
       arg: 4.1.3
       create-require: 1.1.1
@@ -5768,8 +5811,8 @@ snapshots:
     dependencies:
       '@rollup/pluginutils': 5.0.2(rollup@3.29.4)
       escape-string-regexp: 5.0.0
-      fast-glob: 3.2.12
-      local-pkg: 0.4.2
+      fast-glob: 3.3.2
+      local-pkg: 0.4.3
       magic-string: 0.26.7
       mlly: 0.5.16
       pathe: 0.3.9
@@ -5866,7 +5909,7 @@ snapshots:
 
   unplugin@0.10.2:
     dependencies:
-      acorn: 8.8.1
+      acorn: 8.11.3
       chokidar: 3.5.3
       webpack-sources: 3.2.3
       webpack-virtual-modules: 0.4.5
