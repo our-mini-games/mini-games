@@ -1,0 +1,17 @@
+<svg width="68" height="84" viewBox="0 0 68 84" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <rect x="0" y="0" rx="4" ry="4" width="68" height="84" fill="none" stroke-width="2" stroke="#babecc" />
+  <g transform="translate(2, 2)">
+    <rect x="0" y="0" rx="4" ry="4" width="16" height="32" fill="#0088ff" stroke="#fff" />
+    <rect x="16" y="0" rx="4" ry="4" width="32" height="32" fill="#ff4400" stroke="#fff" />
+    <rect x="48" y="0" rx="4" ry="4" width="16" height="32" fill="#8800ff" stroke="#fff" />
+    <rect x="0" y="32" rx="4" ry="4" width="16" height="32" fill="#0066ee" stroke="#fff" />
+    <rect x="16" y="32" rx="4" ry="4" width="32" height="16" fill="#00ff88" stroke="#fff" />
+    <rect x="48" y="32" rx="4" ry="4" width="16" height="32" fill="#ff22aa" stroke="#fff" />
+    <rect x="0" y="64" rx="4" ry="4" width="16" height="16" fill="#babecc" stroke="#fff" />
+    <rect x="16" y="48" rx="4" ry="4" width="16" height="16" fill="#babecc" stroke="#fff" />
+    <rect x="32" y="48" rx="4" ry="4" width="16" height="16" fill="#babecc" stroke="#fff" />
+    <rect x="48" y="64" rx="4" ry="4" width="16" height="16" fill="#babecc" stroke="#fff" />
+
+    <line x1="16" y1="82" x2="48" y2="82" stroke="white" stroke-width="2" />
+  </g>
+</svg>
