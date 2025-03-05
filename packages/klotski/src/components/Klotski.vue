@@ -1,7 +1,7 @@
 <template>
   <div class="klotski">
     <header class="header">
-      <button class="btn btn-back">
+      <button class="btn btn-back" @click="handleBack">
         退
       </button>
       <h1 class="title">Klotski</h1>
@@ -95,6 +95,10 @@ const CompleteModal = defineAsyncComponent(async () => await import('./CompleteM
 const closeCompleteModal = (): void => {
   completeModalVisible.value = false
 }
+
+const handleBack = (): void => {
+  window.location.href = '/mini-games'
+}
 </script>
 
 <style scoped>
@@ -156,6 +160,7 @@ const closeCompleteModal = (): void => {
 .btn {
   width: 2rem;
   height: 2rem;
+  padding: 0;
   color: var(--color-text);
   font-size: 1rem;
   border: 0;
