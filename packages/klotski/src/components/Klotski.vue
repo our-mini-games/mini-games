@@ -21,13 +21,18 @@
         :key="item.name"
         :data-name="item.name"
         class="klotski-item"
-        :class="[`item-w-${item.w}`, `item-h-${item.h}`]"
+        :class="[`item-w-${item.w}`, `item-h-${item.h}`, `item-${item.name}`]"
         :style="{
           left: `${parseFloat(gap) + item.x * size}px`,
           top: `${parseFloat(gap) + item.y * size}px`
         }"
       >
-        {{ item.name }}
+        <div class="inner">
+          <div class="cover"></div>
+          <div class="name">
+            {{ PERSONS_MAP[item.name] }}
+          </div>
+        </div>
       </div>
     </main>
     <footer class="footer">
@@ -62,7 +67,7 @@
 
 <script setup lang="ts">
 import { KlotskiGameStatus } from '../composables/useKlotski'
-import { classicalLayouts } from '../config'
+import { classicalLayouts, PERSONS_MAP } from '../config'
 const { gap, size, size1, size2, boxWidth, boxHeight } = useSize()
 
 const {
@@ -101,7 +106,7 @@ const handleBack = (): void => {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .klotski {
   width: 100%;
   height: 100%;
@@ -113,48 +118,48 @@ const handleBack = (): void => {
   text-shadow: 1px 1px 1px var(--color-white);
   padding: 0.2rem v-bind('gap');
   box-sizing: border-box;
-}
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  gap: 0.5rem;
-  padding: 0.2rem 0;
-  background-color: var(--color-bg);
-  box-sizing: border-box;
-}
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 0.5rem;
+    padding: 0.2rem 0;
+    background-color: var(--color-bg);
+    box-sizing: border-box;
 
-.title,
-.step-info,
-.timer {
-  padding: 0 0.5rem;
-  font-weight: 700;
-  line-height: 2rem;
-  border-radius: 0.2rem;
-  box-shadow:
-    inset -2px -2px 4px var(--color-white),
-    inset 2px 2px 4px var(--color-shadow);
-}
+    .title,
+    .step-info,
+    .timer {
+      padding: 0 0.5rem;
+      font-weight: 700;
+      line-height: 2rem;
+      border-radius: 0.2rem;
+      box-shadow:
+        inset -2px -2px 4px var(--color-white),
+        inset 2px 2px 4px var(--color-shadow);
+    }
 
-.title {
-  flex: 1;
-  margin: 0;
-  text-align: center;
-  font-size: 1.2rem;
-}
+    .title {
+      flex: 1;
+      margin: 0;
+      text-align: center;
+      font-size: 1.2rem;
+    }
 
-.timer {
-  font-size: 1.2rem;
-  width: 3em;
-  text-align: center;
-}
+    .timer {
+      font-size: 1.2rem;
+      width: 3em;
+      text-align: center;
+    }
 
-.step-info {
-  font-size: 1.2rem;
-  width: 2em;
-  text-align: center;
+    .step-info {
+      font-size: 1.2rem;
+      width: 2em;
+      text-align: center;
+    }
+  }
 }
 
 .btn {
@@ -201,31 +206,160 @@ const handleBack = (): void => {
     inset -2px -2px 4px var(--color-white),
     inset 2px 2px 4px var(--color-shadow);
   box-sizing: border-box;
+
+  .klotski-item {
+    position: absolute;
+    z-index: 2;
+    width: v-bind('size1');
+    height: v-bind('size1');
+    text-shadow: 3px 3px 2px var(--color-white);
+    background-color: var(--color-bg);
+    border-radius: 0.2rem;
+    box-shadow:
+      inset 2px 2px 4px var(--color-white),
+      inset -2px -2px 4px var(--color-shadow);
+
+      .inner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2px;
+        width: 100%;
+        height: 100%;
+        padding: 0.5rem;
+        border-radius: 0.2rem;
+        box-sizing: border-box;
+
+        .cover {
+          flex: 1;
+          aspect-ratio: 1 / 1;
+          background-repeat: no-repeat;
+          background-size: contain;
+          // border: 1px solid var(--color-white);
+          // box-shadow:
+          //   inset -2px -2px 4px var(--color-white),
+          //   inset 2px 2px 4px var(--color-shadow);
+        }
+
+        .name {
+          text-align: center;
+          padding: 0.1rem;
+          font-size: 1rem;
+          font-weight: 700;
+        }
+      }
+
+    &.item-w-1 {
+      // 小兵
+      &.item-h-1 {
+        .inner {
+          flex-direction: column;
+          .cover {
+            height: 100%;
+            background-position: center;
+            background-image: url('@/assets/imgs/pawn.png');
+          }
+          .name {
+            height: 1.2rem;
+            line-height: 1.2rem;
+            font-size: 1rem;
+          }
+        }
+      }
+
+      // 竖将
+      &.item-h-2 {
+        height: v-bind('size2');
+        .inner {
+          flex-direction: column;
+          .cover {
+            width: 100%;
+            background-position: center;
+          }
+          .name {}
+        }
+      }
+    }
+
+    &.item-w-2 {
+      width: v-bind('size2');
+      // 横将
+      &.item-h-1 {
+        .inner {
+          .cover {
+            height: 100%;
+            background-position: 0 center;
+            background-image: url('@/assets/imgs/guanyu.png');
+          }
+          .name {}
+        }
+      }
+
+      // 曹操
+      &.item-h-2 {
+        height: v-bind('size2');
+        .inner {
+          flex-direction: column;
+          .cover {
+            height: 100%;
+            background-position: center;
+            background-image: url('@/assets/imgs/caocao.png');
+          }
+          .name {}
+        }
+      }
+    }
+
+    &.item-guanyu {
+      .inner {
+        .cover {
+          background-image: url('@/assets/imgs/guanyu.png');
+        }
+      }
+    }
+    &.item-zhangfei {
+      .inner {
+        .cover {
+          background-image: url('@/assets/imgs/zhangfei.png');
+        }
+      }
+    }
+    &.item-zhaoyun {
+      .inner {
+        .cover {
+          background-image: url('@/assets/imgs/zhaoyun.png');
+        }
+      }
+    }
+    &.item-huangzhong {
+      .inner {
+        .cover {
+          background-image: url('@/assets/imgs/huangzhong.png');
+        }
+      }
+    }
+    &.item-machao {
+      .inner {
+        .cover {
+          background-image: url('@/assets/imgs/machao.png');
+        }
+      }
+    }
+  }
 }
 
-.klotski-board .klotski-item {
+.klotski-board::after {
+  content: '';
   position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: v-bind('size1');
-  height: v-bind('size1');
-  font-size: 2rem;
-  font-weight: 700;
-  text-shadow: 3px 3px 2px var(--color-white);
-  background-color: var(--color-bg);
-  border-radius: 0.2rem;
-  box-shadow:
-    inset 2px 2px 4px var(--color-white),
-    inset -2px -2px 4px var(--color-shadow);
-}
-
-.klotski-board .item-w-2 {
+  bottom: 0;
+  left: 50%;
   width: v-bind('size2');
-}
-
-.klotski-board .item-h-2 {
-  height: v-bind('size2');
+  height: 10px;
+  transform: translate(-50%, 5px) skewX(-45deg);
+  background-color: var(--color-bg);
+  background-image: linear-gradient(to right, transparent 30%, var(--color-green) 30%, var(--color-green) 70%, transparent 70%);
+  background-size: 8px 10px;
+  background-repeat: repeat-x;
 }
 
 .footer {
@@ -233,28 +367,28 @@ const handleBack = (): void => {
   width: 100%;
   background-color: var(--color-bg);
   box-sizing: border-box;
-}
 
-.footer .level-info {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  align-items: center;
-  text-align: center;
-  line-height: 2rem;
-}
+  .level-info {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    align-items: center;
+    text-align: center;
+    line-height: 2rem;
 
-.footer .level-name {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--color-blue);
-  text-shadow: 2px 2px 1px var(--color-white);
-}
+    .level-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--color-blue);
+      text-shadow: 2px 2px 1px var(--color-white);
+    }
+  }
 
-.footer .btn-next {
-  position: absolute;
-  right: 0;
-  top: 0;
+  .btn-next {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
 }
 </style>

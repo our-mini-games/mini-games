@@ -1,6 +1,6 @@
 import { ComputedRef, Ref } from 'vue'
 import Hammer from 'hammerjs'
-import { classicalLayouts, KlotskiItem } from '../config'
+import { classicalLayouts, PERSONS, KlotskiItem } from '../config'
 import { canMove, generateKlotskiItems, getGenerals } from '../lib/utils'
 
 export interface KlotskiLevelInfo {
@@ -78,7 +78,7 @@ export const useKlotski = (): Klotski => {
             name = verticalGenerals.shift()!
             break
           case 'PAWN':
-            name = `卒${pawnLength--}`
+            name = PERSONS[`Pawn${pawnLength--}` as keyof typeof PERSONS]
             break
           default:
             break
@@ -150,7 +150,7 @@ export const useKlotski = (): Klotski => {
     item.y = nextPosition.y
     step.value++
 
-    if (item.name === '曹操' && item.x === 1 && item.y === 3) {
+    if (item.name === PERSONS.Caocao && item.x === 1 && item.y === 3) {
       gameStatus.value = KlotskiGameStatus.Completed
     }
   }
@@ -202,10 +202,21 @@ export const useKlotski = (): Klotski => {
       }
     })
 
+    hammer.on('panmove', e => {
+      e.preventDefault()
+      if (isDragging && target) {
+        // const direction = Math.abs(e.overallVelocityX) > Math.abs(e.overallVelocityY) ? e.overallVelocityX > 0 ? Hammer.DIRECTION_RIGHT : Hammer.DIRECTION_LEFT : e.overallVelocityY > 0 ? Hammer.DIRECTION_DOWN : Hammer.DIRECTION_UP
+        // target.style.transform = `translate(${direction === Hammer.DIRECTION_RIGHT || direction === Hammer.DIRECTION_LEFT ? e.deltaX : 0}px, ${direction === Hammer.DIRECTION_DOWN || direction === Hammer.DIRECTION_UP ? e.deltaY : 0}px)`
+        target.style.transform = `translate(${e.deltaX}px, ${e.deltaY}px)`
+      }
+    })
+
     hammer.on('panend', (e) => {
       e.preventDefault()
       if (isDragging && target) {
-        handleMove(target.getAttribute('data-name') as string, e.direction)
+        const direction = Math.abs(e.overallVelocityX) > Math.abs(e.overallVelocityY) ? e.overallVelocityX > 0 ? Hammer.DIRECTION_RIGHT : Hammer.DIRECTION_LEFT : e.overallVelocityY > 0 ? Hammer.DIRECTION_DOWN : Hammer.DIRECTION_UP
+        handleMove(target.getAttribute('data-name') as string, direction)
+        target.style.transform = 'translate(0, 0)'
 
         isDragging = false
         target = null
