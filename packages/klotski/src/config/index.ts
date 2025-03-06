@@ -7,13 +7,30 @@ export const HORIZONTAL = 2
 export const VERTICAL = 3
 export const PAWN = 4 // 卒
 
-export const GENERALS = {
-  Caocao: '曹操',
-  Guanying: '關羽',
-  Zhangfei: '張飛',
-  Zhaoyun: '趙雲',
-  Huangzhong: '黃忠',
-  Maochao: '馬超'
+export const PERSONS = {
+  Caocao: 'caocao',
+  Guanying: 'guanying',
+  Zhangfei: 'zhangfei',
+  Zhaoyun: 'zhaoyun',
+  Huangzhong: 'huangzhong',
+  Machao: 'machao',
+  Pawn1: 'pawn1',
+  Pawn2: 'pawn2',
+  Pawn3: 'pawn3',
+  Pawn4: 'pawn4'
+}
+
+export const PERSONS_MAP = {
+  [PERSONS.Caocao]: '曹操',
+  [PERSONS.Guanying]: '關羽',
+  [PERSONS.Zhangfei]: '張飛',
+  [PERSONS.Zhaoyun]: '趙雲',
+  [PERSONS.Huangzhong]: '黃忠',
+  [PERSONS.Machao]: '馬超',
+  [PERSONS.Pawn1]: '甲',
+  [PERSONS.Pawn2]: '乙',
+  [PERSONS.Pawn3]: '丙',
+  [PERSONS.Pawn4]: '丁'
 }
 
 export interface Layout {

@@ -1,5 +1,5 @@
 import Hammer from 'hammerjs'
-import { ROWS, COLS, KlotskiItem, Rect, GENERALS } from '../config'
+import { ROWS, COLS, KlotskiItem, Rect, PERSONS } from '../config'
 
 export const generateKlotskiItems = (layouts: number[][]): KlotskiItem[] => {
   const _layouts = [...layouts]
@@ -16,7 +16,7 @@ export const generateKlotskiItems = (layouts: number[][]): KlotskiItem[] => {
 
       switch (item) {
         case 1:
-          result.push({ name: GENERALS.Caocao, x, y, w: 2, h: 2 })
+          result.push({ name: PERSONS.Caocao, x, y, w: 2, h: 2 })
           _layouts[y][x + 1] = -1
           _layouts[y + 1][x] = -1
           _layouts[y + 1][x + 1] = -1
@@ -50,7 +50,7 @@ export const getGenerals = (desc: string): { horizontalGenerals: string[], verti
 
   let horizontalLength = parseInt(match[0])
   let verticalLength = parseInt(match[1])
-  const generals = [GENERALS.Guanying, GENERALS.Zhangfei, GENERALS.Zhaoyun, GENERALS.Huangzhong, GENERALS.Maochao]
+  const generals = [PERSONS.Guanying, PERSONS.Zhangfei, PERSONS.Zhaoyun, PERSONS.Huangzhong, PERSONS.Machao]
 
   const horizontalGenerals: string[] = []
   const verticalGenerals: string[] = []

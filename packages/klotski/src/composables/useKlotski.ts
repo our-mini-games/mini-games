@@ -1,6 +1,6 @@
 import { ComputedRef, Ref } from 'vue'
 import Hammer from 'hammerjs'
-import { classicalLayouts, KlotskiItem } from '../config'
+import { classicalLayouts, PERSONS, KlotskiItem } from '../config'
 import { canMove, generateKlotskiItems, getGenerals } from '../lib/utils'
 
 export interface KlotskiLevelInfo {
@@ -78,7 +78,7 @@ export const useKlotski = (): Klotski => {
             name = verticalGenerals.shift()!
             break
           case 'PAWN':
-            name = `卒${pawnLength--}`
+            name = PERSONS[`Pawn${pawnLength--}` as keyof typeof PERSONS]
             break
           default:
             break
@@ -150,7 +150,7 @@ export const useKlotski = (): Klotski => {
     item.y = nextPosition.y
     step.value++
 
-    if (item.name === '曹操' && item.x === 1 && item.y === 3) {
+    if (item.name === PERSONS.Caocao && item.x === 1 && item.y === 3) {
       gameStatus.value = KlotskiGameStatus.Completed
     }
   }
