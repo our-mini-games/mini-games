@@ -205,6 +205,7 @@ const handleBack = (): void => {
 
 .klotski-board .klotski-item {
   position: absolute;
+  z-index: 2;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -227,6 +228,20 @@ const handleBack = (): void => {
 
 .klotski-board .item-h-2 {
   height: v-bind('size2');
+}
+
+.klotski-board::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: v-bind('size2');
+  height: 10px;
+  transform: translate(-50%, 5px) skewX(-45deg);
+  background-color: var(--color-bg);
+  background-image: linear-gradient(to right, transparent 30%, var(--color-green) 30%, var(--color-green) 70%, transparent 70%);
+  background-size: 8px 10px;
+  background-repeat: repeat-x;
 }
 
 .footer {
