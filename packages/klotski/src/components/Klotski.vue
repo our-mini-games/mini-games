@@ -229,6 +229,7 @@ const handleBack = (): void => {
         padding: 0.5rem;
         border-radius: 0.2rem;
         box-sizing: border-box;
+        pointer-events: none;
 
         .cover {
           flex: 1;
