@@ -215,6 +215,7 @@ const handleBack = (): void => {
   text-shadow: 3px 3px 2px var(--color-white);
   background-color: var(--color-bg);
   border-radius: 0.2rem;
+  /* transition: transform 0.2s ease-in-out; */
   box-shadow:
     inset 2px 2px 4px var(--color-white),
     inset -2px -2px 4px var(--color-shadow);
