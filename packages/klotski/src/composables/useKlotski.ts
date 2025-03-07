@@ -1,6 +1,6 @@
 import { ComputedRef, Ref } from 'vue'
 import Hammer from 'hammerjs'
-import { classicalLayouts, PERSONS, KlotskiItem } from '../config'
+import { classicalLayouts, PERSONS, KlotskiItem, Rect } from '../config'
 import { canMove, generateKlotskiItems, getGenerals } from '../lib/utils'
 import { usePointerTip } from './usePointerTip'
 
@@ -139,23 +139,23 @@ export const useKlotski = (): Klotski => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let currentItem: KlotskiItem | undefined
+  const curAvailableDir: Array<Rect | null> = []
   const handleMove = (name: string, direction: number): void => {
-    const item = currentLevelInfo.value!.klotskiItems.find(item => item.name === name)
-    if (!item) {
+    if (!currentItem) {
       return
     }
 
-    const nextPosition = canMove(item, currentLevelInfo.value!.klotskiItems, direction)
+    const nextPosition = curAvailableDir[direction]
 
     if (!nextPosition) {
       return
     }
 
-    item.x = nextPosition.x
-    item.y = nextPosition.y
+    currentItem.x = nextPosition.x
+    currentItem.y = nextPosition.y
     step.value++
 
-    if (item.name === PERSONS.Caocao && item.x === 1 && item.y === 3) {
+    if (currentItem.name === PERSONS.Caocao && currentItem.x === 1 && currentItem.y === 3) {
       gameStatus.value = KlotskiGameStatus.Completed
     }
   }
@@ -201,24 +201,25 @@ export const useKlotski = (): Klotski => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let canMoveDir = 0
 
-    const prepareItem = (): void => {
-      const name = target!.getAttribute('data-name') as string
+    const prepareItem = (target: HTMLElement): boolean => {
+      const name = target.getAttribute('data-name') as string
       currentItem = currentLevelInfo.value!.klotskiItems.find(item => item.name === name)
       canMoveDir = 0
-      if (canMove(currentItem!, currentLevelInfo.value!.klotskiItems, 2)) { canMoveDir |= 2 }
-      if (canMove(currentItem!, currentLevelInfo.value!.klotskiItems, 4)) { canMoveDir |= 4 }
-      if (canMove(currentItem!, currentLevelInfo.value!.klotskiItems, 8)) { canMoveDir |= 8 }
-      if (canMove(currentItem!, currentLevelInfo.value!.klotskiItems, 16)) { canMoveDir |= 16 }
+      curAvailableDir.fill(null)
+      if ((curAvailableDir[2] = canMove(currentItem!, currentLevelInfo.value!.klotskiItems, 2))) { canMoveDir |= 2 }
+      if ((curAvailableDir[4] = canMove(currentItem!, currentLevelInfo.value!.klotskiItems, 4))) { canMoveDir |= 4 }
+      if ((curAvailableDir[8] = canMove(currentItem!, currentLevelInfo.value!.klotskiItems, 8))) { canMoveDir |= 8 }
+      if ((curAvailableDir[16] = canMove(currentItem!, currentLevelInfo.value!.klotskiItems, 16))) { canMoveDir |= 16 }
+      return canMoveDir > 0
     }
 
     hammer.on('panstart', (e) => {
       e.preventDefault()
-      if (gameStatus.value === KlotskiGameStatus.Playing && e.target.classList.contains('klotski-item')) {
+      if (gameStatus.value === KlotskiGameStatus.Playing && e.target.classList.contains('klotski-item') && prepareItem(e.target)) {
         target = e.target
         isDragging = true
 
-        addPointerTip(target)
-        prepareItem()
+        addPointerTip(target, target.classList.contains('item-caocao'))
       }
     })
 
