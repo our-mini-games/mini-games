@@ -1,0 +1,39 @@
+.pointer-tip::after {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 30%;
+    height: 80%;    
+    content: "";
+    background: linear-gradient(#ffffff61, rgba(212, 52, 52, 0.667), #ffffff61, rgba(212, 52, 52, 0.667), #ffffff61);
+    background-size: 100% 200%; /* 使背景图像能够从0%滑动到100% */
+    clip-path: polygon(0 0, 50% 20%, 100% 0, 100% 80%, 50% 100%, 0 80%, 0 0);
+    animation: transition-anim 1.5s linear infinite;
+    pointer-events: none;
+    transform: translate(-50%, -50%) ;
+}
+
+.pointer-tip-up::after {
+    transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.pointer-tip-left::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.pointer-tip-right::after {
+    transform: translate(-50%, -50%) rotate(-90deg);
+}
+
+.pointer-tip-down::after {
+    transform: translate(-50%, -50%) rotate(0deg);
+}
+
+@keyframes transition-anim {
+    from {
+        background-position: 0% 100%;
+    }
+    to {
+        background-position: 0% 0%;
+    }
+}

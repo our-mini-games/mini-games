@@ -2,6 +2,7 @@ import { ComputedRef, Ref } from 'vue'
 import Hammer from 'hammerjs'
 import { classicalLayouts, PERSONS, KlotskiItem } from '../config'
 import { canMove, generateKlotskiItems, getGenerals } from '../lib/utils'
+import { usePointerTip } from './usePointerTip'
 
 export interface KlotskiLevelInfo {
   klotskiItems: KlotskiItem[]
@@ -37,6 +38,8 @@ export interface Klotski {
 }
 
 const STORAGE_KEY = 'KLOTSKI_STORAGE'
+
+const { addPointerTip, removePointerTip } = usePointerTip()
 
 export const useKlotski = (): Klotski => {
   let timer: NodeJS.Timeout
@@ -134,6 +137,8 @@ export const useKlotski = (): Klotski => {
     start()
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let currentItem: KlotskiItem | undefined
   const handleMove = (name: string, direction: number): void => {
     const item = currentLevelInfo.value!.klotskiItems.find(item => item.name === name)
     if (!item) {
@@ -193,30 +198,55 @@ export const useKlotski = (): Klotski => {
 
     let target: HTMLElement | null = null
     let isDragging = false
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    let canMoveDir = 0
+
+    const prepareItem = (): void => {
+      const name = target!.getAttribute('data-name') as string
+      currentItem = currentLevelInfo.value!.klotskiItems.find(item => item.name === name)
+      canMoveDir = 0
+      if (canMove(currentItem!, currentLevelInfo.value!.klotskiItems, 2)) { canMoveDir |= 2 }
+      if (canMove(currentItem!, currentLevelInfo.value!.klotskiItems, 4)) { canMoveDir |= 4 }
+      if (canMove(currentItem!, currentLevelInfo.value!.klotskiItems, 8)) { canMoveDir |= 8 }
+      if (canMove(currentItem!, currentLevelInfo.value!.klotskiItems, 16)) { canMoveDir |= 16 }
+    }
 
     hammer.on('panstart', (e) => {
       e.preventDefault()
       if (gameStatus.value === KlotskiGameStatus.Playing && e.target.classList.contains('klotski-item')) {
         target = e.target
         isDragging = true
+
+        addPointerTip(target)
+        prepareItem()
       }
     })
 
-    hammer.on('panmove', e => {
+    // hammer.on('panmove', e => {
+    //   e.preventDefault()
+    //   if (isDragging && target) {
+    //     // const direction = Math.abs(e.overallVelocityX) > Math.abs(e.overallVelocityY) ? e.overallVelocityX > 0 ? Hammer.DIRECTION_RIGHT : Hammer.DIRECTION_LEFT : e.overallVelocityY > 0 ? Hammer.DIRECTION_DOWN : Hammer.DIRECTION_UP
+    //     // target.style.transform = `translate(${direction === Hammer.DIRECTION_RIGHT || direction === Hammer.DIRECTION_LEFT ? e.deltaX : 0}px, ${direction === Hammer.DIRECTION_DOWN || direction === Hammer.DIRECTION_UP ? e.deltaY : 0}px)`
+    //     target.style.transform = `translate(${e.deltaX}px, ${e.deltaY}px)`
+    //   }
+    // })
+
+    hammer.on('panmove', (e) => {
       e.preventDefault()
-      if (isDragging && target) {
-        // const direction = Math.abs(e.overallVelocityX) > Math.abs(e.overallVelocityY) ? e.overallVelocityX > 0 ? Hammer.DIRECTION_RIGHT : Hammer.DIRECTION_LEFT : e.overallVelocityY > 0 ? Hammer.DIRECTION_DOWN : Hammer.DIRECTION_UP
-        // target.style.transform = `translate(${direction === Hammer.DIRECTION_RIGHT || direction === Hammer.DIRECTION_LEFT ? e.deltaX : 0}px, ${direction === Hammer.DIRECTION_DOWN || direction === Hammer.DIRECTION_UP ? e.deltaY : 0}px)`
-        target.style.transform = `translate(${e.deltaX}px, ${e.deltaY}px)`
+      if (isDragging && target && canMoveDir & e.direction) {
+        target.classList.remove(...allPointerTipDirs)
+        target.classList.add(pointerTipMap[e.direction])
       }
     })
 
     hammer.on('panend', (e) => {
       e.preventDefault()
       if (isDragging && target) {
-        const direction = Math.abs(e.overallVelocityX) > Math.abs(e.overallVelocityY) ? e.overallVelocityX > 0 ? Hammer.DIRECTION_RIGHT : Hammer.DIRECTION_LEFT : e.overallVelocityY > 0 ? Hammer.DIRECTION_DOWN : Hammer.DIRECTION_UP
-        handleMove(target.getAttribute('data-name') as string, direction)
-        target.style.transform = 'translate(0, 0)'
+        // const direction = Math.abs(e.overallVelocityX) > Math.abs(e.overallVelocityY) ? e.overallVelocityX > 0 ? Hammer.DIRECTION_RIGHT : Hammer.DIRECTION_LEFT : e.overallVelocityY > 0 ? Hammer.DIRECTION_DOWN : Hammer.DIRECTION_UP
+        // handleMove(target.getAttribute('data-name') as string, direction)
+        // target.style.transform = 'translate(0, 0)'
+        removePointerTip(target)
+        handleMove(target.getAttribute('data-name') as string, e.direction)
 
         isDragging = false
         target = null
