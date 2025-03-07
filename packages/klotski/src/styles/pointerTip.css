@@ -5,35 +5,31 @@
     width: 30%;
     height: 80%;    
     content: "";
-    background: linear-gradient(#ffffff61, rgba(212, 52, 52, 0.667), #ffffff61, rgba(212, 52, 52, 0.667), #ffffff61);
-    background-size: 100% 200%; /* 使背景图像能够从0%滑动到100% */
+    background: linear-gradient(#ffffff61, rgba(188, 66, 66, 0.667), #ffffff61, rgba(188, 66, 66, 0.667), #ffffff61);
+    background-size: 200% 200%; /* 使背景图像能够从0%滑动到100% */
     clip-path: polygon(0 0, 50% 20%, 100% 0, 100% 80%, 50% 100%, 0 80%, 0 0);
-    animation: transition-anim 1.5s linear infinite;
     pointer-events: none;
     transform: translate(-50%, -50%) ;
 }
 
+.pointer-tip-major::after {
+    background: linear-gradient(#ffffff61, rgba(110, 188, 54, 0.667), #ffffff61, rgba(110, 188, 54, 0.667), #ffffff61);
+}
+
+/* .pointer-tip-down::after */
 .pointer-tip-up::after {
     transform: translate(-50%, -50%) rotate(180deg);
 }
 
 .pointer-tip-left::after {
-    transform: translate(-50%, -50%) rotate(90deg);
+    width: 80%;
+    height: 30%;
+    clip-path: polygon(10% 0, 100% 0, 90% 50%, 100% 100%, 10% 100%, 0 50%, 10% 0);
 }
 
 .pointer-tip-right::after {
-    transform: translate(-50%, -50%) rotate(-90deg);
+    width: 80%;
+    height: 30%;
+    clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%, 10% 50%, 0 0);
 }
 
-.pointer-tip-down::after {
-    transform: translate(-50%, -50%) rotate(0deg);
-}
-
-@keyframes transition-anim {
-    from {
-        background-position: 0% 100%;
-    }
-    to {
-        background-position: 0% 0%;
-    }
-}

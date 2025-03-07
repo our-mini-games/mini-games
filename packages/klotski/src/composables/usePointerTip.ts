@@ -1,7 +1,7 @@
 import '../styles/pointerTip.css'
 
 interface PointerTip {
-  addPointerTip: (tar: HTMLElement) => void
+  addPointerTip: (tar: HTMLElement, isMajor: boolean) => void
   removePointerTip: (tar: HTMLElement) => void
 }
 
@@ -26,9 +26,12 @@ export const allPointerTipDirs = [PointerTipDir.up, PointerTipDir.down, PointerT
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 let pointerTipTarget: HTMLElement | null = null
 
-const addPointerTip = (tar: HTMLElement): void => {
+const addPointerTip = (tar: HTMLElement, isMajor: boolean): void => {
   pointerTipTarget = tar
   tar.classList.add('pointer-tip')
+  if (isMajor) {
+    tar.classList.add('pointer-tip-major')
+  }
 }
 
 const removePointerTip = (tar: HTMLElement): void => {
