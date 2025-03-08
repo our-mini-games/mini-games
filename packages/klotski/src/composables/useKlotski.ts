@@ -243,11 +243,9 @@ export const useKlotski = (): Klotski => {
     hammer.on('panend', (e) => {
       e.preventDefault()
       if (isDragging && target) {
-        // const direction = Math.abs(e.overallVelocityX) > Math.abs(e.overallVelocityY) ? e.overallVelocityX > 0 ? Hammer.DIRECTION_RIGHT : Hammer.DIRECTION_LEFT : e.overallVelocityY > 0 ? Hammer.DIRECTION_DOWN : Hammer.DIRECTION_UP
-        // handleMove(target.getAttribute('data-name') as string, direction)
-        // target.style.transform = 'translate(0, 0)'
         removePointerTip(target)
-        handleMove(target.getAttribute('data-name') as string, e.direction)
+        const direction = Math.abs(e.overallVelocityX) > Math.abs(e.overallVelocityY) ? e.overallVelocityX > 0 ? Hammer.DIRECTION_RIGHT : Hammer.DIRECTION_LEFT : e.overallVelocityY > 0 ? Hammer.DIRECTION_DOWN : Hammer.DIRECTION_UP
+        handleMove(target.getAttribute('data-name') as string, direction)
 
         isDragging = false
         target = null
