@@ -12,11 +12,11 @@ import { useWindow } from './composables/useWindow'
 
 const windowSize = useWindow()
 
-// const ipl = useImgPreload()
-// ipl.mockRender(50)
-// nextTick(() => {
-//   ipl.reload()
-// })
+const ipl = useImgPreload()
+ipl.mockRender(50)
+nextTick(() => {
+  ipl.reload()
+})
 </script>
 
 <style src="./assets/reset.scss"></style>

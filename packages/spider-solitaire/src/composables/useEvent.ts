@@ -7,6 +7,7 @@ import { getIntersectionRate } from '../lib/helper'
 
 export interface UseEventReturnType {
   isDragging: Ref<boolean>
+  validTargets: Ref<number[]>
 }
 
 export default (
@@ -25,31 +26,54 @@ export default (
     top: 0
   }
 
+  const flushValidTargets = (): void => {
+    validTargets.value = []
+  }
+
   // 当前选中的牌
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let targetSolitaire: SolitaireGroupItem | null = null
 
   // 被移动牌组处于 activateGroup 中的索引位置
   let sourceIdx = -1
+  // 存储当前可放置的目标牌组索引
+  const validTargets = ref<number[]>([])
 
   const isDragging = ref(false)
 
+  const collectValidDropTargets = (solitaire: SolitaireGroupItem): number[] => {
+    return activeGroup.value.reduce<number[]>((targets, group, index) => {
+      if (index !== sourceIdx && canIDropIt(group, solitaire)) {
+        targets.push(index)
+      }
+      return targets
+    }, [])
+  }
+
   const handleDragStart = (clientX: number, clientY: number, solitaires: SolitaireGroupItem[], subIndex: number): void => {
     if (!inAnimation.value && canSolitairesMove(solitaires, subIndex)) {
+      sourceIdx = activeGroup.value.indexOf(solitaires)
+      const targetCard = solitaires[subIndex]
+      const targets = collectValidDropTargets(targetCard)
+      if (!targets.length) {
+        flushValidTargets()
+        return
+      }
+      validTargets.value = targets
+
       startPosition.left = windowSize.value.isRotate ? clientY : clientX
       startPosition.top = windowSize.value.isRotate ? (windowSize.value.width - clientX) : clientY
 
       targetSolitaire = solitaires[subIndex]
 
       movingGroup.value = {
-        index: activeGroup.value.indexOf(solitaires),
+        index: sourceIdx,
         subIndex,
         source: solitaires,
         solitaires: solitaires.slice(subIndex)
       }
       // 暂时移除当前牌组中被移动的元素
       solitaires.splice(subIndex)
-
-      sourceIdx = activeGroup.value.indexOf(solitaires)
 
       isDragging.value = true
     }
@@ -74,35 +98,29 @@ export default (
     }
     // 获取鼠标最后所在位置是否在牌组区域（每组牌最后一张的位置）
     const dropTargets = document.querySelectorAll<SVGAElement>(`.${dropTargetClassName}`)
-
     const movingRect = movingSolitaireRef.value[0].getBoundingClientRect()
 
     let isDrop = false
     let collectableIndex = -1
 
-    for (let i = 0; i < dropTargets.length; i++) {
-      // 跳过当前牌组
-      if (i === sourceIdx) {
-        continue
-      }
-
-      const intersectionRate = getIntersectionRate(movingRect, dropTargets[i].getBoundingClientRect())
+    // 只检查预先验证过的有效目标位置
+    for (const targetIndex of validTargets.value) {
+      const intersectionRate = getIntersectionRate(movingRect, dropTargets[targetIndex].getBoundingClientRect())
 
       if (intersectionRate > 0.4) {
-        if (!canIDropIt(activeGroup.value[i], targetSolitaire!)) {
-          break
-        }
-        dropIt(i, sourceIdx, movingGroup.value.solitaires)
+        dropIt(targetIndex, sourceIdx, movingGroup.value.solitaires)
         isDrop = true
 
-        if (canICollectIt(activeGroup.value[i])) {
-          collectableIndex = i
+        if (canICollectIt(activeGroup.value[targetIndex])) {
+          collectableIndex = targetIndex
         }
         break
       }
     }
 
     isDragging.value = false
+    // 清空有效目标列表
+    validTargets.value = []
 
     if (!isDrop) {
       // 没有放置成功，需要把临时被移动的数据都还原回去
@@ -139,6 +157,7 @@ export default (
   })
 
   return {
-    isDragging
+    isDragging,
+    validTargets
   }
 }

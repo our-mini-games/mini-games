@@ -60,7 +60,8 @@
             <use
               class="drop-target"
               :style="{
-                visibility: isDragging ? 'visible' : 'hidden'
+                visibility: isDragging ? 'visible' : 'hidden',
+                opacity: isDragging && validTargets.includes(index) ? 0.5 : 0
               }"
               xlink:href="#drop-target"
               fill="blue"
@@ -243,7 +244,7 @@ const chooseModeModalVisible = ref(false)
 const svgRef = ref<SVGAElement>()
 const movingSolitaireRef = ref<SVGAElement[]>([])
 
-// const ipl = useImgPreload()
+const ipl = useImgPreload()
 const buttons = ['重新开始', '选择难度']
 // 统计
 const statistics = computed(() => {
@@ -281,8 +282,8 @@ const handleButtonClick = (button: string): void => {
   }
   switch (button) {
     case '重新开始':
-      // ipl.mockRender(0)
-      // ipl.reload()
+      ipl.mockRender(0)
+      ipl.reload()
       init()
       break
     case '选择难度':
@@ -294,7 +295,8 @@ const handleButtonClick = (button: string): void => {
 }
 
 const {
-  isDragging
+  isDragging,
+  validTargets
 } = useEvent(
   'drop-target',
   svgRef,
