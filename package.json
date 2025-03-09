@@ -8,22 +8,22 @@
     "eslint": "eslint ./packages --fix"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.1.2",
-    "@commitlint/config-conventional": "^17.1.0",
-    "@typescript-eslint/eslint-plugin": "^5.41.0",
-    "@typescript-eslint/parser": "^5.41.0",
-    "commitizen": "^4.2.5",
-    "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^8.22.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.25.2",
-    "eslint-plugin-n": "^15.0.0",
-    "eslint-plugin-promise": "^6.0.0",
-    "eslint-plugin-vue": "^9.3.0",
-    "husky": "^8.0.0",
-    "lint-staged": "^13.0.3",
+    "@commitlint/cli": "catalog:",
+    "@commitlint/config-conventional": "catalog:",
+    "@typescript-eslint/eslint-plugin": "catalog:",
+    "@typescript-eslint/parser": "catalog:",
+    "commitizen": "catalog:",
+    "cz-conventional-changelog": "catalog:",
+    "eslint": "catalog:",
+    "eslint-config-standard": "catalog:",
+    "eslint-plugin-import": "catalog:",
+    "eslint-plugin-n": "catalog:",
+    "eslint-plugin-promise": "catalog:",
+    "eslint-plugin-vue": "catalog:",
+    "husky": "catalog:",
+    "lint-staged": "catalog:",
     "typescript": "^4.8.4",
-    "@vue/eslint-config-standard-with-typescript": "^8.0.0"
+    "@vue/eslint-config-standard-with-typescript": "catalog:"
   },
   "lint-staged": {
     "*.{ts,js}": "eslint --fix"
