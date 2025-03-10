@@ -1,5 +1,5 @@
 import Hammer from 'hammerjs'
-import { Direction } from '../config'
+import { Direction } from '../config/index.js'
 
 export default (
   el: string,

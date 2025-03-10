@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { classicalLayouts } from '../config'
+import { classicalLayouts } from '../config/index.js'
 const props = defineProps<{
   currentLevel: number
 }>()

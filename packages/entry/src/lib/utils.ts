@@ -1,5 +1,5 @@
-import { GameConfig } from '../config'
-import { MemberConfig } from '../config/members.config'
+import { GameConfig } from '../config/index.js'
+import { MemberConfig } from '../config/members.config.js'
 
 export const createGameList = (games: GameConfig[], members: MemberConfig[], rootPath = '/'): DocumentFragment => {
   const fragment = new DocumentFragment()

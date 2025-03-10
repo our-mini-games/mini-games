@@ -1,8 +1,8 @@
 import { ComputedRef, Ref } from 'vue'
 import Hammer from 'hammerjs'
-import { classicalLayouts, PERSONS, KlotskiItem, Rect } from '../config'
-import { canMove, generateKlotskiItems, getGenerals } from '../lib/utils'
-import { usePointerTip } from './usePointerTip'
+import { classicalLayouts, PERSONS, KlotskiItem, Rect } from '../config/index.js'
+import { canMove, generateKlotskiItems, getGenerals } from '../lib/utils.js'
+import { usePointerTip, allPointerTipDirs, pointerTipMap } from './usePointerTip.js'
 
 export interface KlotskiLevelInfo {
   klotskiItems: KlotskiItem[]
@@ -140,7 +140,7 @@ export const useKlotski = (): Klotski => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let currentItem: KlotskiItem | undefined
   const curAvailableDir: Array<Rect | null> = []
-  const handleMove = (name: string, direction: number): void => {
+  const handleMove = (_name: string, direction: number): void => {
     if (!currentItem) {
       return
     }

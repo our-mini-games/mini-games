@@ -48,8 +48,8 @@
 </template>
 
 <script setup lang="ts">
-import { sizeConfig, Direction, GameStatus } from '../config'
-import { GameItem } from '../types'
+import { sizeConfig, Direction, GameStatus } from '../config/index.js'
+import { GameItem } from '../types/index.js'
 
 const { row, column, size, gap } = sizeConfig
 
@@ -65,7 +65,7 @@ const {
   verticalMerge
 } = useMerge(gameGrids)
 
-const handleSwipe = (dir: Direction, e: HammerInput): void => {
+const handleSwipe = (dir: Direction, _e: HammerInput): void => {
   if (gameStatus.value !== GameStatus.Playing) return
 
   switch (dir) {

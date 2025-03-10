@@ -1,1 +1,1 @@
-export * from './snake.config'
+export * from './snake.config.js'

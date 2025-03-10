@@ -1,8 +1,8 @@
 import { Ref } from 'vue'
-import { calleniaLimit, GameMode, GameStatus, Tetrominos, wrapperSize } from '../config'
-import { createBuilding, finishedCheck, getNextTetris, getShuffleBuildingRow, isLegalTetris, removeCheck, sleep } from '../lib/utils'
-import { BuildingType, Noop, PromiseNoop, Tetris } from '../types'
-import { AudioReturnType } from './useAudio'
+import { calleniaLimit, GameMode, GameStatus, Tetrominos, wrapperSize } from '../config/index.js'
+import { createBuilding, finishedCheck, getNextTetris, getShuffleBuildingRow, isLegalTetris, removeCheck, sleep } from '../lib/utils.js'
+import { BuildingType, Noop, PromiseNoop, Tetris } from '../types/index.js'
+import { AudioReturnType } from './useAudio.js'
 
 interface GameReturnType {
   startup: Noop

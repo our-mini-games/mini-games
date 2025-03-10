@@ -1,5 +1,5 @@
 import Hammer from 'hammerjs'
-import { ROWS, COLS, KlotskiItem, Rect, PERSONS } from '../config'
+import { ROWS, COLS, KlotskiItem, Rect, PERSONS } from '../config/index.js'
 
 export const generateKlotskiItems = (layouts: number[][]): KlotskiItem[] => {
   const _layouts = [...layouts]

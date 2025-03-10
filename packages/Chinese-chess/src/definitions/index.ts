@@ -1,5 +1,5 @@
-import { Point } from '@/libs/Point'
-import { Soldier, BigGun, Horse, Vehicle, Elephant, Scholar, Boss } from '../libs/PieceObject'
+import { Point } from '@/libs/Point.js'
+import { Soldier, BigGun, Horse, Vehicle, Elephant, Scholar, Boss } from '@/libs/PieceObject.js'
 export const USER_INFO_KEY = 'CHINESE_CHESS_USER_INFO'
 export const NICKNAME_KEY = 'CHINESE_CHESS_NICKNAME'
 

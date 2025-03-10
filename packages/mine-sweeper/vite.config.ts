@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       vue(),
       Components({
+        dts: './components.d.ts',
         resolvers: [
           AntDesignVueResolver({
             resolveIcons: true,

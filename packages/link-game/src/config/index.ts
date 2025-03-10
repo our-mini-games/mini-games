@@ -1,2 +1,2 @@
-export * from './game.config'
-export * from './constants'
+export * from './game.config.js'
+export * from './constants.js'

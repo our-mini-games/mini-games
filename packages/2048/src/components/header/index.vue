@@ -23,9 +23,9 @@
 </template>
 
 <script setup lang="ts">
-import { GameStatus } from '../../config'
+import { GameStatus } from '../../config/index.js'
 
-const setGameStatus = inject('setGameStatus', (status: GameStatus) => {})
+const setGameStatus = inject('setGameStatus', (_: GameStatus) => {})
 
 const handleAgain = (): void => {
   setGameStatus(GameStatus.Finished)

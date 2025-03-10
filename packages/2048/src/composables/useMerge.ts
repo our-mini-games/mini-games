@@ -1,7 +1,7 @@
 import { Ref } from 'vue'
-import { GameItem } from '../types'
+import { GameItem } from '../types/index.js'
 import clonedeep from 'lodash.clonedeep'
-import { matrixRotate } from '../lib/utils'
+import { matrixRotate } from '../lib/utils.js'
 
 interface MergeReturnType {
   horizotalMerge: (isDesc?: boolean) => number

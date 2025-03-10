@@ -1,8 +1,8 @@
 import { Ref } from 'vue'
-import { GameStatus } from '../config'
-import { canIRemoveThem, isEmpty } from '../lib/pathFinding'
-import { shuffle, sleep } from '../lib/utils'
-import { Box, LevelInfo } from '../types'
+import { GameStatus } from '../config/index.js'
+import { canIRemoveThem, isEmpty } from '../lib/pathFinding.js'
+import { shuffle, sleep } from '../lib/utils.js'
+import { Box, LevelInfo } from '../types/index.js'
 
 export default (
   boxes: Ref<Box[]>,

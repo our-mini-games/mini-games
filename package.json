@@ -5,13 +5,18 @@
   "type": "module",
   "scripts": {
     "prepare": "husky install",
-    "eslint": "eslint ./packages --fix"
+    "eslint": "eslint ./packages --fix",
+    "build": "pnpm -r build",
+    "build:parallel": "pnpm -r --parallel build",
+    "build:entry": "pnpm --filter entry build",
+    "build:games": "pnpm --filter \"!entry\" -r build"
   },
   "devDependencies": {
     "@commitlint/cli": "catalog:",
     "@commitlint/config-conventional": "catalog:",
     "@typescript-eslint/eslint-plugin": "catalog:",
     "@typescript-eslint/parser": "catalog:",
+    "@vue/eslint-config-standard-with-typescript": "catalog:",
     "commitizen": "catalog:",
     "cz-conventional-changelog": "catalog:",
     "eslint": "catalog:",
@@ -22,8 +27,7 @@
     "eslint-plugin-vue": "catalog:",
     "husky": "catalog:",
     "lint-staged": "catalog:",
-    "typescript": "^4.8.4",
-    "@vue/eslint-config-standard-with-typescript": "catalog:"
+    "typescript": "^4.9.5"
   },
   "lint-staged": {
     "*.{ts,js}": "eslint --fix"

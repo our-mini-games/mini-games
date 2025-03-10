@@ -1,6 +1,6 @@
-import { renderGameArea, renderHome, renderInfo, renderRocker } from './lib/Renderer'
-import { EXIT } from './config/constants'
-import { createContext, createGreedySnake } from './lib/GreedySnake'
+import { renderGameArea, renderHome, renderInfo, renderRocker } from './lib/Renderer.js'
+import { EXIT } from './config/constants.js'
+import { createContext, createGreedySnake } from './lib/GreedySnake.js'
 import './style.css'
 
 const startGame = (): void => {

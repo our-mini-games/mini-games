@@ -1,5 +1,5 @@
-import { Camp, GameStatus } from '@/definitions'
-import { ChessPiece } from '@/libs/ChessPiece'
+import { Camp, GameStatus } from '@/definitions/index.js'
+import { ChessPiece } from '@/libs/ChessPiece.js'
 
 export type VoidFunction = () => void
 

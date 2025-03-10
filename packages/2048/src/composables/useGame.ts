@@ -1,7 +1,7 @@
 import { shuffle } from 'lodash'
-import { GameStatus, sizeConfig } from '../config'
-import { createDefaultGrids, createGridValue } from '../lib/utils'
-import { GameItem } from '../types'
+import { GameStatus, sizeConfig } from '../config/index.js'
+import { createDefaultGrids, createGridValue } from '../lib/utils.js'
+import { GameItem } from '../types/index.js'
 
 export default (): void => {
   const gameGrids = ref<GameItem[][]>(createDefaultGrids(sizeConfig.row, sizeConfig.column))

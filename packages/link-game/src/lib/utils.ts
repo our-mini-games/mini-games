@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash.clonedeep'
-import { Box, LevelInfo } from '../types'
-import { itemSequences } from '../config'
-import { canIRemoveThem, isEmpty } from './pathFinding'
+import { Box, LevelInfo } from '../types/index.js'
+import { itemSequences } from '../config/index.js'
+import { canIRemoveThem, isEmpty } from './pathFinding.js'
 
 export const getBoxes = async (levelInfo: LevelInfo): Promise<Box[]> => {
   const { row, column, totalOfItems } = levelInfo

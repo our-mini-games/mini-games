@@ -1,2 +1,2 @@
-export * from './games.config'
-export * from './members.config'
+export * from './games.config.js'
+export * from './members.config.js'
