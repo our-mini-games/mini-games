@@ -1,18 +1,5 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "strict": true,
-    "jsx": "preserve",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
-    "skipLibCheck": true,
-    "noEmit": true
-  },
+  "extends": "../../tsconfig.json",
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
@@ -20,5 +7,4 @@
     "src/**/*.vue",
     "./auto-imports.d.ts"
   ],
-  "references": [{ "path": "./tsconfig.node.json" }]
 }
