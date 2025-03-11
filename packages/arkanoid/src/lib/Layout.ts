@@ -53,8 +53,14 @@ class Layout {
     this.#initControls()
     this.#initLights()
 
-    this.onWindowResize = this.onWindowResize.bind(this)
-    window.addEventListener('resize', this.onWindowResize)
+    const observe = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.target === this.el) {
+          this.onWindowResize(entry.contentRect.width, entry.contentRect.height)
+        }
+      }
+    })
+    observe.observe(this.el)
   }
 
   #initCamera (): void {
@@ -103,9 +109,9 @@ class Layout {
     this.el.appendChild(this.renderer.domElement)
   }
 
-  onWindowResize (): void {
-    this.width = this.el.offsetWidth
-    this.height = this.el.offsetHeight
+  onWindowResize (width: number, height: number): void {
+    this.width = width
+    this.height = height
 
     this.camera.aspect = this.width / this.height
     this.camera.updateProjectionMatrix()

@@ -100,23 +100,31 @@ const init = (): void => {
 
   const hammer = new Hammer(target)
 
+  hammer.get('pan').set({
+    threshold: 10,
+    direction: Hammer.DIRECTION_HORIZONTAL
+  })
+
   let startTime = performance.now()
+  let startX = 0
   hammer.on('panstart', (e) => {
     e.target.classList.add('active')
     startTime = performance.now()
+    startX = e.center.x
   })
 
   hammer.on('panmove', (e) => {
     e.target.style.transform = `translateX(${Math.max(Math.min(e.deltaX, 123), -123)}px)`
     const nowTime = performance.now()
     if (nowTime - startTime > 32) {
-      if (e.deltaX > 0) {
+      if (startX < e.center.x) {
         arkanoid.moveBaffle('right')
-      } else {
+      } else if (startX > e.center.x) {
         arkanoid.moveBaffle('left')
       }
       startTime = nowTime
     }
+    startX = e.center.x
   })
 
   hammer.on('panend', (e) => {
@@ -125,6 +133,4 @@ const init = (): void => {
   })
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(init, 0)
-})
+window.addEventListener('DOMContentLoaded', init)
