@@ -1,3 +1,4 @@
+import Hammer from 'hammerjs'
 import Arkanoid, { ArkanoidStatus } from './lib/Arkanoid'
 import Layout from './lib/Layout'
 
@@ -25,10 +26,11 @@ const init = (): void => {
   const btnBack = document.querySelector<HTMLButtonElement>('.btn-back')
   const btnRestart = document.querySelector<HTMLButtonElement>('.btn-restart')
   const btnCtrl = document.querySelector<HTMLButtonElement>('.btn-ctrl')
-  const btnLeft = document.querySelector<HTMLButtonElement>('.btn-left')
-  const btnRight = document.querySelector<HTMLButtonElement>('.btn-right')
 
-  if (!btnBack || !btnRestart || !btnCtrl || !btnLeft || !btnRight) {
+  const controls = document.querySelector<HTMLDivElement>('.controls')
+  const target = document.querySelector<HTMLDivElement>('.target')
+
+  if (!btnBack || !btnRestart || !btnCtrl || !target || !controls) {
     throw new Error('GG')
   }
 
@@ -56,12 +58,8 @@ const init = (): void => {
     }
   })
 
-  btnLeft.addEventListener('click', () => {
-    arkanoid.moveBaffle('left')
-  })
-
-  btnRight.addEventListener('click', () => {
-    arkanoid.moveBaffle('right')
+  win.addEventListener('dblclick', (e: MouseEvent) => {
+    e.preventDefault()
   })
 
   win.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -99,6 +97,34 @@ const init = (): void => {
         break
     }
   })
+
+  const hammer = new Hammer(target)
+
+  let startTime = performance.now()
+  hammer.on('panstart', (e) => {
+    e.target.classList.add('active')
+    startTime = performance.now()
+  })
+
+  hammer.on('panmove', (e) => {
+    e.target.style.transform = `translateX(${Math.max(Math.min(e.deltaX, 123), -123)}px)`
+    const nowTime = performance.now()
+    if (nowTime - startTime > 32) {
+      if (e.deltaX > 0) {
+        arkanoid.moveBaffle('right')
+      } else {
+        arkanoid.moveBaffle('left')
+      }
+      startTime = nowTime
+    }
+  })
+
+  hammer.on('panend', (e) => {
+    e.target.classList.remove('active')
+    e.target.style.transform = 'translateX(0)'
+  })
 }
 
-window.addEventListener('DOMContentLoaded', init)
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(init, 0)
+})
