@@ -48,7 +48,7 @@ export const games: GameConfig[] = [
   {
     path: '/mini-games/arkanoid/index.html',
     name: '打砖块',
-    cover: 'org.svg'
+    cover: 'arkanoid.png'
   },
   {
     path: 'https://github.com/our-mini-games/mini-games/discussions',
