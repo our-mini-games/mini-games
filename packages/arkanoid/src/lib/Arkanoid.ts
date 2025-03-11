@@ -199,7 +199,7 @@ export default class Arkanoid {
   }
 
   moveBaffle (dir: 'left' | 'right'): void {
-    if (!this.baffleBody) return
+    if (!this.baffleBody || this.status !== 'playing') return
 
     switch (dir) {
       case 'left':
