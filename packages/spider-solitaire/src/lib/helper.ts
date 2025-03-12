@@ -1,5 +1,5 @@
-import { GameMode, numbers, SolitaireSuits } from '../config'
-import { SolitaireGroupItem } from '../types'
+import { GameMode, numbers, SolitaireSuits } from '../config/index.js'
+import { SolitaireGroupItem } from '../types/index.js'
 
 /**
  * 数组随机排序

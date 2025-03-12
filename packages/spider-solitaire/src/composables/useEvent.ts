@@ -1,9 +1,9 @@
-import { ComputedRef, Ref } from 'vue'
+import { ComputedRef, Ref, ref, onMounted } from 'vue'
 import Hammer from 'hammerjs'
-import { canICollectIt, canIDropIt, canSolitairesMove } from '../lib/validator'
-import { SolitaireGroupItem, WindowSize } from '../types'
-import { MovingGroupRecord, SolitaireGroup, SolitaireReturnType } from './useSolitaire'
-import { getIntersectionRate } from '../lib/helper'
+import { canICollectIt, canIDropIt, canSolitairesMove } from '../lib/validator.js'
+import { SolitaireGroupItem, WindowSize } from '../types/index.js'
+import { MovingGroupRecord, SolitaireGroup, SolitaireReturnType } from './useSolitaire.js'
+import { getIntersectionRate } from '../lib/helper.js'
 
 export interface UseEventReturnType {
   isDragging: Ref<boolean>
@@ -31,8 +31,7 @@ export default (
   }
 
   // 当前选中的牌
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let targetSolitaire: SolitaireGroupItem | null = null
+  // let targetSolitaire: SolitaireGroupItem | null = null
 
   // 被移动牌组处于 activateGroup 中的索引位置
   let sourceIdx = -1
@@ -64,7 +63,7 @@ export default (
       startPosition.left = windowSize.value.isRotate ? clientY : clientX
       startPosition.top = windowSize.value.isRotate ? (windowSize.value.width - clientX) : clientY
 
-      targetSolitaire = solitaires[subIndex]
+      // targetSolitaire = solitaires[subIndex]
 
       movingGroup.value = {
         index: sourceIdx,

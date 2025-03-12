@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { Tetrominos } from '../config'
-import { getTetrisNextType } from '../lib/nextType'
-import { createTetris } from '../lib/utils'
+import { Tetrominos } from '../config/index.js'
+import { getTetrisNextType } from '../lib/nextType.js'
+import { createTetris } from '../lib/utils.js'
 
 describe('Conversion of "I"', () => {
   /**

@@ -1,5 +1,5 @@
-import { SolitaireNumber } from '../config'
-import { SolitaireGroupItem } from '../types'
+import { SolitaireNumber } from '../config/index.js'
+import { SolitaireGroupItem } from '../types/index.js'
 
 const reverseSolitaireNumbers = [
   SolitaireNumber.king,

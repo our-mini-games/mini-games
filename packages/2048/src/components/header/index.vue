@@ -23,6 +23,7 @@
 </template>
 
 <script setup lang="ts">
+import { inject, nextTick } from 'vue'
 import { GameStatus } from '../../config/index.js'
 
 const setGameStatus = inject('setGameStatus', (_: GameStatus) => {})

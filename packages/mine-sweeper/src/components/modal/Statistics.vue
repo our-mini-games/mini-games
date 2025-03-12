@@ -61,8 +61,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { MINE_SWEEPER_STATISTICS } from '../../config/constants'
-import { formatTime } from '../../lib/utils'
+import { MINE_SWEEPER_STATISTICS } from '../../config/constants.js'
+import { formatTime } from '../../lib/utils.js'
 
 defineEmits<(e: 'close') => void>()
 

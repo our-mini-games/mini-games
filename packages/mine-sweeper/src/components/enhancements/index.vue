@@ -29,7 +29,7 @@ import { ref, computed, inject } from 'vue'
 import OpenPic from '../../assets/img/open.png'
 import DoubtfulPic from '../../assets/img/doubtful.png'
 import BugPic from '../../assets/img/bug.png'
-import { LeftButtonBehaviors } from '../../types'
+import { LeftButtonBehaviors } from '../../types/index.js'
 
 const useDoubtful = inject('useDoubtful', ref(false))
 

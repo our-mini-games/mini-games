@@ -1,5 +1,5 @@
-import { ComputedRef, ref } from 'vue'
-import { SolitaireSize, WindowSize } from '../types'
+import { ComputedRef, ref, computed, onMounted, onUnmounted } from 'vue'
+import { SolitaireSize, WindowSize } from '../types/index.js'
 
 export const useWindow = (): ComputedRef<WindowSize> => {
   const width = ref(window.innerWidth)

@@ -38,6 +38,7 @@
 
 <script setup lang="ts">
 import { ref, defineAsyncComponent } from 'vue'
+import type { Menu } from 'ant-design-vue'
 
 const GameSettingModal = defineAsyncComponent(async () => await import('../modal/GameSetting.vue'))
 const StatisticsModal = defineAsyncComponent(async () => await import('../modal/Statistics.vue'))
@@ -45,7 +46,7 @@ const StatisticsModal = defineAsyncComponent(async () => await import('../modal/
 const gameSettingVisible = ref(false)
 const statisticsVisible = ref(false)
 
-const handleClick = ({ key }: { key: string }): void => {
+const handleClick: InstanceType<typeof Menu>['onClick'] = ({ key }): void => {
   if (key === 'gameSetting') {
     gameSettingVisible.value = true
   } else if (key === 'statistics') {

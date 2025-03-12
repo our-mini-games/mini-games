@@ -1,14 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { Level } from '../config'
+import { Level } from '../config/index.js'
 
-import { createTestBoxes } from './helper'
 import {
-  isAdjacent,
-  isCollinear,
   canConnectedByACorner,
-  canConnectedByTwoCorners
-} from '../lib/pathFinding'
-import { LevelInfo } from '../types'
+  canConnectedByTwoCorners, isAdjacent,
+  isCollinear
+} from '../lib/pathFinding.js'
+import { LevelInfo } from '../types/index.js'
+import { createTestBoxes } from './helper.js'
 
 describe('寻路算法测试', () => {
   it('相邻元素', () => {

@@ -1,5 +1,5 @@
-import { Tetris, TetrisType } from '../types'
-import { Tetrominos } from './game.config'
+import { Tetris, TetrisType } from '../types/index.js'
+import { Tetrominos } from './game.config.js'
 
 export default <Record<Tetrominos, Record<TetrisType, Tetris['coordinates']>>>{
   [Tetrominos.I]: {

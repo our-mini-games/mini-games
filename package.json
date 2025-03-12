@@ -27,7 +27,7 @@
     "eslint-plugin-vue": "catalog:",
     "husky": "catalog:",
     "lint-staged": "catalog:",
-    "typescript": "^4.9.5"
+    "typescript": "catalog:"
   },
   "lint-staged": {
     "*.{ts,js}": "eslint --fix"

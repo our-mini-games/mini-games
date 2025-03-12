@@ -390,7 +390,9 @@
 </template>
 
 <script setup lang="ts">
-import { SolitaireSuits, SolitaireNumber, fillColors, colors } from '../../config'
+import { SolitaireSuits, SolitaireNumber, fillColors, colors } from '../../config/index.js'
+import { useWindow } from '../../composables/useWindow.js'
+import { computed } from 'vue'
 
 const PATHNAME = import.meta.env.VITE_APP_PATHNAME
 

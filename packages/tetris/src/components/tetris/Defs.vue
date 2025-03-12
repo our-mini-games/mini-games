@@ -34,5 +34,5 @@
 </template>
 
 <script setup lang="ts">
-import { itemSize } from '../../config'
+import { itemSize } from '../../config/index.js'
 </script>

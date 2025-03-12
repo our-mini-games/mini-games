@@ -19,8 +19,17 @@ import LayoutVue from './components/layout/index.vue'
 import TetrisVue from './components/tetris/index.vue'
 import OperatingKeys from './components/operatingKeys/index.vue'
 import FunctionalKeys from './components/functionalKeys/index.vue'
-import { GameStatus } from './config'
-
+import { GameStatus } from './config/index.js'
+import useTetris from './composables/useTetris.js'
+import useScore from './composables/useScore.js'
+import useLevel from './composables/useLevel.js'
+import useTransverseDisplacement from './composables/useTransverseDisplacement.js'
+import useAnimation from './composables/useAnimation.js'
+import useGame from './composables/useGame.js'
+import useAudio from './composables/useAudio.js'
+import useFinalTips from './composables/useFinalTips.js'
+import useEvent from './composables/useEvent.js'
+import useNextType from './composables/useNextType.js'
 const statusText = ref('Hello world')
 
 const audio = useAudio()
@@ -62,8 +71,8 @@ const { finalTips } = useFinalTips(
   building
 )
 
-watch(finalTips, (val) => {
-}, { immediate: true })
+// watch(finalTips, (val) => {
+// }, { immediate: true })
 
 const {
   handleTurnLeft,
@@ -91,8 +100,6 @@ const {
   startup,
   run,
   stop,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  changeCurrent,
   setKeydownSpeed,
   handleReachBottom
 } = useGame(

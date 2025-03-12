@@ -1,8 +1,8 @@
 import { Ref } from 'vue'
-import { GameMode, GameStatus } from '../config'
-import { getTetrisNextType, getTetrisRandomType } from '../lib/nextType'
-import { isLegalTetris } from '../lib/utils'
-import { BuildingType, Tetris } from '../types'
+import { GameMode, GameStatus } from '../config/index.js'
+import { getTetrisNextType, getTetrisRandomType } from '../lib/nextType.js'
+import { isLegalTetris } from '../lib/utils.js'
+import { BuildingType, Tetris } from '../types/index.js'
 import throttle from 'lodash.throttle'
 
 export default (

@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { Room, User } from '@/types'
+import { Room, User } from '@/types/index.js'
 
 const emits = defineEmits<(e: 'game:chat', msg: string) => void>()
 

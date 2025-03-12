@@ -1,9 +1,9 @@
-import { describe, suite, expect, test } from 'vitest'
+import { describe, expect, suite, test } from 'vitest'
 
-import { getMoveList, movePiece } from '../utils'
-import { ChessPiece, createChessPiece } from '@/libs/ChessPiece'
-import { Point } from '@/libs/Point'
-import { Camp, ChessPieceValue } from '@/definitions'
+import { Camp, ChessPieceValue } from '@/definitions/index.js'
+import { ChessPiece, createChessPiece } from '@/libs/ChessPiece.js'
+import { Point } from '@/libs/Point.js'
+import { getMoveList, movePiece } from '../utils/index.js'
 
 const P = (x: number, y: number): Point => new Point(x, y)
 

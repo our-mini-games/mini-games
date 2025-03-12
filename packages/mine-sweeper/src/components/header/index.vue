@@ -23,9 +23,9 @@
 
 <script setup lang="ts">
 import { ref, inject, computed, Ref } from 'vue'
-import { GameStatus } from '../../types'
+import { GameStatus } from '../../types/index.js'
 import GameControl from './GameControl.vue'
-import { formatTime } from '../../lib/utils'
+import { formatTime } from '../../lib/utils.js'
 
 const gameStatus = inject<Ref<GameStatus>>('gameStatus')!
 const gameTime = inject('gameTime', ref(0))

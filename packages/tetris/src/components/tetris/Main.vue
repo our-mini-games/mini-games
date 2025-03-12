@@ -63,8 +63,8 @@
 
 <script setup lang="ts">
 import type { Ref } from 'vue'
-import { wrapperSize, itemSize, color } from '../../config'
-import { BuildingType, Coordinate, Tetris } from '../../types'
+import { wrapperSize, itemSize, color } from '../../config/index.js'
+import { BuildingType, Coordinate, Tetris } from '../../types/index.js'
 
 const width = wrapperSize.column * itemSize
 const height = wrapperSize.row * itemSize

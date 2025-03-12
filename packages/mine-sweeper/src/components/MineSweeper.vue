@@ -113,11 +113,11 @@
 
 <script setup lang="ts">
 import { ref, inject, watch, Ref, defineAsyncComponent } from 'vue'
-import { checkGameStatus } from '../lib/utils'
-import useEvent from '../composables/useEvent'
-import { useSize } from '../composables/useSize'
+import { checkGameStatus } from '../lib/utils.js'
+import useEvent from '../composables/useEvent.js'
+import { useSize } from '../composables/useSize.js'
 
-import { LevelInfo, Box, GameStatus } from '../types'
+import { LevelInfo, Box, GameStatus } from '../types/index.js'
 
 import PageHeader from '../components/header/index.vue'
 

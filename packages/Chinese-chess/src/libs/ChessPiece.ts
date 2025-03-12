@@ -1,8 +1,8 @@
-import { Camp, chessPieceMapper, type ChessPieceValue } from '../definitions'
-import { Point } from './Point'
+import { Camp, chessPieceMapper, type ChessPieceValue } from '../definitions/index.js'
+import { Point } from './Point.js'
 
 export interface ChessPiece {
-  id: number,
+  id: number
   name: string
   value: ChessPieceValue
   camp: Camp

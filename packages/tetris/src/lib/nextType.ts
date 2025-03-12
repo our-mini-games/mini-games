@@ -1,6 +1,6 @@
-import { Tetrominos } from '../config'
-import { Coordinate, Tetris } from '../types'
-import { createTetris, getRandomTetromino, shuffle } from './utils'
+import { Tetrominos } from '../config/index.js'
+import { Coordinate, Tetris } from '../types/index.js'
+import { createTetris, getRandomTetromino, shuffle } from './utils.js'
 
 /**
  * 获取当前元素的下一形态

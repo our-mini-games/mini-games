@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { GameMode } from '../definitions'
+import { GameMode } from '../definitions/index.js'
 
 const emits = defineEmits<(e: 'update:mode', value: GameMode) => void>()
 

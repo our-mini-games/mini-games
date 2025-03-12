@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { Camp, UserLike, GameContext, GameStatus } from 'chinese-chess-service'
+import { Camp, type UserLike, GameContext, GameStatus } from 'chinese-chess-service'
 // import { ComputedRef } from 'vue'
 
 const props = defineProps<{

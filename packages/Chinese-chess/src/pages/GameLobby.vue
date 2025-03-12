@@ -29,7 +29,7 @@
 <script setup lang="ts">
 // import { useSocket } from '@/composables/useSocket'
 import { GameMode } from '@/definitions'
-import type { Room } from '@/types'
+import type { Room } from '@/types/index.js'
 
 // eslint-disable-next-line @typescript-eslint/promise-function-async
 const GameMain = defineAsyncComponent(() => import('./GameMain.vue'))

@@ -72,10 +72,12 @@
 </template>
 
 <script setup lang="ts">
-import { GameStatus, Level, LINK_GAME_LEVEL } from '../../config'
-import { LevelInfo } from '../../types'
-// eslint-disable-next-line @typescript-eslint/prefer-function-type
-const emit = defineEmits<{ (e: 'close'): void }>()
+import { GameStatus, Level, LINK_GAME_LEVEL } from '../../config/index.js'
+import { LevelInfo } from '../../types/index.js'
+
+const emit = defineEmits<{
+  close: []
+}>()
 
 const currentLevel = inject('currentLevel', ref(Level.easy))
 const gameStatus = inject('gameStatus', ref(GameStatus.finished))

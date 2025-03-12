@@ -1,4 +1,4 @@
-import { SolitaireNumber, SolitaireSuits } from '../config'
+import { SolitaireNumber, SolitaireSuits } from '../config/index.js'
 
 export interface SolitaireGroupItem {
   suit: SolitaireSuits

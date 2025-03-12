@@ -50,7 +50,7 @@
 </template>
 <script setup lang="ts">
 import { onMounted, inject, Ref, ref, defineAsyncComponent } from 'vue'
-import { GameStatus } from '../types'
+import { GameStatus } from '../types/index.js'
 
 const GameSettingModal = defineAsyncComponent(async () => await import('./modal/GameSetting.vue'))
 

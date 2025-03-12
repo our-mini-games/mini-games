@@ -78,7 +78,6 @@
 
           <a-button
             class="btn"
-            type="warning"
             @click="handleSwitchCamp"
           >
             交换阵营
@@ -88,7 +87,7 @@
         <template v-else>
           <a-button
             class="btn"
-            type="warning"
+            type="dashed"
             :disabled="context?.currentCamp === currentUserCamp"
             @click="handleRequestUndo"
           >
@@ -97,7 +96,8 @@
 
           <a-button
             class="btn"
-            type="warning"
+            type="dashed"
+            danger
             @click="handleGiveUp"
           >
             投降
@@ -115,8 +115,8 @@
 </template>
 
 <script setup lang="ts">
-import events from '@/definitions/events'
-import { Room } from '@/types'
+import events from '@/definitions/events.js'
+import { Room } from '@/types/index.js'
 import { createGameInterface, GameStatus, Camp, switchCamp, type GameContext, type UserLike } from 'chinese-chess-service/client'
 import { Socket } from 'socket.io-client'
 import { Modal, message } from 'ant-design-vue'
@@ -197,7 +197,7 @@ const isPlayer = computed(() => {
 
 const players = computed(() => context.value?.players)
 
-const selfPlayer = computed(() => {
+const selfPlayer = computed<any>(() => {
   if (!players.value || !currentUser.value) {
     return null
   }
@@ -208,7 +208,7 @@ const selfPlayer = computed(() => {
   return { ...players.value[currentUserCamp.value], camp: currentUserCamp.value }
 })
 
-const enemyPlayer = computed(() => {
+const enemyPlayer = computed<any>(() => {
   if (!players.value || !currentUser.value) {
     return null
   }

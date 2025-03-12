@@ -19,8 +19,8 @@
 </template>
 
 <script setup lang="ts">
-import { Camp } from '@/definitions'
-import type { ChessManual } from '@/types'
+import { Camp } from '@/definitions/index.js'
+import type { ChessManual } from '@/types/index.js'
 
 const chessManual = inject('chessManual', ref<ChessManual[]>([]))
 const listRef = ref<HTMLUListElement | null>(null)

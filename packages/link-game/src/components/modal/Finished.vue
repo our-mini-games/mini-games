@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { Ref } from 'vue'
-import { LevelInfo } from '../../types'
+import { LevelInfo } from '../../types/index.js'
 
 const PATHNAME = import.meta.env.VITE_APP_PATHNAME
 

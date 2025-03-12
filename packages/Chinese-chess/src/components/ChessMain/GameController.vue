@@ -8,14 +8,14 @@
 </template>
 
 <script setup lang="ts">
-import { ChessPiece } from '@/libs/ChessPiece'
-import { createGameInterface } from '@/libs/GameInterface'
-import { Point } from '@/libs/Point'
-import { GameContext, User } from '@/types'
+import { ChessPiece } from '@/libs/ChessPiece.js'
+import { createGameInterface } from '@/libs/GameInterface.js'
+import { Point } from '@/libs/Point.js'
+import { GameContext, User } from '@/types/index.js'
 import { ComputedRef } from 'vue'
 import cloneDeep from 'lodash.clonedeep'
-import { getMoveList, getPieceByPoint, isCheckMate, isMovable, isSameCoord, mockMove, movePiece, switchCamp } from '@/utils'
-import { Camp, GameStatus } from '@/definitions'
+import { getMoveList, getPieceByPoint, isCheckMate, isMovable, isSameCoord, mockMove, movePiece, switchCamp } from '@/utils/index.js'
+import { Camp, GameStatus } from '@/definitions/index.js'
 
 const emits = defineEmits<(e: 'game:change', context: GameContext) => void>()
 

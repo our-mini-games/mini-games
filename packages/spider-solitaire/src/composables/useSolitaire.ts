@@ -1,10 +1,10 @@
 
-import { ComputedRef, Ref } from 'vue'
-import { GameMode } from '../config'
-import { initializeTheGame } from '../lib/helper'
-import { canICollectIt } from '../lib/validator'
-import type { SolitaireGroupItem, WindowSize } from '../types'
-import useAnimations, { AnimationSolitaire } from './useAnimations'
+import { ComputedRef, Ref, ref, watch } from 'vue'
+import { GameMode } from '../config/index.js'
+import { initializeTheGame } from '../lib/helper.js'
+import { canICollectIt } from '../lib/validator.js'
+import type { SolitaireGroupItem, WindowSize } from '../types/index.js'
+import useAnimations, { AnimationSolitaire } from './useAnimations.js'
 
 export type SolitaireGroup = SolitaireGroupItem[][]
 

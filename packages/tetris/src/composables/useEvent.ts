@@ -1,9 +1,9 @@
-import { GameMode, GameStatus } from '../config'
-import { Noop, PromiseNoop } from '../types'
+import { GameMode, GameStatus } from '../config/index.js'
+import { Noop, PromiseNoop } from '../types/index.js'
 
 import { Ref } from 'vue'
-import { isMobile } from '../lib/utils'
-import { AudioReturnType } from './useAudio'
+import { isMobile } from '../lib/utils.js'
+import { AudioReturnType } from './useAudio.js'
 
 type KeyboardEventKey = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight' | 'KeyA' | 'KeyD' | 'KeyS' | 'KeyW' | 'Space' | 'Enter'
 type CustomEventKey = 'OnOrOff' | 'Reboot' | 'Pause' | 'Mode'

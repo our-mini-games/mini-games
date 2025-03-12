@@ -3,7 +3,7 @@
   "include": [
     "src",
     "vite.config.ts",
-    "./types/auto-imports.d.ts"
+    "./auto-imports.d.ts"
   ],
   "compilerOptions": {
     "paths": {

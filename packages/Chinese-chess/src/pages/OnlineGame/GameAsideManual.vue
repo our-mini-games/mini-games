@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { ComputedRef } from 'vue'
 import { Camp } from 'chinese-chess-service'
-import { colorMapper } from '@/definitions'
+import { colorMapper } from '@/definitions/index.js'
 
 const manualListRef = ref<HTMLElement | null>(null)
 

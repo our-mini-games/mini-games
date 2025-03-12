@@ -1,9 +1,9 @@
-import { createCanvas } from './Canvas'
-import { Camp, colorMapper } from '../definitions'
-import { Point } from './Point'
-import { ChessPiece } from './ChessPiece'
-import { loadPic } from '@/utils'
-import { AnimationReturnType, createAnimation } from './Animation'
+import { loadPic } from '@/utils/index.js'
+import { Camp, colorMapper } from '../definitions/index.js'
+import { AnimationReturnType, createAnimation } from './Animation.js'
+import { createCanvas } from './Canvas.js'
+import { ChessPiece } from './ChessPiece.js'
+import { Point } from './Point.js'
 
 export interface SizeOptions {
   width: number

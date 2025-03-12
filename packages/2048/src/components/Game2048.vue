@@ -86,7 +86,20 @@ useSwipe('.game-container .svg', handleSwipe)
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/mixins.scss';
+// @import '../assets/mixins.scss';
+
+@function pow($number, $e) {
+  $value: 1;
+
+  @if $e > 0 {
+    @for $i from 1 through $e {
+      $value: $value * $number;
+    }
+  }
+
+  @return $value;
+}
+
 .game-container {
   .svg {
     background-color: var(--bg-color);

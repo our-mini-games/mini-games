@@ -61,8 +61,8 @@ import TetrisMain from './Main.vue'
 import TetrisAside from './Aside.vue'
 import SVGDefs from './Defs.vue'
 
-import { color, GameStatus, itemSize } from '../../config'
-import { Coordinate } from '../../types'
+import { color, GameStatus, itemSize } from '../../config/index.js'
+import { Coordinate } from '../../types/index.js'
 
 const gameStatus = inject('gameStatus', ref(GameStatus.PowerOff))
 

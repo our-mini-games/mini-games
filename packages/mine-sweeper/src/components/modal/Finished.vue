@@ -69,13 +69,13 @@
 
 <script setup lang="ts">
 import { inject, ref, computed, watch, Ref } from 'vue'
-import { GameStatus, LevelInfo } from '../../types'
+import { GameStatus, LevelInfo } from '../../types/index.js'
 
 import CompletePic from '../../assets/img/complete.png'
 import DefeatPic from '../../assets/img/defeat.png'
 import ClosePic from '../../assets/img/close.png'
-import { formatTime } from '../../lib/utils'
-import { MINE_SWEEPER_STATISTICS } from '../../config/constants'
+import { formatTime } from '../../lib/utils.js'
+import { MINE_SWEEPER_STATISTICS } from '../../config/constants.js'
 
 const visible = ref(false)
 const gameStatus = inject('gameStatus', ref<GameStatus>('finished'))

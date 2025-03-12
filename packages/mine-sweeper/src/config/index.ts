@@ -1,4 +1,4 @@
-import { LevelInfo } from '../types'
+import { LevelInfo } from '../types/index.js'
 
 /**
  * 游戏难度
