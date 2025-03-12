@@ -1,5 +1,5 @@
 import { ComputedRef, Ref } from 'vue'
-import { defaultLevel, levelConfig } from '../config'
+import { defaultLevel, levelConfig } from '../config/index.js'
 
 interface ReturnType {
   initialLevel: Ref<number>

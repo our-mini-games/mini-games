@@ -1,6 +1,6 @@
-import { Box, GameStatus, LevelInfo } from '../types'
+import { Box, GameStatus, LevelInfo } from '../types/index.js'
 
-import { MINE_SWEEPER_STATISTICS } from '../config/constants'
+import { MINE_SWEEPER_STATISTICS } from '../config/constants.js'
 
 let boxes: Box[] = []
 
@@ -71,7 +71,7 @@ export function shuffle <T extends any[] = []> (input: T): T {
   return input
 }
 
-export const getRectFillColor = (item: Box, gameStatus: GameStatus): string => {
+export const getRectFillColor = (item: Box, _gameStatus: GameStatus): string => {
   switch (item.status) {
     case 'active':
       return 'transparent'

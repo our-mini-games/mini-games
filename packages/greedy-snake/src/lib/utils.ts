@@ -1,5 +1,5 @@
-import { Orientation } from '../config'
-import { Coordinate } from '../types'
+import { Orientation } from '../config/index.js'
+import { Coordinate } from '../types/index.js'
 
 export const rangeRandom = (min: number, max: number): number => Math.round(Math.random() * (max - min)) + min
 

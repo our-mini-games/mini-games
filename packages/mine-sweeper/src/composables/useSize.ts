@@ -1,5 +1,5 @@
 import { ComputedRef, Ref, computed, onMounted } from 'vue'
-import { LevelInfo } from '../types'
+import { LevelInfo } from '../types/index.js'
 import Panzoom from '@panzoom/panzoom'
 
 export const useSize = (el: Ref<HTMLElement | undefined>, levelInfo: Ref<LevelInfo>): {

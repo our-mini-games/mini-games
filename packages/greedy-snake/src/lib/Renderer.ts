@@ -1,9 +1,9 @@
-import { Directions, GameStatus, Orientation, snakeSize } from '../config'
-import { Coordinate, Snake, SnakePart } from '../types'
-import { createCanvas, getControlPoints, getOrientation, roundRect } from './utils'
-import { createVirtualRocker, RockerDirection } from './VirtualRocker'
-import { GreedySnakeContext } from './GreedySnake'
-import { DRAW, EXIT, LENGTH_CHANGE, RESTART, STATUS_CHANGE } from '../config/constants'
+import { Directions, GameStatus, Orientation, snakeSize } from '../config/index.js'
+import { Coordinate, Snake, SnakePart } from '../types/index.js'
+import { createCanvas, getControlPoints, getOrientation, roundRect } from './utils.js'
+import { createVirtualRocker, RockerDirection } from './VirtualRocker.js'
+import { GreedySnakeContext } from './GreedySnake.js'
+import { DRAW, EXIT, LENGTH_CHANGE, RESTART, STATUS_CHANGE } from '../config/constants.js'
 
 export const renderHome = (el: string | HTMLElement, startGame: () => void): {
   mount: () => void

@@ -34,11 +34,13 @@
 </template>
 
 <script setup lang="ts">
-import { GameStatus } from './config'
+import { GameStatus } from './config/index.js'
 
 import PageHeader from './components/header/index.vue'
 import LinkGame from './components/LinkGame.vue'
 import Home from './components/Home.vue'
+import { useGameConfig } from './composables/useGameConfig.js'
+import useBoxes from './composables/useBoxes.js'
 
 // eslint-disable-next-line @typescript-eslint/promise-function-async
 const GameSettingModal = defineAsyncComponent(() => import('./components/modal/GameSetting.vue'))

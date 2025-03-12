@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { GameContext } from '@/types'
+import { GameContext } from '@/types/index.js'
 
 const emits = defineEmits<{
   (e: 'room:chat', msg: string): void

@@ -44,9 +44,10 @@
 </template>
 
 <script setup lang="ts">
-import { GameStatus } from '../../config'
+import { GameStatus } from '../../config/index.js'
 import { Ref } from 'vue'
-import { Box, LevelInfo } from '../../types'
+import { Box, LevelInfo } from '../../types/index.js'
+import useGameProps from '../../composables/useGameProps.js'
 
 defineEmits<{
   (e: 'set-level'): void

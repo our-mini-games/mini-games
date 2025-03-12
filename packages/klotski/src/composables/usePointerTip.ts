@@ -23,11 +23,7 @@ export const pointerTipMap: Record<number, PointerTipDir> = {
 
 export const allPointerTipDirs = [PointerTipDir.up, PointerTipDir.down, PointerTipDir.left, PointerTipDir.right]
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-let pointerTipTarget: HTMLElement | null = null
-
 const addPointerTip = (tar: HTMLElement, isMajor: boolean): void => {
-  pointerTipTarget = tar
   tar.classList.add('pointer-tip')
   if (isMajor) {
     tar.classList.add('pointer-tip-major')

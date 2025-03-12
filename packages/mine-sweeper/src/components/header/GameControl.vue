@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { inject, computed, Ref, nextTick } from 'vue'
-import { GameStatus } from '../../types'
+import { GameStatus } from '../../types/index.js'
 
 const gameStatus = inject<Ref<GameStatus>>('gameStatus')!
 

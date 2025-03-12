@@ -1,6 +1,6 @@
-import { ChessPiece, createChessPiece } from '@/libs/ChessPiece'
-import { Point } from '../libs/Point'
-import { Camp, ChessPieceValue, defaultMoveList } from '@/definitions'
+import { ChessPiece, createChessPiece } from '@/libs/ChessPiece.js'
+import { Point } from '@/libs/Point.js'
+import { Camp, ChessPieceValue, defaultMoveList } from '@/definitions/index.js'
 
 type CurryFunction<T> = (arg: T) => T | CurryFunction<T>
 type ComposeFunction = <T>(...funcs: Array<(arg: T) => T>) => (arg: T) => T
@@ -156,7 +156,7 @@ const getTheNearestPiece = (piece: ChessPiece, pieces: ChessPiece[]): NearestPie
 }
 
 export const getMoveList = (piece: ChessPiece, pieces: ChessPiece[]): Point[] => {
-  let points: Point[] = defaultMoveList[piece.value](piece.coord)
+  let points: Point[] = defaultMoveList[piece.value as keyof typeof defaultMoveList](piece.coord)
 
   const { camp, value, coord } = piece
 

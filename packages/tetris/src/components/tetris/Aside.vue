@@ -76,8 +76,8 @@
 
 <script setup lang="ts">
 import type { Ref } from 'vue'
-import { wrapperSize, itemSize, color, Tetrominos, GameStatus } from '../../config'
-import { Tetris } from '../../types'
+import { wrapperSize, itemSize, color, Tetrominos, GameStatus } from '../../config/index.js'
+import { Tetris } from '../../types/index.js'
 
 const svgSize = itemSize * wrapperSize.column / 2
 

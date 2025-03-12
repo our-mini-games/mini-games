@@ -1,4 +1,4 @@
-import { Level } from '../config'
+import { Level } from '../config/index.js'
 
 export interface GameProps {
   rearrangement: number

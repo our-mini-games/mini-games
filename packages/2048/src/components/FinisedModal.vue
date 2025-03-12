@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { GameStatus } from '../config'
+import { GameStatus } from '../config/index.js'
 
 import CompletePic from '../assets/imgs/complete.png'
 import DefeatPic from '../assets/imgs/defeat.png'
@@ -51,7 +51,7 @@ import ClosePic from '../assets/imgs/close.png'
 
 const visible = ref(false)
 const gameStatus = inject('gameStatus', ref(GameStatus.Finished))
-const setGameStatus = inject('setGameStatus', (status: GameStatus) => {})
+const setGameStatus = inject('setGameStatus', (_status: GameStatus) => {})
 
 const handleAgain = (): void => {
   visible.value = false

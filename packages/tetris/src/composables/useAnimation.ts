@@ -1,7 +1,7 @@
 import { Ref } from 'vue'
-import { GameMode, GameStatus, modeAnimationsConfig, modeTextConfig, wrapperSize } from '../config'
-import { createBuilding, createBuildingRowItems, sleep } from '../lib/utils'
-import { BuildingType, Noop } from '../types'
+import { GameMode, GameStatus, modeAnimationsConfig, modeTextConfig, wrapperSize } from '../config/index.js'
+import { createBuilding, createBuildingRowItems, sleep } from '../lib/utils.js'
+import { BuildingType, Noop } from '../types/index.js'
 
 interface ReturnType {
   removeAnimation: (removeRows: number[]) => Promise<void>
@@ -142,7 +142,7 @@ export default (
       requestId = requestAnimationFrame(runModeAnimation)
     }
 
-    const stopModeAnimation = (isPowerOff = false): void => {
+    const stopModeAnimation = (_isPowerOff = false): void => {
       cancelAnimationFrame(requestId)
       building.value = createBuilding(wrapperSize.row, wrapperSize.column)
     }

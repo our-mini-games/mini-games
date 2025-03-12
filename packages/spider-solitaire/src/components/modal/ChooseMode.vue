@@ -34,8 +34,9 @@
 </template>
 
 <script setup lang="ts">
-import { GameMode, gameModes } from '../../config'
-import { useWindow } from '../../composables/useWindow'
+import { GameMode, gameModes } from '../../config/index.js'
+import { useWindow } from '../../composables/useWindow.js'
+import { inject, ref } from 'vue'
 
 const emit = defineEmits<(e: 'close') => void>()
 

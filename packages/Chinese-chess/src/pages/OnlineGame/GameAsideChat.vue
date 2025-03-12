@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChatInfo, User } from '@/types'
+import { ChatInfo, User } from '@/types/index.js'
 import { message } from 'ant-design-vue'
 
 const emits = defineEmits<(e: 'chat', content: string) => void>()

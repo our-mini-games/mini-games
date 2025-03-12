@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { Room } from '@/types'
+import { Room } from '@/types/index.js'
 import { GameStatus, createGameInterface, ChessPiece, colorMapper } from 'chinese-chess-service'
 import { Empty } from 'ant-design-vue'
 

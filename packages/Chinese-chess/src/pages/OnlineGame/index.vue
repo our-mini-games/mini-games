@@ -14,11 +14,11 @@
 </template>
 
 <script setup lang="ts">
-import useSocket from '@/composables/useSocket'
+import useSocket from '@/composables/useSocket.js'
 import { Socket } from 'socket.io-client'
-import events from '@/definitions/events'
-import { USER_INFO_KEY } from '@/definitions'
-import { ChatInfo, Room, User } from '@/types'
+import events from '@/definitions/events.js'
+import { USER_INFO_KEY } from '@/definitions/index.js'
+import { ChatInfo, Room, User } from '@/types/index.js'
 import { Modal, message } from 'ant-design-vue'
 import GameLobby from './GameLobby.vue'
 import GameMain from './GameMain.vue'
@@ -123,9 +123,9 @@ const socketHandler = (socket: Socket) => {
       context.value = data
     })
 
-    socket.on(events.room.chat, msg => {
-      // message.value = msg
-    })
+    // socket.on(events.room.chat, msg => {
+    //   // message.value = msg
+    // })
 
     socket.on(events.room.seatRequest, () => {
       Modal.destroyAll()
@@ -214,7 +214,7 @@ const socketHandler = (socket: Socket) => {
     })
   })
 
-  socket.on(events.client.disconnect, (userInfo: User) => {
+  socket.on(events.client.disconnect, () => {
     message.destroy()
     message.error('服务器连接中断，88')
   })

@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { GameMode, colorMapper } from '@/definitions'
+import { GameMode, colorMapper } from '@/definitions/index.js'
 import { message } from 'ant-design-vue'
 import { Camp, createServer, createGameInterface, GameContext, GameStatus, switchCamp } from 'chinese-chess-service'
 

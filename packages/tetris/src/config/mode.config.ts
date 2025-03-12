@@ -2,7 +2,7 @@
  * 模式选择界面配置
  */
 
-import { GameMode } from './game.config'
+import { GameMode } from './game.config.js'
 
 export const modeAnimationsConfig: Record<GameMode, number[][][]> = {
   [GameMode.Normal]: [

@@ -1,4 +1,4 @@
-import { GameItem } from '../types'
+import { GameItem } from '../types/index.js'
 
 export const createGridValue = (): number => Math.random() > 0.5 ? 2 : 4
 

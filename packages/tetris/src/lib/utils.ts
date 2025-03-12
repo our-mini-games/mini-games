@@ -1,5 +1,5 @@
-import { Tetrominos, tetrisCoordinates, wrapperSize } from '../config'
-import { BuildingType, Tetris, TetrisType } from '../types'
+import { Tetrominos, tetrisCoordinates, wrapperSize } from '../config/index.js'
+import { BuildingType, Tetris, TetrisType } from '../types/index.js'
 
 export const getRandomNumber = (min: number, max: number): number => Math.round(Math.random() * (max - min)) + min
 

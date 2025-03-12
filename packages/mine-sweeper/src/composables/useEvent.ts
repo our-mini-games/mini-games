@@ -1,6 +1,6 @@
-import { Box, BoxStatus, GameStatus, LeftButtonBehaviors } from '../types'
+import { Box, BoxStatus, GameStatus, LeftButtonBehaviors } from '../types/index.js'
 import { Ref, inject, onBeforeUnmount, onMounted, ref } from 'vue'
-import { countMines, isLeftButton, isRightButton } from '../lib/utils'
+import { countMines, isLeftButton, isRightButton } from '../lib/utils.js'
 
 interface EventReturnType {
   handleMousedown: (item: Box, e: MouseEvent) => void
@@ -8,7 +8,7 @@ interface EventReturnType {
 }
 
 export default (
-  el: Ref<HTMLElement | undefined>,
+  _el: Ref<HTMLElement | undefined>,
   boxes: Ref<Box[]>,
   useDoubtful: Ref<Boolean>,
   gameStatus: Ref<GameStatus>,

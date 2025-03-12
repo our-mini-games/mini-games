@@ -1,8 +1,8 @@
-import { GameStatus, Directions, snakeSize } from '../config'
-import { DIRECTION_CHANGE, DRAW, EXIT, GAME_OVER, LENGTH_CHANGE, RESTART, STATUS_CHANGE } from '../config/constants'
-import { Snake, SnakePart, Coordinate } from '../types'
-import EventEmitter from './EventEmitter'
-import { rangeRandom } from './utils'
+import { GameStatus, Directions, snakeSize } from '../config/index.js'
+import { DIRECTION_CHANGE, DRAW, EXIT, GAME_OVER, LENGTH_CHANGE, RESTART, STATUS_CHANGE } from '../config/constants.js'
+import { Snake, SnakePart, Coordinate } from '../types/index.js'
+import EventEmitter from './EventEmitter.js'
+import { rangeRandom } from './utils.js'
 import throttle from 'lodash.throttle'
 
 export interface GreedySnakeContext {

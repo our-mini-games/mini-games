@@ -1,4 +1,4 @@
-import { Box, LevelInfo } from '../types'
+import { Box, LevelInfo } from '../types/index.js'
 
 // 判断选中元素是否可以消除
 export const canIRemoveThem = (

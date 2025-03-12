@@ -1,4 +1,4 @@
-import { Tetrominos } from '../config'
+import { Tetrominos } from '../config/index.js'
 
 export interface Coordinate {
   x: number

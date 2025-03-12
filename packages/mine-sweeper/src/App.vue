@@ -10,10 +10,10 @@
 
 <script setup lang="ts">
 import { ref, computed, provide, watch } from 'vue'
-import { levels } from './config'
-import { createStatistics, getBoxes } from './lib/utils'
-import { MINE_SWEEPER_SETTING } from './config/constants'
-import type { Box, CustomSetting, GameStatus, LeftButtonBehaviors, LevelInfo } from './types'
+import { levels } from './config/index.js'
+import { createStatistics, getBoxes } from './lib/utils.js'
+import { MINE_SWEEPER_SETTING } from './config/constants.js'
+import type { Box, CustomSetting, GameStatus, LeftButtonBehaviors, LevelInfo } from './types/index.js'
 
 import Bg from './components/Bg.vue'
 import Home from './components/Home.vue'

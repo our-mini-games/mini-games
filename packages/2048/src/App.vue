@@ -14,6 +14,7 @@
 import TheHeader from './components/header/index.vue'
 import Game2048 from './components/Game2048.vue'
 import FinisedModal from './components/FinisedModal.vue'
+import useGame from './composables/useGame.js'
 
 useGame()
 </script>

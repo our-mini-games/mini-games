@@ -1,7 +1,7 @@
 import { ComputedRef, Ref } from 'vue'
-import { Level, LINK_GAME_LEVEL } from '../config'
-import { LevelInfo } from '../types'
-import { getSize } from '../lib/utils'
+import { Level, LINK_GAME_LEVEL } from '../config/index.js'
+import { getSize } from '../lib/utils.js'
+import { LevelInfo } from '../types/index.js'
 
 export const useGameConfig = (): {
   areaSize: ComputedRef<{ width: number, height: number }>

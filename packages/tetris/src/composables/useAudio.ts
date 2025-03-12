@@ -1,6 +1,6 @@
 import { Ref } from 'vue'
 import AudioMp3 from '../assets/music/audio.mp3'
-import { Noop } from '../types'
+import { Noop } from '../types/index.js'
 
 const noop: Noop = () => {}
 

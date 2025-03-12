@@ -2,14 +2,14 @@
  * 游戏主体控制
  */
 
-import { Camp, ChessPieceValue, GameStatus } from '../definitions'
-import { ChessPiece, createChessPiece } from './ChessPiece'
-import { createGameInterface } from './GameInterface'
-import { changeXCoordMove, changeOtherCoordMove } from '../libs/ChessManual'
 import cloneDeep from 'lodash.clonedeep'
+import { Camp, ChessPieceValue, GameStatus } from '../definitions/index.js'
+import { changeOtherCoordMove, changeXCoordMove } from '../libs/ChessManual.js'
+import { ChessPiece, createChessPiece } from './ChessPiece.js'
+import { createGameInterface } from './GameInterface.js'
 
-import { Point } from './Point'
-import { movePiece } from '@/utils'
+import { movePiece } from '@/utils/index.js'
+import { Point } from './Point.js'
 
 export interface MovePathCollection {
   value: ChessPieceValue
@@ -165,13 +165,13 @@ export const createController = ({
     const newChessPiece: ChessPiece[] = cloneDeep(context.chessPieces)
     const newActivePiece = newChessPiece.find(item => item.coord.x === context.activePiece?.coord.x && item.coord.y === context.activePiece.coord.y)
     // 如果这个坐标有地方子力的话就吃子
-    let index = newChessPiece.findIndex(item => item.coord.x === x && item.coord.y === y && item.camp === camp)
+    const index = newChessPiece.findIndex(item => item.coord.x === x && item.coord.y === y && item.camp === camp)
     // 模拟它走一步
     movePiece(newActivePiece!, { x, y })
     if (index !== -1) {
       newChessPiece.splice(index, 1)
     }
-    
+
     return isGeneralInChess(newChessPiece, camp)
   }
 
@@ -229,8 +229,8 @@ export const createController = ({
       }).length > 0
 
       const eatInGeneralInChess: boolean = canEatCoord.filter(item => {
-        let eatChessPiece: ChessPiece[] = cloneDeep(context.chessPieces)
-        let eatActivePiece = eatChessPiece.find(item => item.coord.x === coord.x && item.coord.y === coord.y && item.camp !== context.currentCamp)
+        const eatChessPiece: ChessPiece[] = cloneDeep(context.chessPieces)
+        const eatActivePiece = eatChessPiece.find(item => item.coord.x === coord.x && item.coord.y === coord.y && item.camp !== context.currentCamp)
         // 吃掉这个位置的子 看看还是不是将军
         movePiece(eatActivePiece!, {
           x: item[0],
@@ -244,7 +244,6 @@ export const createController = ({
       if (moveInGeneralInChess || eatInGeneralInChess) {
         return false
       }
-
     }
     return true
   }

@@ -1,5 +1,5 @@
-import { Camp } from '../definitions'
-import { ChessPiece } from './ChessPiece'
+import { Camp } from '../definitions/index.js'
+import { ChessPiece } from './ChessPiece.js'
 
 export const changeXCoordMove = (currentCamp: Camp, piece: ChessPiece, x: number, y: number, chessPieces: ChessPiece[]): string => {
   // 这个方法是用来列举那些只改变X轴坐标走棋的棋谱
@@ -7,7 +7,7 @@ export const changeXCoordMove = (currentCamp: Camp, piece: ChessPiece, x: number
   // 只有马特殊判断 因为如果在一路上有前马和后马的话就要判断是那个马进行了移动
   let text: string = piece.name
   if (piece.id === 3 || piece.id === 33) {
-    const hasTowHorse: ChessPiece[] = chessPieces.filter(item => item.coord.x === piece.coord.x && item.coord.y !== piece.coord.y && item.camp === currentCamp && piece.id === 3 || piece.id === 33)
+    const hasTowHorse: ChessPiece[] = chessPieces.filter(item => item.coord.x === piece.coord.x && item.coord.y !== piece.coord.y && item.camp === currentCamp && (piece.id === 3 || piece.id === 33))
     if (hasTowHorse.length === 1) {
       // 判断是前马还是后马
       if (currentCamp === Camp.RED) {

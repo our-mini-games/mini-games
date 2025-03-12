@@ -1,8 +1,10 @@
+// @ts-expect-error
 import UnitPath from 'unit-path'
-import { ComputedRef, Ref } from 'vue'
-import { SolitaireNumber, SolitaireSuits } from '../config'
-import { SolitaireGroupItem, WindowSize } from '../types'
-import { SolitaireGroup } from './useSolitaire'
+import type { ComputedRef, Ref } from 'vue'
+import { nextTick, ref } from 'vue'
+import { SolitaireNumber, SolitaireSuits } from '../config/index.js'
+import { SolitaireGroupItem, WindowSize } from '../types/index.js'
+import { SolitaireGroup } from './useSolitaire.js'
 
 interface UseAnimationsReturnType {
   animationSolitaire: Ref<AnimationSolitaire>
@@ -71,7 +73,7 @@ export default (
 
       const points = unitPath.setPath('LINE', { x: sourceRect.left, y: sourceRect.top }, { x: targetRect.left, y: targetRect.top })
         .getPoints(10)
-        .map(point => ({
+        .map((point: { x: number, y: number }) => ({
           x: point.x / scale,
           y: point.y / scale
         }))
@@ -140,7 +142,7 @@ export default (
 
         const points = unitPath.setPath('LINE', { x: sourceRect.left, y: sourceRect.top }, { x: targetRect.left, y: targetRect.top })
           .getPoints(10)
-          .map(point => ({
+          .map((point: { x: number, y: number }) => ({
             x: point.x / scale,
             y: point.y / scale
           }))

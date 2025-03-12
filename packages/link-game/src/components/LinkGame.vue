@@ -311,9 +311,10 @@
 
 <script setup lang="ts">
 import { Ref } from 'vue'
-import { GameStatus } from '../config'
-import { getFromPosition, getPosition, getToPosition, sleep } from '../lib/utils'
-import { Box, LevelInfo } from '../types'
+import { GameStatus } from '../config/index.js'
+import { getFromPosition, getPosition, getToPosition, sleep } from '../lib/utils.js'
+import { Box, LevelInfo } from '../types/index.js'
+import useEvent from '../composables/useEvent.js'
 
 const PATHNAME = import.meta.env.VITE_APP_PATHNAME
 

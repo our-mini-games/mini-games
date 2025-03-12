@@ -232,8 +232,13 @@
 </template>
 
 <script setup lang="ts">
-import { colors, gameModes } from '../../config'
-import { getOpenedSolitaireTop } from '../../lib/helper'
+import { colors, gameModes } from '../../config/index.js'
+import { getOpenedSolitaireTop } from '../../lib/helper.js'
+import { defineAsyncComponent, ref, computed, onMounted, provide } from 'vue'
+import useImgPreload from '../../composables/useImgPreload.js'
+import { useWindow } from '../../composables/useWindow.js'
+import useSolitaire from '../../composables/useSolitaire.js'
+import useEvent from '../../composables/useEvent.js'
 
 import GraphDefs from './GraphDefs.vue'
 

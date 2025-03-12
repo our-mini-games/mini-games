@@ -1,7 +1,8 @@
 import { Ref } from 'vue'
-import { GameStatus } from '../config'
-import { getBoxes } from '../lib/utils'
-import { Box, LevelInfo } from '../types'
+import { GameStatus } from '../config/index.js'
+import { getBoxes } from '../lib/utils.js'
+import { Box, LevelInfo } from '../types/index.js'
+import useImgPreload from './useImgPreload.js'
 
 const ipl = useImgPreload()
 
@@ -15,6 +16,7 @@ export default (levelInfo: Ref<LevelInfo>, gameStatus: Ref<GameStatus>): {
     ipl.mockRender(66)
     boxes.value = await getBoxes(level)
     nextTick(() => {
+      // @ts-expect-error
       ipl.reload()
     })
   }

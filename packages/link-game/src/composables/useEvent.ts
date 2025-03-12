@@ -1,8 +1,8 @@
 import { ComputedRef, Ref } from 'vue'
-import { GameStatus } from '../config'
-import { canIRemoveThem } from '../lib/pathFinding'
-import { isComplete, sleep } from '../lib/utils'
-import { Box, LevelInfo } from '../types'
+import { GameStatus } from '../config/index.js'
+import { canIRemoveThem } from '../lib/pathFinding.js'
+import { isComplete, sleep } from '../lib/utils.js'
+import { Box, LevelInfo } from '../types/index.js'
 
 export default (
   boxes: Ref<Box[]>,
@@ -16,7 +16,7 @@ export default (
   // const checkedItems = ref<Box[]>([])
   const checkedItems = computed(() => boxes.value.filter(box => box.status !== 'default'))
 
-  const handleCheck = (item: Box, e: MouseEvent): void => {
+  const handleCheck = (item: Box): void => {
     if (gameStatus.value !== GameStatus.playing) {
       return
     }

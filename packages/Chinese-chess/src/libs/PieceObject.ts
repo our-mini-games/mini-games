@@ -1,6 +1,7 @@
-import { ChessPiece } from './ChessPiece'
-import { Camp } from '../definitions'
-import { Point } from './Point'
+import { Camp } from '../definitions/index.js'
+import { ChessPiece } from './ChessPiece.js'
+import { Point } from './Point.js'
+
 interface HorseRule {
   horseLegcoord: [number, number]
   notMovecoord: Array<[number, number]>

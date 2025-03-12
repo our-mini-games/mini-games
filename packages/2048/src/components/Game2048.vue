@@ -48,8 +48,8 @@
 </template>
 
 <script setup lang="ts">
-import { sizeConfig, Direction, GameStatus } from '../config'
-import { GameItem } from '../types'
+import { sizeConfig, Direction, GameStatus } from '../config/index.js'
+import { GameItem } from '../types/index.js'
 
 const { row, column, size, gap } = sizeConfig
 
@@ -65,7 +65,7 @@ const {
   verticalMerge
 } = useMerge(gameGrids)
 
-const handleSwipe = (dir: Direction, e: HammerInput): void => {
+const handleSwipe = (dir: Direction, _e: HammerInput): void => {
   if (gameStatus.value !== GameStatus.Playing) return
 
   switch (dir) {
@@ -86,7 +86,20 @@ useSwipe('.game-container .svg', handleSwipe)
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/mixins.scss';
+// @import '../assets/mixins.scss';
+
+@function pow($number, $e) {
+  $value: 1;
+
+  @if $e > 0 {
+    @for $i from 1 through $e {
+      $value: $value * $number;
+    }
+  }
+
+  @return $value;
+}
+
 .game-container {
   .svg {
     background-color: var(--bg-color);

@@ -1,7 +1,7 @@
-import { Ref } from 'vue'
-import { GameMode, GameStatus, wrapperSize } from '../config'
-import { createBuilding } from '../lib/utils'
-import { BuildingType, Tetris } from '../types'
+import { ref, Ref } from 'vue'
+import { GameMode, GameStatus, wrapperSize } from '../config/index.js'
+import { createBuilding } from '../lib/utils.js'
+import { BuildingType, Tetris } from '../types/index.js'
 
 interface TetrisReturnType {
   gameStatus: Ref<GameStatus>

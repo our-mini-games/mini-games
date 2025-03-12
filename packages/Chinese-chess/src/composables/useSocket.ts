@@ -1,5 +1,5 @@
 import { io, type Socket } from 'socket.io-client'
-import { USER_INFO_KEY, NICKNAME_KEY } from '@/definitions'
+import { USER_INFO_KEY, NICKNAME_KEY } from '@/definitions/index.js'
 
 const useSocket = () => {
   const socket = ref<Socket | null>(null)

@@ -1,4 +1,4 @@
-import { Box } from '../types'
+import { Box } from '../types/index.js'
 
 /**
  * 创建测试用的元素

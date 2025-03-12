@@ -8,7 +8,9 @@
 
 <script setup lang="ts">
 import GameWrapper from './components/GameWrapper/index.vue'
-import { useWindow } from './composables/useWindow'
+import { useWindow } from './composables/useWindow.js'
+import useImgPreload from './composables/useImgPreload.js'
+import { nextTick } from 'vue'
 
 const windowSize = useWindow()
 

@@ -1,7 +1,7 @@
 import './style.css'
 
-import { createGameList } from './lib/utils'
-import { games, members } from './config'
+import { createGameList } from './lib/utils.js'
+import { games, members } from './config/index.js'
 
 const app = document.querySelector('#app')!
 

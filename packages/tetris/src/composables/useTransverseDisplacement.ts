@@ -1,7 +1,7 @@
 import { ComputedRef, Ref } from 'vue'
-import { GameStatus } from '../config'
-import { isLegalTetris } from '../lib/utils'
-import { BuildingType, Noop, PromiseNoop, Tetris } from '../types'
+import { GameStatus } from '../config/index.js'
+import { isLegalTetris } from '../lib/utils.js'
+import { BuildingType, Noop, PromiseNoop, Tetris } from '../types/index.js'
 import throttle from 'lodash.throttle'
 
 interface ReturnType {

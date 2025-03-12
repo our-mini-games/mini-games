@@ -129,9 +129,9 @@
 
 <script setup lang="ts">
 import { ref, reactive, inject } from 'vue'
-import { levels } from '../../config'
-import { MINE_SWEEPER_SETTING } from '../../config/constants'
-import { CustomSetting, LevelInfo } from '../../types'
+import { levels } from '../../config/index.js'
+import { MINE_SWEEPER_SETTING } from '../../config/constants.js'
+import { CustomSetting, LevelInfo } from '../../types/index.js'
 
 interface FormState {
   level: LevelInfo['level']

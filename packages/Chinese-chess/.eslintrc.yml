@@ -1,6 +1,5 @@
 extends:
   -  '../../.eslintrc.yml'
-  - './.eslintrc-auto-import.json'
 rules: {
   '@typescript-eslint/no-misused-promises': 0,
   '@typescript-eslint/restrict-plus-operands': 0,

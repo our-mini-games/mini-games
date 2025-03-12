@@ -66,8 +66,11 @@
 </template>
 
 <script setup lang="ts">
-import { KlotskiGameStatus } from '../composables/useKlotski'
-import { classicalLayouts, PERSONS_MAP } from '../config'
+import { KlotskiGameStatus } from '../composables/useKlotski.js'
+import { classicalLayouts, PERSONS_MAP } from '../config/index.js'
+import { useSize } from '../composables/useSize.js'
+import { useKlotski } from '../composables/useKlotski.js'
+
 const { gap, size, size1, size2, boxWidth, boxHeight } = useSize()
 
 const {

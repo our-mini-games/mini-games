@@ -1,6 +1,7 @@
 import Hammer from 'hammerjs'
+// @ts-expect-error
 import UnitPath from 'unit-path'
-import { createCanvas } from './utils'
+import { createCanvas } from './utils.js'
 
 export enum RockerDirection {
   // eslint-disable-next-line no-unused-vars

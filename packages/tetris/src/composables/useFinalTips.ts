@@ -1,7 +1,7 @@
 import { ComputedRef, Ref } from 'vue'
-import { GameStatus, wrapperSize } from '../config'
-import { isLegalTetris } from '../lib/utils'
-import { BuildingType, Coordinate, Tetris } from '../types'
+import { GameStatus, wrapperSize } from '../config/index.js'
+import { isLegalTetris } from '../lib/utils.js'
+import { BuildingType, Coordinate, Tetris } from '../types/index.js'
 
 export default (
   gameStatus: Ref<GameStatus>,

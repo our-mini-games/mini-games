@@ -1,4 +1,4 @@
-import { Camp } from '@/definitions'
+import type { Camp } from '@/definitions/index.js'
 
 interface TextItem {
   text: string
