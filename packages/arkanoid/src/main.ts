@@ -1,6 +1,6 @@
 import Hammer from 'hammerjs'
-import Arkanoid, { ArkanoidStatus } from './lib/Arkanoid'
-import Layout from './lib/Layout'
+import Arkanoid, { ArkanoidStatus } from './lib/Arkanoid.js'
+import Layout from './lib/Layout.js'
 
 import './assets/style.css'
 

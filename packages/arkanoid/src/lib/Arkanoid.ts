@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import Cannon from 'cannon'
-import Box from './Box'
-import Layout from './Layout'
+import Box from './Box.js'
+import Layout from './Layout.js'
 
 export interface ArkanoidOptions {
   el: string | HTMLElement
