@@ -46,6 +46,11 @@ export const games: GameConfig[] = [
     cover: 'klotski.svg'
   },
   {
+    path: '/mini-games/arkanoid/index.html',
+    name: '打砖块',
+    cover: 'arkanoid.png'
+  },
+  {
     path: 'https://github.com/our-mini-games/mini-games/discussions',
     name: '没有想要的？',
     cover: 'org.svg'

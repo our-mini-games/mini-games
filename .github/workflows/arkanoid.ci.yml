@@ -1,0 +1,42 @@
+name: Deploy arkanoid page
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/arkanoid/**'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.13.4
+
+      - name: Build and deploy
+        run: |
+          cd ./packages/arkanoid
+          pnpm install
+          pnpm run build
+          echo "==========Move dist to root=========="
+          mkdir -p ../../dist/arkanoid
+          cp -r dist/* ../../dist/arkanoid
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          keep_files: true  # 保留之前构建的文件
