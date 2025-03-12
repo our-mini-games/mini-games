@@ -28,7 +28,7 @@ jobs:
       - name: Build and deploy
         run: |
           cd ./packages/2048
-          pnpm install
+          pnpm install --no-frozen-lockfile
           pnpm run build
           echo "==========Move dist to root=========="
           mkdir -p ../../dist/2048
