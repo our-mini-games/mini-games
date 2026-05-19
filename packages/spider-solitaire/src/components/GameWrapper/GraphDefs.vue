@@ -372,6 +372,7 @@
               text-anchor="start"
               font-weight="bold"
               font-family="Card Characters, Gill Sans, serif"
+              style="text-rendering: optimizeLegibility;"
             >
               {{ number }}
             </text>

@@ -8,6 +8,7 @@
     :viewBox="`0 0 ${windowSize.viewBoxWidth} ${windowSize.viewBoxHeight}`"
     preserveAspectRatio="xMinYMin meet"
     class="game-wrapper"
+    style="touch-action: none;"
   >
     <g
       :transform="`translate(${windowSize.padding.left}, ${windowSize.padding.top})`"
@@ -54,6 +55,7 @@
                 :class="`active-solitaire-${index}-${subIndex}`"
                 :xlink:href="`#${solitaire.suit}-${solitaire.number}`"
                 :y="getOpenedSolitaireTop(item, subIndex, windowSize.unopenedGroupGap, windowSize.openedGroupGap)"
+                style="cursor: grab;"
               />
             </template>
 
@@ -321,11 +323,25 @@ provide('mode', mode)
 .game-wrapper {
   box-shadow: 0 0 2px #888;
   user-select: none;
-
-  // .btn {
-  //   * {
-  //     pointer-events: none;
-  //   }
-  // }
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  
+  // 移动端优化
+  @media (max-width: 768px) {
+    // 优化触摸目标
+    .active-solitaire {
+      &:active {
+        opacity: 0.8;
+      }
+    }
+    
+    // 优化按钮触摸目标
+    .btn {
+      &:active {
+        opacity: 0.7;
+        transform: scale(0.98);
+      }
+    }
+  }
 }
 </style>

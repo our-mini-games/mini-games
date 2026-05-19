@@ -23,7 +23,9 @@ export default (
 ): UseEventReturnType => {
   const startPosition = {
     left: 0,
-    top: 0
+    top: 0,
+    transformX: 0,
+    transformY: 0
   }
 
   const flushValidTargets = (): void => {
@@ -63,7 +65,9 @@ export default (
       startPosition.left = windowSize.value.isRotate ? clientY : clientX
       startPosition.top = windowSize.value.isRotate ? (windowSize.value.width - clientX) : clientY
 
-      // targetSolitaire = solitaires[subIndex]
+      // 预先计算transform值，避免在移动时重复计算
+      startPosition.transformX = 0
+      startPosition.transformY = 0
 
       movingGroup.value = {
         index: sourceIdx,
@@ -86,8 +90,14 @@ export default (
     const x = windowSize.value.isRotate ? clientY : clientX
     const y = windowSize.value.isRotate ? (windowSize.value.width - clientX) : clientY
 
+    const translateX = (x - startPosition.left) / windowSize.value.scale
+    const translateY = (y - startPosition.top) / windowSize.value.scale
+
+    // 使用transform3d启用硬件加速，并批量更新样式
+    const transformValue = `translate3d(${translateX}px, ${translateY}px, 0)`
+
     movingSolitaireRef.value.forEach(target => {
-      target.style.transform = `translate(${(x - startPosition.left) / windowSize.value.scale}px, ${(y - startPosition.top) / windowSize.value.scale}px)`
+      target.style.transform = transformValue
     })
   }
 
@@ -95,6 +105,7 @@ export default (
     if (!svgRef.value || !movingGroup.value.solitaires.length) {
       return
     }
+
     // 获取鼠标最后所在位置是否在牌组区域（每组牌最后一张的位置）
     const dropTargets = document.querySelectorAll<SVGAElement>(`.${dropTargetClassName}`)
     const movingRect = movingSolitaireRef.value[0].getBoundingClientRect()
@@ -135,7 +146,19 @@ export default (
     }
   }
   const initHammer = (): void => {
-    const mc = new Hammer(svgRef.value!)
+    const mc = new Hammer(svgRef.value!, {
+      // 优化触摸事件配置
+      touchAction: 'none',
+      recognizers: [
+        [Hammer.Pan, { direction: Hammer.DIRECTION_ALL, threshold: 5 }]
+      ]
+    })
+
+    // 使用requestAnimationFrame优化拖拽移动
+    let rafId: number | null = null
+    let lastClientX = 0
+    let lastClientY = 0
+
     mc.on('panstart', (e: HammerInput) => {
       if (e.target.matches('.active-solitaire')) {
         const index = Number(e.target.dataset.index!)
@@ -144,9 +167,21 @@ export default (
       }
     })
     mc.on('panmove', (e: HammerInput) => {
-      handleDragMove(e.deltaX, e.deltaY)
+      lastClientX = e.deltaX
+      lastClientY = e.deltaY
+
+      if (rafId === null) {
+        rafId = requestAnimationFrame(() => {
+          handleDragMove(lastClientX, lastClientY)
+          rafId = null
+        })
+      }
     })
     mc.on('panend', () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId)
+        rafId = null
+      }
       handleDragEnd()
     })
   }
