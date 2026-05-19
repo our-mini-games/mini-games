@@ -1,6 +1,7 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 html,
@@ -9,13 +10,14 @@ body,
   width: 100%;
   height: 100%;
   overflow: hidden;
+  touch-action: manipulation;
 }
 
 html {
   font-size: 16px;
 
   @media (max-width: 768px) {
-    font-size: 4vw;
+    font-size: 14px;
   }
 
   --primary-color: #00ffff;
@@ -54,6 +56,8 @@ html {
 body {
   font-size: 1rem !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mine-sweeper {

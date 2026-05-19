@@ -44,14 +44,20 @@ const handleBack = (): void => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.5rem;
   width: 100%;
-  height: 4rem;
-  padding: 0 1rem;
+  height: 3.5rem;
+  padding: 0 0.5rem;
   box-sizing: border-box;
   background: var(--bg-cell-color-flag);
   border: 2px solid var(--border-color);
   border-radius: 0.5rem;
+
+  @media (min-width: 769px) {
+    height: 4rem;
+    padding: 0 1rem;
+    gap: 1rem;
+  }
 
   :deep(.btn) {
     all: unset;
@@ -63,6 +69,11 @@ const handleBack = (): void => {
     border-radius: 0.5rem;
     border: 1px solid transparent;
     cursor: pointer;
+    font-size: 0.9rem;
+
+    @media (min-width: 769px) {
+      font-size: 1rem;
+    }
 
     &.active,
     &:hover {
@@ -74,26 +85,42 @@ const handleBack = (): void => {
   .statistics-item {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.3rem;
     height: 2rem;
-    padding: 0 0.5rem;
+    padding: 0 0.3rem;
     border-radius: 0.5rem;
     color: var(--primary-color);
-    font-size: 1rem;
+    font-size: 0.85rem;
     background-color: var(--bg-cell-color-revealed);
+    min-width: 0;
+
+    @media (min-width: 769px) {
+      gap: 0.5rem;
+      padding: 0 0.5rem;
+      font-size: 1rem;
+    }
 
     .icon {
       color: var(--bg-cell-color);
-      font-size: 0.8rem;
+      font-size: 0.7rem;
+
+      @media (min-width: 769px) {
+        font-size: 0.8rem;
+      }
     }
 
     &.mines {
       .bg {
-        width: 1rem;
-        height: 1rem;
+        width: 0.9rem;
+        height: 0.9rem;
         background-image: url('@/assets/img/mine-1.png');
         background-size: cover;
         background-position: center;
+
+        @media (min-width: 769px) {
+          width: 1rem;
+          height: 1rem;
+        }
       }
     }
   }

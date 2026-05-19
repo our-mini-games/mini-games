@@ -96,6 +96,7 @@ onMounted(() => {
   justify-content: center;
   width: 100%;
   height: 100%;
+  padding: 1rem;
 
   /* 主容器 */
   .container {
@@ -106,26 +107,42 @@ onMounted(() => {
     align-items: center;
     height: 100%;
     z-index: 1;
+    gap: 1.5rem;
+
+    @media (max-width: 768px) {
+      gap: 1rem;
+    }
   }
 
   /* 标题样式 */
   h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
     text-transform: uppercase;
     background: linear-gradient(90deg, var(--border-color), var(--primary-color));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: glowText 2s infinite alternate;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
   }
 
   /* 扫雷网格 */
   .mine-grid {
     display: grid;
-    grid-template-columns: repeat(5, 2rem);
-    grid-template-rows: repeat(5, 2rem);
-    gap: 5px;
-    margin: 20px 0;
+    grid-template-columns: repeat(5, 1.8rem);
+    grid-template-rows: repeat(5, 1.8rem);
+    gap: 4px;
+    margin: 1rem 0;
+
+    @media (min-width: 769px) {
+      grid-template-columns: repeat(5, 2rem);
+      grid-template-rows: repeat(5, 2rem);
+      gap: 5px;
+      margin: 20px 0;
+    }
   }
 
   .mine-cell {
@@ -133,17 +150,24 @@ onMounted(() => {
     justify-content: center;
     align-items: center;
     position: relative;
-    width: 2rem;
-    height: 2rem;
+    width: 1.8rem;
+    height: 1.8rem;
     border: 2px solid var(--border-color);
-    border-radius: 5px;
-    font-size: 1.2rem;
+    border-radius: 4px;
+    font-size: 1rem;
     background-color: var(--bg-cell-color);
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center;
     cursor: pointer;
     transition: all 0.3s ease;
+
+    @media (min-width: 769px) {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 5px;
+      font-size: 1.2rem;
+    }
 
     &.revealed {
       background-color: var(--bg-cell-color-revealed);
@@ -202,22 +226,37 @@ onMounted(() => {
   .buttons {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.8rem;
+    width: 100%;
+    max-width: 280px;
+
+    @media (min-width: 769px) {
+      gap: 1rem;
+      max-width: 320px;
+    }
   }
 
   /* 按钮样式 */
   .btn {
-    padding: .5rem 2rem;
-    font-size: 1.5rem;
+    padding: 0.6rem 1.5rem;
+    font-size: 1.2rem;
     color: var(--white);
     background: var(--bg-cell-color-flag);
     border: 2px solid var(--border-color);
-    border-radius: 0.2rem;
+    border-radius: 0.3rem;
     cursor: pointer;
     transition: all 0.3s ease;
     text-shadow: 0 0 5px var(--border-color);
     position: relative;
     overflow: hidden;
+    width: 100%;
+    text-align: center;
+
+    @media (min-width: 769px) {
+      padding: .5rem 2rem;
+      font-size: 1.5rem;
+      border-radius: 0.2rem;
+    }
 
     &::before {
       content: '';
@@ -235,11 +274,19 @@ onMounted(() => {
     &:hover {
       background: var(--bg-cell-color-flag);
       box-shadow: 0 0 15px var(--border-color), 0 0 30px var(--border-color);
-      transform: translateY(-5px);
+      transform: translateY(-3px);
+
+      @media (min-width: 769px) {
+        transform: translateY(-5px);
+      }
 
       &::before {
         transform: translate(-50%, -50%) scale(1);
       }
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 }

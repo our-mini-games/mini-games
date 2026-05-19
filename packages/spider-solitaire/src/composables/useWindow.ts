@@ -15,15 +15,20 @@ export const useWindow = (): ComputedRef<WindowSize> => {
 
   const solitaireSize = computed(() => {
     // 纸牌宽高比 5:7
+    const isMobile = width.value < 768
+
+    // 移动端使用更大的触摸目标
+    const scaleFactor = isMobile ? 1.2 : 1
+
     return {
-      width: resolutionWidth * 180 / defaultViewBoxWidth,
-      height: resolutionWidth * 252 / defaultViewBoxWidth,
+      width: resolutionWidth * 180 / defaultViewBoxWidth * scaleFactor,
+      height: resolutionWidth * 252 / defaultViewBoxWidth * scaleFactor,
       radius: resolutionWidth * 16 / defaultViewBoxWidth,
 
-      // 字体大小
+      // 字体大小 - 移动端使用更大的字体
       font: {
-        textLength: resolutionWidth * 24 / defaultViewBoxWidth,
-        size: resolutionWidth * 36 / defaultViewBoxWidth
+        textLength: resolutionWidth * 24 / defaultViewBoxWidth * scaleFactor,
+        size: resolutionWidth * 36 / defaultViewBoxWidth * scaleFactor
       },
       fontMargin: {
         top: resolutionWidth * 8 / defaultViewBoxWidth,
@@ -57,11 +62,11 @@ export const useWindow = (): ComputedRef<WindowSize> => {
 
       // 图案大小
       patternSize: {
-        sm: resolutionWidth * 24 / defaultViewBoxWidth,
-        md: resolutionWidth * 36 / defaultViewBoxWidth,
-        lg: resolutionWidth * 44 / defaultViewBoxWidth,
-        xl: resolutionWidth * 64 / defaultViewBoxWidth,
-        xxl: resolutionWidth * 128 / defaultViewBoxWidth
+        sm: resolutionWidth * 24 / defaultViewBoxWidth * scaleFactor,
+        md: resolutionWidth * 36 / defaultViewBoxWidth * scaleFactor,
+        lg: resolutionWidth * 44 / defaultViewBoxWidth * scaleFactor,
+        xl: resolutionWidth * 64 / defaultViewBoxWidth * scaleFactor,
+        xxl: resolutionWidth * 128 / defaultViewBoxWidth * scaleFactor
       },
 
       get patternGaps () {
@@ -92,10 +97,16 @@ export const useWindow = (): ComputedRef<WindowSize> => {
 
   const activeAreaSize = computed(() => {
     const w = Math.floor(viewBoxWidth.value - padding.value.left * 2)
+    const isMobile = width.value < 768
+
+    // 移动端使用更小的间隙以节省空间
+    const gap = Math.floor((w - (10 * solitaireSize.value.width)) / (10 - 1))
+    const adjustedGap = isMobile ? Math.max(gap, 2) : gap
+
     return {
       width: w,
       height: Math.floor(viewBoxHeight.value - padding.value.top * 2 - solitaireSize.value.height),
-      gap: Math.floor((w - (10 * solitaireSize.value.width)) / (10 - 1))
+      gap: adjustedGap
     }
   })
 
@@ -124,14 +135,16 @@ export const useWindow = (): ComputedRef<WindowSize> => {
     }
   })
 
-  // 未开启的牌叠加间隙
+  // 未开启的牌叠加间隙 - 移动端使用更小的间隙以节省空间
   const unopenedGroupGap = computed(() => {
-    return Math.floor(viewBoxHeight.value * 0.015)
+    const isMobile = width.value < 768
+    return Math.floor(viewBoxHeight.value * (isMobile ? 0.012 : 0.015))
   })
 
-  // 已开启的牌叠加间隙
+  // 已开启的牌叠加间隙 - 移动端使用更小的间隙以节省空间
   const openedGroupGap = computed(() => {
-    return Math.floor(viewBoxHeight.value * 0.03)
+    const isMobile = width.value < 768
+    return Math.floor(viewBoxHeight.value * (isMobile ? 0.025 : 0.03))
   })
 
   const handleResize = (): void => {

@@ -5,6 +5,9 @@ import { countMines, isLeftButton, isRightButton } from '../lib/utils.js'
 interface EventReturnType {
   handleMousedown: (item: Box, e: MouseEvent) => void
   handleMouseup: (item: Box, e: MouseEvent) => void
+  handleTouchstart: (item: Box, e: TouchEvent) => void
+  handleTouchend: (item: Box, e: TouchEvent) => void
+  handleTouchmove: (item: Box, e: TouchEvent) => void
 }
 
 export default (
@@ -27,12 +30,24 @@ export default (
 
   let isPause = false
 
+  // 移动端长按检测
+  let touchTimer: number | null = null
+  let touchStartPos = { x: 0, y: 0 }
+  let isLongPress = false
+  const LONG_PRESS_DURATION = 500 // 长按时间阈值（毫秒）
+  const TOUCH_MOVE_THRESHOLD = 10 // 触摸移动阈值（像素）
+
   onMounted(() => {
     document.addEventListener('mouseup', handleDocumentMouseup)
+    document.addEventListener('touchend', handleDocumentTouchend)
+    document.addEventListener('touchcancel', handleDocumentTouchend)
   })
 
   onBeforeUnmount(() => {
     document.removeEventListener('mouseup', handleDocumentMouseup)
+    document.removeEventListener('touchend', handleDocumentTouchend)
+    document.removeEventListener('touchcancel', handleDocumentTouchend)
+    clearTouchTimer()
   })
 
   const setClickTimes = (val: number): void => {
@@ -91,6 +106,47 @@ export default (
         box.status = 'default'
       }
     })
+  }
+
+  // 清除长按定时器
+  const clearTouchTimer = (): void => {
+    if (touchTimer !== null) {
+      clearTimeout(touchTimer)
+      touchTimer = null
+    }
+  }
+
+  // 处理长按触发（标记旗帜）
+  const handleLongPress = (item: Box): void => {
+    if (isPause || gameStatus.value !== 'playing') {
+      return
+    }
+
+    isLongPress = true
+    clearActiveStatus()
+
+    // 长按触发标记操作
+    if (item.status !== 'open') {
+      if (useDoubtful.value) {
+        if (item.status === 'doubtful') {
+          item.status = 'marked'
+          remainingFlags.value--
+        } else if (item.status === 'marked') {
+          item.status = 'default'
+          remainingFlags.value++
+        } else {
+          item.status = 'doubtful'
+        }
+      } else {
+        if (item.status === 'marked') {
+          item.status = 'default'
+          remainingFlags.value++
+        } else {
+          item.status = 'marked'
+          remainingFlags.value--
+        }
+      }
+    }
   }
 
   // 鼠标点击
@@ -237,8 +293,96 @@ export default (
     clearActiveStatus()
   }
 
+  // 移动端触摸事件处理
+  const handleTouchstart = (item: Box, e: TouchEvent): void => {
+    if (isPause || gameStatus.value !== 'playing') {
+      return
+    }
+
+    e.preventDefault()
+    isLongPress = false
+
+    const touch = e.touches[0]
+    touchStartPos = { x: touch.clientX, y: touch.clientY }
+
+    // 设置活动状态
+    if (item.status === 'default') {
+      item.status = 'active'
+    }
+
+    // 启动长按检测定时器
+    clearTouchTimer()
+    touchTimer = window.setTimeout(() => {
+      handleLongPress(item)
+    }, LONG_PRESS_DURATION)
+  }
+
+  const handleTouchend = (item: Box, e: TouchEvent): void => {
+    if (isPause || gameStatus.value !== 'playing') {
+      return
+    }
+
+    e.preventDefault()
+    clearTouchTimer()
+
+    // 如果是长按，不执行点击操作
+    if (isLongPress) {
+      isLongPress = false
+      return
+    }
+
+    // 首次点击处理
+    if (firstClick.value) {
+      countMines(item)
+      firstClick.value = false
+    }
+
+    const { x, y, status } = item
+
+    // 执行点击操作
+    if (status === 'active' && x === cachedPos.x && y === cachedPos.y) {
+      setCurrentStatus(item, 'open')
+    } else {
+      clearActiveStatus()
+    }
+  }
+
+  const handleTouchmove = (_item: Box, e: TouchEvent): void => {
+    if (isPause || gameStatus.value !== 'playing') {
+      return
+    }
+
+    e.preventDefault()
+
+    const touch = e.touches[0]
+    const deltaX = Math.abs(touch.clientX - touchStartPos.x)
+    const deltaY = Math.abs(touch.clientY - touchStartPos.y)
+
+    // 如果移动距离超过阈值，取消长按检测
+    if (deltaX > TOUCH_MOVE_THRESHOLD || deltaY > TOUCH_MOVE_THRESHOLD) {
+      clearTouchTimer()
+      clearActiveStatus()
+      isLongPress = false
+    }
+  }
+
+  const handleDocumentTouchend = (): void => {
+    clearTouchTimer()
+    isLongPress = false
+    isPause = false
+
+    if (gameStatus.value !== 'playing') {
+      return
+    }
+
+    clearActiveStatus()
+  }
+
   return {
     handleMousedown,
-    handleMouseup
+    handleMouseup,
+    handleTouchstart,
+    handleTouchend,
+    handleTouchmove
   }
 }

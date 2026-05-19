@@ -72,24 +72,27 @@ export default (
       }
 
       const points = unitPath.setPath('LINE', { x: sourceRect.left, y: sourceRect.top }, { x: targetRect.left, y: targetRect.top })
-        .getPoints(10)
+        .getPoints(8) // 减少点数量以提升性能
         .map((point: { x: number, y: number }) => ({
           x: point.x / scale,
           y: point.y / scale
         }))
 
       return new Promise(resolve => {
+        let pointIndex = 0
+
         const run = (): void => {
-          if (points.length <= 0) {
+          if (pointIndex >= points.length) {
             stop()
             resolve()
             return
           }
 
-          const { x, y } = points.shift()!
+          const { x, y } = points[pointIndex]
           animationSolitaire.value.x = isRotate ? y : x
           animationSolitaire.value.y = isRotate ? (viewBoxHeight - windowSize.value.solitaireSize.height - x) : y
 
+          pointIndex++
           requestId = requestAnimationFrame(run)
         }
         inAnimation.value = true
@@ -141,7 +144,7 @@ export default (
         }
 
         const points = unitPath.setPath('LINE', { x: sourceRect.left, y: sourceRect.top }, { x: targetRect.left, y: targetRect.top })
-          .getPoints(10)
+          .getPoints(8) // 减少点数量以提升性能
           .map((point: { x: number, y: number }) => ({
             x: point.x / scale,
             y: point.y / scale
@@ -149,17 +152,20 @@ export default (
 
         await (async () => {
           return await new Promise(resolve => {
+            let pointIndex = 0
+
             const run = (): void => {
-              if (points.length <= 0) {
+              if (pointIndex >= points.length) {
                 stop()
                 resolve(null)
                 return
               }
 
-              const { x, y } = points.shift()!
+              const { x, y } = points[pointIndex]
               animationSolitaire.value.x = isRotate ? y : x
               animationSolitaire.value.y = isRotate ? (viewBoxHeight - windowSize.value.solitaireSize.height - x) : y
 
+              pointIndex++
               requestId = requestAnimationFrame(run)
             }
             inAnimation.value = true

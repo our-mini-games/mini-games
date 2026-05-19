@@ -9,8 +9,8 @@ export default defineConfig(({ mode }) => {
   return {
     base: env.VITE_APP_PATHNAME,
     plugins: [
-      vue(),
-      Components({
+      (vue as any)(),
+      (Components as any)({
         dts: './components.d.ts',
         resolvers: [
           AntDesignVueResolver({

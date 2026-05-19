@@ -16,6 +16,9 @@
             :transform="`translate(${(item.x - 1) * areaSize + item.x * gap}, ${(item.y - 1) * areaSize + item.y * gap})`"
             @mousedown="(e: any) => handleMousedown(item, e)"
             @mouseup="(e: any) => handleMouseup(item, e)"
+            @touchstart="(e: any) => handleTouchstart(item, e)"
+            @touchend="(e: any) => handleTouchend(item, e)"
+            @touchmove="(e: any) => handleTouchmove(item, e)"
           >
             <rect
               class="mine-cell"
@@ -108,6 +111,8 @@
         v-if="useLeftClickEnhancements"
       />
     </footer>
+    
+    <MobileHint />
   </div>
 </template>
 
@@ -120,6 +125,7 @@ import { useSize } from '../composables/useSize.js'
 import { LevelInfo, Box, GameStatus } from '../types/index.js'
 
 import PageHeader from '../components/header/index.vue'
+import MobileHint from './MobileHint.vue'
 
 import minePic from '../assets/img/mine-1.png'
 import bugPic from '../assets/img/flag-1.png'
@@ -144,7 +150,10 @@ const {
 
 const {
   handleMousedown,
-  handleMouseup
+  handleMouseup,
+  handleTouchstart,
+  handleTouchend,
+  handleTouchmove
 } = useEvent(svgRef, boxes, useDoubtful, gameStatus, remainingFlags)
 
 watch(boxes, (newBoxes) => {
@@ -161,17 +170,23 @@ watch(boxes, (newBoxes) => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   position: relative;
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0.5rem;
   height: 100%;
   user-select: none;
+
+  @media (min-width: 769px) {
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+  }
 
   .mine-sweeper-main {
     flex: 1;
     position: relative;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 
     .mine-cell {
       fill: var(--bg-cell-color);
@@ -206,7 +221,14 @@ watch(boxes, (newBoxes) => {
   }
 
   .mine-sweeper-footer {
-    height: 2.5rem;
+    height: 2rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    @media (min-width: 769px) {
+      height: 2.5rem;
+    }
   }
 }
 </style>

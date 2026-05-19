@@ -123,24 +123,38 @@ watch(gameStatus, (val) => {
   z-index: 9999;
   width: 100vw;
   height: 100vh;
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
 
   .wrapper {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 360px;
-    padding: 56px 16px 38px 16px;
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    padding: 50px 16px 30px 16px;
     background-color: #cdcee5;
     border-radius: 16px;
     box-shadow: 0 4px 16px #888;
-    transform: translate(-50%, -50%);
+
+    @media (min-width: 769px) {
+      padding: 56px 16px 38px 16px;
+    }
 
     .head-pic {
       position: absolute;
       left: 50%;
       top: 0;
-      transform: translate(-50%, -60px);
+      transform: translate(-50%, -50px);
+      width: 80px;
+      height: 80px;
+
+      @media (min-width: 769px) {
+        transform: translate(-50%, -60px);
+        width: auto;
+        height: auto;
+      }
     }
 
     .btn-close {
@@ -148,7 +162,15 @@ watch(gameStatus, (val) => {
       left: 50%;
       bottom: 0;
       cursor: pointer;
-      transform: translate(-50%, 22px);
+      transform: translate(-50%, 50%);
+      width: 36px;
+      height: 36px;
+
+      @media (min-width: 769px) {
+        transform: translate(-50%, 22px);
+        width: 44px;
+        height: 44px;
+      }
     }
 
     .level {
@@ -156,29 +178,47 @@ watch(gameStatus, (val) => {
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+
+      @media (min-width: 769px) {
+        gap: 8px;
+      }
 
       .value {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 700;
         color: #0088ff;
+
+        @media (min-width: 769px) {
+          font-size: 20px;
+        }
       }
     }
 
     .info {
       width: 90%;
-      margin: 32px auto;
-      padding: 16px;
-      border-radius: 16px;
+      margin: 24px auto;
+      padding: 12px;
+      border-radius: 12px;
       box-sizing: border-box;
       background-color: #e6e8f7;
+
+      @media (min-width: 769px) {
+        margin: 32px auto;
+        padding: 16px;
+        border-radius: 16px;
+      }
 
       .row {
         display: flex;
         align-items: center;
 
         &:not(:first-child) {
-          margin-top: 16px;
+          margin-top: 12px;
+
+          @media (min-width: 769px) {
+            margin-top: 16px;
+          }
         }
 
         > * {
@@ -187,11 +227,20 @@ watch(gameStatus, (val) => {
 
         .label {
           text-align: right;
+          font-size: 14px;
+
+          @media (min-width: 769px) {
+            font-size: 16px;
+          }
         }
 
         .value {
-          font-size: 20px;
+          font-size: 18px;
           color: #0088ff;
+
+          @media (min-width: 769px) {
+            font-size: 20px;
+          }
         }
       }
     }
@@ -200,19 +249,44 @@ watch(gameStatus, (val) => {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 32px;
+      gap: 20px;
+
+      @media (min-width: 769px) {
+        gap: 32px;
+      }
 
       .btn {
-        padding: 6px 16px;
-        border-radius: 4px;
+        padding: 8px 20px;
+        border-radius: 6px;
         border: 1px solid #f1f1f1;
         background-color: #f1f1f1;
         cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s ease;
+
+        @media (min-width: 769px) {
+          padding: 6px 16px;
+          border-radius: 4px;
+          font-size: 16px;
+        }
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
 
         &.btn-again {
           color: #fff;
           border-color: #0088ff;
           background-color: #0088ff;
+
+          &:hover {
+            background-color: #0077dd;
+          }
         }
       }
     }
