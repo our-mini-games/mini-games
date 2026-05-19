@@ -2,7 +2,7 @@
   <a-modal
     :visible="visible"
     title="游戏设置"
-    width="600px"
+    :width="modalWidth"
     centered
     :footer="null"
     @cancel="$emit('close')"
@@ -10,8 +10,8 @@
     <a-form
       :model="formState"
       name="gameSetting"
-      :label-col="{ span: 8 }"
-      :wrapper-col="{ span: 16 }"
+      :label-col="labelCol"
+      :wrapper-col="wrapperCol"
       autocomplete="off"
       @finish="onFinish"
     >
@@ -106,7 +106,7 @@
         <a-switch v-model:checked="formState.useLeftClickEnhancements" />
       </a-form-item>
 
-      <a-form-item :wrapper-col="{ span: 16, offset: 8 }">
+      <a-form-item :wrapper-col="buttonCol">
         <a-space>
           <a-button
             type="primary"
@@ -128,7 +128,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, inject } from 'vue'
+import { ref, reactive, inject, computed, onMounted, onBeforeUnmount } from 'vue'
 import { levels } from '../../config/index.js'
 import { MINE_SWEEPER_SETTING } from '../../config/constants.js'
 import { CustomSetting, LevelInfo } from '../../types/index.js'
@@ -143,6 +143,37 @@ interface FormState {
 const emit = defineEmits<(e: 'close') => void>()
 
 const visible = ref(true)
+const windowWidth = ref(window.innerWidth)
+
+const updateWindowWidth = (): void => {
+  windowWidth.value = window.innerWidth
+}
+
+onMounted(() => {
+  window.addEventListener('resize', updateWindowWidth)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateWindowWidth)
+})
+
+const modalWidth = computed(() => {
+  return windowWidth.value < 768 ? '95%' : '600px'
+})
+
+const labelCol = computed(() => {
+  return windowWidth.value < 768 ? { span: 8 } : { span: 8 }
+})
+
+const wrapperCol = computed(() => {
+  return windowWidth.value < 768 ? { span: 16 } : { span: 16 }
+})
+
+const buttonCol = computed(() => {
+  return windowWidth.value < 768 
+    ? { span: 16, offset: 8 }
+    : { span: 16, offset: 8 }
+})
 
 const currentLevel = inject('currentLevel', ref<LevelInfo['level']>(0))
 const useDoubtful = inject('useDoubtful', ref<boolean>(false))

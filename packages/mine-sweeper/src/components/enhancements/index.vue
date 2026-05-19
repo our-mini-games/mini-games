@@ -64,38 +64,62 @@ const behaviors = computed(() => <Array<{
 .enhancements-wrapper {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
+  width: 100%;
+  justify-content: center;
+
+  @media (min-width: 769px) {
+    gap: 1rem;
+  }
 
   .title {
-    width: 6em;
-    height: 2.2rem;
+    width: 5em;
+    height: 2rem;
     margin: 0;
-    padding: 0 0.5em;
-    line-height: 2.2rem;
-    font-size: 1rem;
+    padding: 0 0.3em;
+    line-height: 2rem;
+    font-size: 0.85rem;
     text-align: center;
     color: var(--white);
     background-color: var(--bg-cell-color);
     border-radius: 0.25rem;
     box-sizing: border-box;
+
+    @media (min-width: 769px) {
+      width: 6em;
+      height: 2.2rem;
+      line-height: 2.2rem;
+      font-size: 1rem;
+      padding: 0 0.5em;
+    }
   }
 
   .behaviors {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
     min-width: 0;
     flex: 1;
+    justify-content: center;
+
+    @media (min-width: 769px) {
+      gap: 0.5rem;
+    }
 
     .item {
-      width: 2.2rem;
-      height: 2.2rem;
+      width: 2rem;
+      height: 2rem;
       border: 1px solid var(--bg-color-1);
       background-color: var(--bg-cell-color-revealed);
       background-size: cover;
       background-position: center;
       border-radius: 0.25rem;
       cursor: pointer;
+
+      @media (min-width: 769px) {
+        width: 2.2rem;
+        height: 2.2rem;
+      }
 
       &:hover {
         border-color: var(--white);
