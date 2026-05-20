@@ -84,10 +84,15 @@ export const useGameConfig = (): {
 
   onMounted(() => {
     handleResize()
+    window.addEventListener('resize', handleResize)
     try {
       currentLevel.value = JSON.parse(localStorage.getItem(LINK_GAME_LEVEL) ?? '0')
     } catch {}
     isInitialized.value = true
+  })
+
+  onUnmounted(() => {
+    window.removeEventListener('resize', handleResize)
   })
 
   return {
