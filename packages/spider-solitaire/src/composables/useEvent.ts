@@ -93,11 +93,11 @@ export default (
     const translateX = (x - startPosition.left) / windowSize.value.scale
     const translateY = (y - startPosition.top) / windowSize.value.scale
 
-    // 使用transform3d启用硬件加速，并批量更新样式
-    const transformValue = `translate3d(${translateX}px, ${translateY}px, 0)`
+    // 使用 SVG transform 属性，比 CSS transform 在 SVG 元素上更可靠
+    const transformValue = `translate(${translateX}, ${translateY})`
 
     movingSolitaireRef.value.forEach(target => {
-      target.style.transform = transformValue
+      target.setAttribute('transform', transformValue)
     })
   }
 
@@ -108,6 +108,17 @@ export default (
 
     // 获取鼠标最后所在位置是否在牌组区域（每组牌最后一张的位置）
     const dropTargets = document.querySelectorAll<SVGAElement>(`.${dropTargetClassName}`)
+
+    // 防止 Vue 尚未更新 DOM 时 ref 为空
+    if (!movingSolitaireRef.value[0]) {
+      movingGroup.value.source.push(...movingGroup.value.solitaires)
+      movingGroup.value.source = []
+      movingGroup.value.solitaires = []
+      isDragging.value = false
+      validTargets.value = []
+      return
+    }
+
     const movingRect = movingSolitaireRef.value[0].getBoundingClientRect()
 
     let isDrop = false
@@ -117,7 +128,7 @@ export default (
     for (const targetIndex of validTargets.value) {
       const intersectionRate = getIntersectionRate(movingRect, dropTargets[targetIndex].getBoundingClientRect())
 
-      if (intersectionRate > 0.4) {
+      if (intersectionRate > 0.2) {
         dropIt(targetIndex, sourceIdx, movingGroup.value.solitaires)
         isDrop = true
 
@@ -163,12 +174,12 @@ export default (
       if (e.target.matches('.active-solitaire')) {
         const index = Number(e.target.dataset.index!)
         const subIndex = Number(e.target.dataset.subIndex!)
-        handleDragStart(e.deltaX, e.deltaY, activeGroup.value[index], subIndex)
+        handleDragStart(e.center.x, e.center.y, activeGroup.value[index], subIndex)
       }
     })
     mc.on('panmove', (e: HammerInput) => {
-      lastClientX = e.deltaX
-      lastClientY = e.deltaY
+      lastClientX = e.center.x
+      lastClientY = e.center.y
 
       if (rafId === null) {
         rafId = requestAnimationFrame(() => {
