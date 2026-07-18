@@ -24,6 +24,25 @@
       </a-button>
     </header>
 
+    <div class="mode-selector">
+      <a-radio-group v-model:value="gameMode" button-style="solid">
+        <a-radio-button value="pvp">人人对战</a-radio-button>
+        <a-radio-button value="pve">人机对战</a-radio-button>
+      </a-radio-group>
+
+      <template v-if="gameMode === 'pve'">
+        <a-select v-model:value="difficulty" style="width: 120px">
+          <a-select-option value="easy">简单</a-select-option>
+          <a-select-option value="medium">中等</a-select-option>
+          <a-select-option value="hard">困难</a-select-option>
+        </a-select>
+      </template>
+    </div>
+
+    <div v-if="aiThinking" class="ai-thinking">
+      <a-spin /> AI 思考中...
+    </div>
+
     <div ref="offlineMainRef" class="offline-game-container"></div>
 
     <drawer
@@ -51,9 +70,10 @@
 </template>
 
 <script setup lang="ts">
-import { GameMode, colorMapper } from '@/definitions/index.js'
+import { GameMode, colorMapper } from '@/definitions/index'
 import { message } from 'ant-design-vue'
 import { Camp, createServer, createGameInterface, GameContext, GameStatus, switchCamp } from 'chinese-chess-service'
+import { ChessAI, type AIDifficulty } from '@/libs/AI'
 
 import Drawer from '@/components/Drawer.vue'
 
@@ -63,15 +83,40 @@ const resources = inject('resources', ref<any>({}))
 const offlineMainRef = ref<HTMLElement | null>(null)
 const manualDrawerVisible = ref(false)
 
+// AI 相关状态
+const gameMode = ref<'pvp' | 'pve'>('pvp')
+const difficulty = ref<AIDifficulty>('medium')
+const aiThinking = ref(false)
+const ai = ref<ChessAI | null>(null)
+
 const server = createServer()
 const context = ref<GameContext | null>(null)
 const gameInterface = ref<ReturnType<typeof createGameInterface> | null>(null)
 
 const user1 = { id: '1', nickname: '用户A', firstCamp: Camp.RED, isReady: false }
-const user2 = { id: '2', nickname: '用户B', firstCamp: Camp.RED, isReady: false }
+const user2 = { id: '2', nickname: '用户B', firstCamp: Camp.BLACK, isReady: false }
 
 server.join(user1)
 server.join(user2)
+
+// 监听游戏模式变化，初始化 AI
+watch(gameMode, (newMode) => {
+  if (newMode === 'pve') {
+    ai.value = new ChessAI(difficulty.value, Camp.BLACK)
+    handleRestart()
+  } else {
+    ai.value = null
+    handleRestart()
+  }
+})
+
+// 监听难度变化，重新初始化 AI
+watch(difficulty, (newDifficulty) => {
+  if (gameMode.value === 'pve') {
+    ai.value = new ChessAI(newDifficulty, Camp.BLACK)
+    handleRestart()
+  }
+})
 
 onMounted(() => {
   if (offlineMainRef.value) {
@@ -83,6 +128,10 @@ onMounted(() => {
     gameInterface.value.mount(offlineMainRef.value as any)
 
     gameInterface.value.mainCanvas.addEventListener('click', (e) => {
+      // 如果是 AI 回合或 AI 正在思考，不允许点击
+      if (gameMode.value === 'pve' && (server.context.currentCamp === Camp.BLACK || aiThinking.value)) {
+        return
+      }
       server.moveOrSelect(server.context.players![server.context.currentCamp]!, gameInterface.value!.getPointer(e))
     })
 
@@ -149,10 +198,41 @@ const handleContextChange = (value: GameContext) => {
     }
 
     if (context.value.status === GameStatus.Finished) {
-      // message.destroy()
       console.log(context.value.manual)
       message.info('游戏结束')
     }
+
+    // AI 走棋逻辑
+    if (gameMode.value === 'pve' && context.value.currentCamp === Camp.BLACK && context.value.status === GameStatus.Playing) {
+      triggerAIMove()
+    }
+  }
+}
+
+const triggerAIMove = async () => {
+  if (!ai.value || aiThinking.value) return
+
+  aiThinking.value = true
+
+  // 使用 setTimeout 让 UI 有时间更新
+  await new Promise(resolve => setTimeout(resolve, 100))
+
+  try {
+    const move = ai.value.getBestMove({
+      ...context.value,
+      server,
+    })
+
+    if (move) {
+      // 模拟 AI 点击起点
+      server.moveOrSelect(user2, { x: move.from.x, y: move.from.y })
+      // 模拟 AI 点击终点
+      server.moveOrSelect(user2, { x: move.to.x, y: move.to.y })
+    }
+  } catch (error) {
+    console.error('AI move error:', error)
+  } finally {
+    aiThinking.value = false
   }
 }
 const runAnimation = (name: string) => {
@@ -182,6 +262,11 @@ const runTips = (content: string) => {
 }
 
 const handleRestart = () => {
+  // 如果是人机模式，初始化 AI
+  if (gameMode.value === 'pve') {
+    ai.value = new ChessAI(difficulty.value, Camp.BLACK)
+  }
+
   server.readyOrCancelReady(user1, true)
   server.readyOrCancelReady(user2, true)
   server.restart()
@@ -217,6 +302,22 @@ const handleBack = (): void => {
     .btn-restart {
       margin-left: auto
     }
+  }
+
+  .mode-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .ai-thinking {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #666;
   }
 
   .offline-game-container {
