@@ -4,40 +4,34 @@
       <button
         v-for="item of dirKeys"
         :key="item.value"
-        class="arcade-button key-item"
-        :aria-label="item.label"
-        :disabled="operatingDisabled"
+        class="keydown-shadow key-item "
+        :data-label="item.label"
         :data-key="item.value"
         :class="item.value.toLowerCase()"
       >
-        {{ item.symbol }}
+        <span class="key"></span>
       </button>
     </div>
 
+    <VolumeArea />
+
     <button
       data-key="Space"
-      :disabled="operatingDisabled"
-      class="arcade-button big-key"
-      :class="{ 'arcade-button--primary': !operatingDisabled }"
+      class="keydown-shadow big-key"
     >
-      确认 / 旋转
+      <span class="key"></span>
     </button>
   </section>
 </template>
 
 <script setup lang="ts">
-import { GameStatus } from '../../config/index.js'
-
-const gameStatus = inject('gameStatus', ref(GameStatus.PowerOff))
-const operatingDisabled = computed(() =>
-  gameStatus.value === GameStatus.PowerOff || gameStatus.value === GameStatus.Paused
-)
+import VolumeArea from './VolumeArea.vue'
 
 const dirKeys = [
-  { label: '置底', value: 'ArrowUp', symbol: '↑' },
-  { label: '左移', value: 'ArrowLeft', symbol: '←' },
-  { label: '右移', value: 'ArrowRight', symbol: '→' },
-  { label: '加速', value: 'ArrowDown', symbol: '↓' }
+  { label: '置底', value: 'ArrowUp' },
+  { label: '左移', value: 'ArrowLeft' },
+  { label: '右移', value: 'ArrowRight' },
+  { label: '加速', value: 'ArrowDown' }
 ]
 </script>
 
@@ -46,26 +40,111 @@ const dirKeys = [
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+
+  .keydown-shadow:active .key {
+    transform: translate(2px, 2px);
+    box-shadow: none
+  }
 }
 
 .dir-keys {
-  display: grid;
-  grid-template-columns: repeat(3, 38px);
-  gap: 4px;
-}
+  position: relative;
+  width: 105px;
+  min-width: 105px;
+  height: 120px;
 
-.key-item {
-  padding: 0;
-  font-size: 19px;
-}
+  .key-item {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: none;
+    color: var(--desc-text);
 
-.arrowup { grid-column: 2; }
-.arrowleft { grid-area: 2 / 1; }
-.arrowright { grid-area: 2 / 3; }
-.arrowdown { grid-area: 2 / 2; }
+    &.arrowup,
+    &.arrowdown {
+      display: block;
+      margin: 0 auto;
+    }
+
+    &.arrowright {
+      float: left;
+    }
+
+    &.arrowright {
+      float: right;
+    }
+
+    &.arrowdown {
+      margin-top: -4px
+    }
+
+    .key {
+      display: inline-block;
+      position: relative;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: var(--key-color);
+      border: 1px solid var(--key-color-dark);
+      // border-bottom-width: 2px;
+      // border-right-width: 2px;
+      // box-shadow: -4px -4px 8px var(--shadow-color-light),
+      //   4px 4px 8px var(--shadow-color-dark);
+      box-shadow: 2px 2px 0 var(--key-color-dark);
+      pointer-events: none;
+    }
+
+    &::after {
+      content: attr(data-label);
+      display: block;
+      transform: scale(.7) translate(2px, -2px);
+      font-size: 12px;
+    }
+  }
+}
 
 .big-key {
-  flex: 1;
+  border: none;
+  background: none;
+
+  .key {
+    display: block;
+    position: relative;
+    width: 72px;
+    height: 72px;
+    border: 1px solid var(--big-key-color-dark);
+    // border-bottom-width: 3px;
+    // border-right-width: 3px;
+    border-radius: 50%;
+    background-color: var(--big-key-color);
+    box-shadow: 2px 2px 0 var(--big-key-color-dark);
+    pointer-events: none;
+
+    // &::before {
+    //   content: '';
+    //   position: absolute;
+    //   left: 10px;
+    //   top: 14px;
+    //   width: 6px;
+    //   height: 12px;
+    //   border-radius: 50%;
+    //   background-color: #ffffffc7;
+    //   transform-origin: center;
+    //   transform: rotate(25deg);
+    // }
+    // &::after {
+    //   content: '';
+    //   position: absolute;
+    //   left: 8px;
+    //   top: 30px;
+    //   width: 6px;
+    //   height: 20px;
+    //   border-radius: 50%;
+    //   background-color: #ffffffc7;
+    //   transform-origin: center;
+    //   transform: rotate(-15deg);
+    // }
+  }
 }
 </style>

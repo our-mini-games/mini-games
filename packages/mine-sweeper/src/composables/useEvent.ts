@@ -58,6 +58,11 @@ export default (
   const setCurrentStatus = (item: Box, status: BoxStatus): void => {
     isPause = true
 
+    if (status === 'open' && firstClick.value) {
+      countMines(item)
+      firstClick.value = false
+    }
+
     item.status = status
 
     // 开启元素时，遇到空格子递归开启周边元素
@@ -182,11 +187,6 @@ export default (
     e.preventDefault()
     e.stopPropagation()
 
-    if (firstClick.value) {
-      countMines(item)
-      firstClick.value = false
-    }
-
     if (isPause || gameStatus.value !== 'playing') {
       return
     }
@@ -304,6 +304,7 @@ export default (
 
     const touch = e.touches[0]
     touchStartPos = { x: touch.clientX, y: touch.clientY }
+    cachedPos = { x: item.x, y: item.y }
 
     // 设置活动状态
     if (item.status === 'default') {
@@ -329,12 +330,6 @@ export default (
     if (isLongPress) {
       isLongPress = false
       return
-    }
-
-    // 首次点击处理
-    if (firstClick.value) {
-      countMines(item)
-      firstClick.value = false
     }
 
     const { x, y, status } = item

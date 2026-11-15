@@ -30,7 +30,7 @@ import useAudio from './composables/useAudio.js'
 import useFinalTips from './composables/useFinalTips.js'
 import useEvent from './composables/useEvent.js'
 import useNextType from './composables/useNextType.js'
-const statusText = ref('游戏中')
+const statusText = ref('Hello world')
 
 const audio = useAudio()
 
@@ -138,7 +138,7 @@ const {
 watch(gameStatus, (newStatus, oldStatus) => {
   switch (newStatus) {
     case GameStatus.Finished:
-      statusText.value = '游戏结束'
+      statusText.value = 'Game Over'
       finisedAnimation(() => { currentTetris.value = null })
       break
     case GameStatus.Playing:
@@ -147,14 +147,14 @@ watch(gameStatus, (newStatus, oldStatus) => {
         setScore() // 重置计分
         startup()
       }
-      statusText.value = '游戏中'
+      statusText.value = 'Hello world'
       break
     case GameStatus.Paused:
-      statusText.value = '已暂停'
+      statusText.value = 'Paused'
       break
     case GameStatus.ChooseMode:
       currentTetris.value = null
-      statusText.value = '选择模式'
+      statusText.value = 'Choose Mode'
       modeAnimation()
       break
     case GameStatus.PowerOff:
@@ -193,7 +193,6 @@ provide('statusText', statusText)
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100svh;
-  padding: 12px;
+  height: 100%;
 }
 </style>

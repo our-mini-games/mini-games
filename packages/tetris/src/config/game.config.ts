@@ -6,9 +6,9 @@ export const wrapperSize = {
 export const itemSize = 12
 
 export const color = {
-  bg: '#284638',
-  item: 'var(--arcade-gold)',
-  final: '#758e75'
+  bg: 'rgba(188, 188, 188, 0.365)',
+  item: '#333',
+  final: 'rgba(188, 188, 188, 0.5)'
 }
 
 export const defaultLevel = 1
