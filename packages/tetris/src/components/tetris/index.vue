@@ -1,9 +1,58 @@
 <template>
   <section class="tetris-container">
     <SVGDefs />
-    <p v-if="gameStatus === GameStatus.PowerOff" class="off-screen">按开机键开始</p>
-    <TetrisMain v-if="gameStatus !== GameStatus.PowerOff" />
-    <TetrisAside v-if="gameStatus !== GameStatus.PowerOff" />
+
+    <div class="ornamental ornamental-left">
+      <img
+        src="https://avatars.githubusercontent.com/u/39545747?v=4"
+        width="36"
+        height="36"
+        class="avatar"
+      />
+      <img
+        src="https://avatars.githubusercontent.com/u/47918504?v=4"
+        width="36"
+        height="36"
+        class="avatar"
+      />
+      <img
+        src="https://avatars.githubusercontent.com/u/71477878?v=4"
+        width="36"
+        height="36"
+        class="avatar"
+      />
+    </div>
+
+    <TetrisMain v-if="(gameStatus !== GameStatus.PowerOff)" />
+
+    <div class="ornamental ornamental-right">
+      <svg
+        width="54"
+        height="220"
+      >
+        <g name="ornamental-tetris">
+          <g
+            v-for="(tetris, index) of ornamentalTetrisList"
+            :key="index"
+          >
+            <g
+              v-for="item of tetris"
+              :key="`${item.x}-${item.y}`"
+            >
+              <use
+                :x="item.x * itemSize"
+                :y="item.y * itemSize + index * (5 * itemSize)"
+                :fill="color.item"
+                :stroke="color.item"
+                xlink:href="#tetris-item"
+              />
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <TetrisAside v-if="(gameStatus !== GameStatus.PowerOff)" />
   </section>
 </template>
 
@@ -11,23 +60,81 @@
 import TetrisMain from './Main.vue'
 import TetrisAside from './Aside.vue'
 import SVGDefs from './Defs.vue'
-import { GameStatus } from '../../config/index.js'
+
+import { color, GameStatus, itemSize } from '../../config/index.js'
+import { Coordinate } from '../../types/index.js'
 
 const gameStatus = inject('gameStatus', ref(GameStatus.PowerOff))
+
+const ornamentalTetrisList: Coordinate[][] = [
+  [
+    { x: 2, y: 0 },
+    { x: 2, y: 1 },
+    { x: 2, y: 2 },
+    { x: 2, y: 3 }
+  ],
+
+  [
+    { x: 1, y: 0 },
+    { x: 2, y: 0 },
+    { x: 2, y: 1 },
+    { x: 2, y: 2 }
+  ],
+
+  [
+    { x: 1, y: 0 },
+    { x: 1, y: 1 },
+    { x: 2, y: 1 },
+    { x: 2, y: 2 }
+  ],
+
+  [
+    { x: 1, y: 0 },
+    { x: 1, y: 1 },
+    { x: 2, y: 1 },
+    { x: 1, y: 2 }
+  ]
+]
+
 </script>
 
 <style lang="scss" scoped>
 .tetris-container {
   display: inline-flex;
-  gap: 12px;
-  width: min(100%, calc(var(--tetris-field-width) + 110px));
-  min-height: calc(var(--tetris-field-width) * 2);
-  text-align: left;
-}
+  position: relative;
+  // border: 1px solid #333;
+  // border-radius: 12px;
+  border-width: 16px;
+  border-style: solid;
+  border-color: #f1f1f1 #fff #f3f3f3 #eaeaea;
+  margin: 16px 0;
+  padding-right: 3px;
+  width: 222px;
+  height: 276px;
+  outline: 1px solid #333;
+  outline-offset: -16px;
 
-.off-screen {
-  margin: auto;
-  color: var(--arcade-muted);
-  font-size: 14px;
+  .ornamental {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    width: 54px;
+    height: 240px;
+
+    &.ornamental-left {
+      left: -70px;
+
+      .avatar {
+        border-radius: 4px;
+      }
+    }
+
+    &.ornamental-right {
+      right: -70px;
+    }
+  }
 }
 </style>

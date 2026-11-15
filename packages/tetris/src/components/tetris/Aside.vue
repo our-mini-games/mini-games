@@ -5,7 +5,7 @@
     </h2>
 
     <section class="wrapper next-wrapper">
-      <h3 class="title">预览</h3>
+      <h3 class="title">Next</h3>
       <svg
         class="next-svg"
         :width="svgSize"
@@ -47,7 +47,7 @@
 
     <section class="wrapper level-wrapper">
       <h3 class="title">
-        等级
+        Level
       </h3>
       <div class="value">
         {{ theLevel }}
@@ -56,7 +56,7 @@
 
     <section class="wrapper score-wrapper">
       <h3 class="title">
-        得分
+        Score
       </h3>
       <div class="value">
         {{ score }}
@@ -65,7 +65,7 @@
 
     <section class="wrapper hi-score-wrapper">
       <h3 class="title">
-        最高分
+        Hi-Score
       </h3>
       <div class="value">
         {{ highScore }}
@@ -81,13 +81,16 @@ import { Tetris } from '../../types/index.js'
 
 const svgSize = itemSize * wrapperSize.column / 2
 
+const asideWidth = `${svgSize + 3}px`
+const asideHeight = `${wrapperSize.row * itemSize + 3}px`
+
 const nextTetris = inject<Ref<Tetris | undefined>>('nextTetris')!
 const score = inject('score', ref(0))
 const highScore = inject('highScore', ref(0))
 const initialLevel = inject('initialLevel', ref(0))
 const level = inject('level', ref(0))
 const gameStatus = inject('gameStatus', ref(GameStatus.PowerOff))
-const statusText = inject('statusText', ref('游戏中'))
+const statusText = inject('statusText', ref('Hello world'))
 
 const nextTetrisCoordinates = computed(() => nextTetris.value ? nextTetris.value.coordinates : [])
 
@@ -116,9 +119,10 @@ const offset = computed(() => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  flex: 1;
-  min-width: 68px;
-  padding: 4px;
+  width: v-bind(asideWidth);
+  height: v-bind(asideHeight);
+  padding: 2px;
+  border-left: 1px solid #333;
   line-height: 1;
 
   .hello {
@@ -126,34 +130,28 @@ const offset = computed(() => {
     align-items: center;
     justify-content: center;
     height: 32px;
-    font-size: 13px;
+    font-size: 12px;
     text-align: center;
-    border: 1px solid var(--arcade-line);
-    border-radius: var(--arcade-radius);
-    background: var(--arcade-slot);
-    color: var(--arcade-jade);
   }
 
   .wrapper {
     margin-top: 2px;
-    color: var(--arcade-text);
+    color: #333;
 
     &:not(.next-wrapper) {
-      padding: 5px 7px 0;
-      border-top: 1px solid var(--arcade-line);
+      text-align: right;
     }
 
     .title {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       font-size: 12px;
-      color: var(--arcade-muted);
+      color: #888;
     }
 
     .value {
       padding: 4px 0;
-      font-size: 17px;
+      font-size: 14px;
       font-weight: 700;
-      color: var(--arcade-gold);
     }
   }
 }
