@@ -26,17 +26,12 @@ export const getBoxes = async (levelInfo: LevelInfo): Promise<Box[]> => {
 
   // 深拷贝一份数据用于全解测试
   if (!fullSolutionTest(cloneDeep(boxes), levelInfo)) {
-    // eslint-disable-next-line no-console
-    console.log('%c生成游戏失败', 'color: #f40')
-    // eslint-disable-return-await
     boxes = await new Promise((resolve) => {
       setTimeout(() => {
         resolve(getBoxes(levelInfo))
       })
     })
   }
-  // eslint-disable-next-line no-console
-  console.log('%c生成游戏成功，%c祝你游戏愉快', 'color: #10b20a; font-size: 20px; font-weight: 700', 'color: #333')
   return boxes
 }
 
@@ -178,11 +173,6 @@ export const getSize = (row: number, column: number, width: number, height: numb
 
   const min = Math.min(w, h)
   const max = Math.max(w, h)
-
-  console.log({
-    min,
-    max
-  })
 
   if (min === max) {
     return min
