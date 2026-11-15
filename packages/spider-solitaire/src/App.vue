@@ -4,6 +4,7 @@
   }">
     <GameWrapper />
   </div>
+  <p v-if="windowSize.isRotate" class="orientation-hint">横屏游玩更方便</p>
 </template>
 
 <script setup lang="ts">
@@ -22,3 +23,19 @@ nextTick(() => {
 </script>
 
 <style src="./assets/reset.scss"></style>
+
+<style scoped>
+.orientation-hint {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--arcade-well);
+  color: var(--arcade-muted);
+  font-size: 13px;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+</style>

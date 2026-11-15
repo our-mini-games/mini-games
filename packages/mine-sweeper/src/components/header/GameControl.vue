@@ -7,9 +7,7 @@
       class="btn game-control"
       @click="handleClick"
     >
-      <template #icon>
-        <PlayCircleFilled class="icon" />
-      </template>
+      {{ title }}
     </a-button>
   </a-tooltip>
 </template>
@@ -40,8 +38,7 @@ const handleClick = (): void => {
 </script>
 
 <style lang="scss" scoped>
-.game-control .icon {
-  font-size: 1.2rem;
-  color: var(--primary-color);
+.game-control {
+  white-space: nowrap;
 }
 </style>

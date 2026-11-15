@@ -10,30 +10,14 @@ html {
     font-size: 4vw;
   }
 
-  --primary-color: #0088ff;
-  --primary-color-hover: rgba(0, 136, 255, 0.8);
-  --primary-text-color: #333;
-  --secondary-text-color: #666;
-  --tertiary-text-color: #999;
-
-  --border-color: #f1f1f1;
-  --disabled-color: #e1e1e1;
-
-  --shadow-color: #888;
-  --finished-color-bg: #cdcee5;
-
-  --white: #fff;
-  --black: #000;
-  --red: #f40;
-  --green: #4CAF50;
-  --green-hover: #45a049;
-  --orange: #ff9800;
-  --orange-hover: #fb8c00;
-}
-
-body {
-  font-size: 1rem !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --primary-color: var(--arcade-gold);
+  --primary-text-color: var(--arcade-text);
+  --secondary-text-color: var(--arcade-muted);
+  --border-color: var(--arcade-line);
+  --disabled-color: var(--arcade-muted);
+  --finished-color-bg: var(--arcade-panel);
+  --white: var(--arcade-text);
+  --red: var(--arcade-danger);
 }
 
 html,

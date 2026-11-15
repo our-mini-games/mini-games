@@ -1,19 +1,19 @@
 <template>
   <header class="header">
-    <h1 class="title">
-      Hello world
+    <h1 class="title arcade-title">
+      2048
     </h1>
 
     <div class="operations">
       <button
-        class="btn btn-back"
+        class="arcade-button"
         @click="handleBack"
       >
         返回
       </button>
 
       <button
-        class="btn btn-again"
+        class="arcade-button arcade-button--primary"
         @click="handleAgain"
       >
         重新开始
@@ -41,31 +41,17 @@ const handleBack = (): void => {
 
 <style lang="scss" scoped>
 .header {
-  .title {
-    text-align: center;
-    color: #fff;
-  }
+  text-align: center;
+}
 
-  .operations {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 32px;
-    margin-top: 16px;
+.title {
+  font-size: clamp(48px, 10vw, 80px);
+}
 
-    .btn {
-      padding: 8px 32px;
-      color: #f1f1f1;
-      font-size: 16px;
-      border-radius: 4px;
-      border: 1px solid #f1f1f1;
-      background-color: transparent;
-
-      &.btn-again {
-        border-color: #6de9dd;
-        background-color: #6de9dd;
-      }
-    }
-  }
+.operations {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
 }
 </style>

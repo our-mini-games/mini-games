@@ -1,13 +1,13 @@
 <template>
   <div class="complete-modal">
-    <div class="complete-modal-container">
+    <div class="complete-modal-container arcade-panel arcade-dialog">
       <h2 class="complete-modal-title">{{ isAllCompleted ? '恭喜你完成了所有关卡！' : '恭喜你完成了当前关卡！' }}</h2>
 
       <footer class="complete-modal-footer">
-        <button class="btn btn-close" @click="handleClose">
+        <button class="arcade-button" @click="handleClose">
           知道了
         </button>
-        <button class="btn btn-next" @click="handleNext">
+        <button class="arcade-button arcade-button--primary" @click="handleNext">
           {{ isAllCompleted ? '重新开始' : '下一关' }}
         </button>
       </footer>
@@ -52,7 +52,8 @@ const handleNext = (): void => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.05);
+  background: var(--arcade-scrim);
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -60,53 +61,20 @@ const handleNext = (): void => {
 }
 
 .complete-modal-container {
-  width: min(90%, 20em);
-  padding: 0.5rem;
-  border-radius: 0.2rem;
-  background-color: var(--color-bg);
-  box-shadow:
-    inset 2px 2px 4px var(--color-white),
-    inset -2px -2px 4px var(--color-shadow);
+  box-sizing: border-box;
+  width: min(90%, 360px);
+  padding: 24px 16px;
+  text-align: center;
 }
 
 .complete-modal-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  text-align: center;
+  margin: 0 0 16px;
+  font-size: 19px;
 }
 
 .complete-modal-footer {
   display: flex;
   justify-content: center;
-  gap: 1em;
-  width: 100%;
-  padding: 0.2rem;
-}
-
-.btn {
-  width: 6em;
-  height: 2rem;
-  font-size: 1rem;
-  font-weight: 700;
-  text-shadow: 1px 1px 1px var(--color-white);
-  border-radius: 0.2rem;
-  border: 0;
-  box-shadow:
-    inset 2px 2px 4px var(--color-white),
-    inset -2px -2px 4px var(--color-shadow);
-}
-
-.btn:active {
-  box-shadow:
-    inset -2px -2px 4px var(--color-white),
-    inset 2px 2px 4px var(--color-shadow);
-}
-
-.btn-close {
-  color: var(--color-red);
-}
-
-.btn-next {
-  color: var(--color-blue);
+  gap: 10px;
 }
 </style>

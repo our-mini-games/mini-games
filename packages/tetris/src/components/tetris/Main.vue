@@ -2,6 +2,7 @@
   <main class="tetris-main">
     <svg
       class="game-wrapper"
+      :viewBox="`0 0 ${width} ${height}`"
       :width="width"
       :height="height"
     >
@@ -79,6 +80,10 @@ const currentTetrisCoordinates = computed(() => currentTetris.value ? currentTet
 <style lang="scss" scoped>
 .game-wrapper {
   display: block;
-  margin: 2px;
+  width: var(--tetris-field-width);
+  height: auto;
+  outline: 1px solid var(--arcade-tile-edge);
+  border-radius: 5px;
+  background: var(--arcade-slot);
 }
 </style>

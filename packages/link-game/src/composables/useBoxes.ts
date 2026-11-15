@@ -16,7 +16,6 @@ export default (levelInfo: Ref<LevelInfo>, gameStatus: Ref<GameStatus>): {
     ipl.mockRender(66)
     boxes.value = await getBoxes(level)
     nextTick(() => {
-      // @ts-expect-error
       ipl.reload()
     })
   }

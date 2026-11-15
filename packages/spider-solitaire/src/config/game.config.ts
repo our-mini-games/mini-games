@@ -32,12 +32,12 @@ export enum GameMode {
 }
 
 export const colors = {
-  primary: '#001f3d',
-  border: '#cfcfcf',
-  white: '#fff',
-  black: '#333',
-  red: '#f10',
-  background: '#fff'
+  primary: '#365e4d',
+  border: '#80998a',
+  white: '#fbf2dd',
+  black: '#202c25',
+  red: '#a13332',
+  background: '#fbf2dd'
 }
 
 export const fillColors = {

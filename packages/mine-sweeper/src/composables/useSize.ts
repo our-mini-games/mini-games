@@ -1,4 +1,4 @@
-import { ComputedRef, Ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ComputedRef, Ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { LevelInfo } from '../types/index.js'
 import Panzoom from '@panzoom/panzoom'
 
@@ -18,86 +18,63 @@ export const useSize = (el: Ref<HTMLElement | undefined>, levelInfo: Ref<LevelIn
     }
   })
 
-  let panzoom: any = null
-  let resizeObserver: ResizeObserver | null = null
-
+  let panzoom: ReturnType<typeof Panzoom> | undefined
+  let resizeObserver: ResizeObserver | undefined
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
-  const initPanzoom = (): void => {
-    if (!el.value) return
-
-    const elem = el.value
-    const parent = elem.parentElement!
-
+  const measureBoard = (parent: HTMLElement): { scale: number, x: number, y: number } => {
     const { width, height } = parent.getBoundingClientRect()
-
-    // 移动端使用更适合的缩放策略
-    const scaleX = width / viewBoxSize.value.width
-    const scaleY = height / viewBoxSize.value.height
-    const minScale = isMobile
-      ? Math.min(scaleX, scaleY) * 0.9 // 移动端稍微缩小一点，留出边距
-      : (width > viewBoxSize.value.width ? 1 : scaleX)
-
-    panzoom = Panzoom(elem, {
-      handleStartEvent: () => {
-        // override default behavior
-      },
-      startScale: minScale,
-      startX: width / 2 - viewBoxSize.value.width * minScale / 2,
-      startY: height / 2 - viewBoxSize.value.height * minScale / 2,
-      maxScale: isMobile ? 3 : 5,
-      minScale: minScale * 0.5,
-      origin: '0 0',
-      step: isMobile ? 0.1 : 0.05,
-      isSVG: true,
-      // 移动端禁用鼠标滚轮缩放，使用触摸缩放
-      noBind: isMobile
-    })
-
-    // 桌面端添加滚轮缩放
-    if (!isMobile) {
-      parent.addEventListener('wheel', panzoom.zoomWithWheel)
+    const board = viewBoxSize.value
+    const scale = Math.min((width - 16) / board.width, (height - 16) / board.height, 1.4)
+    return {
+      scale,
+      x: (width / scale - board.width) / 2,
+      y: (height / scale - board.height) / 2
     }
   }
 
-  const handleResize = (): void => {
-    if (panzoom) {
-      panzoom.reset()
-      // 重新计算缩放
-      setTimeout(() => {
-        if (!el.value) return
-        const parent = el.value.parentElement!
-        const { width, height } = parent.getBoundingClientRect()
-        const scaleX = width / viewBoxSize.value.width
-        const scaleY = height / viewBoxSize.value.height
-        const minScale = isMobile
-          ? Math.min(scaleX, scaleY) * 0.9
-          : (width > viewBoxSize.value.width ? 1 : scaleX)
+  const centerBoard = (): void => {
+    const parent = el.value?.parentElement
+    if (!panzoom || !parent || parent.clientWidth <= 16 || parent.clientHeight <= 16) return
 
-        panzoom.zoom(minScale)
-        panzoom.pan(
-          width / 2 - viewBoxSize.value.width * minScale / 2,
-          height / 2 - viewBoxSize.value.height * minScale / 2
-        )
-      }, 100)
-    }
+    const { scale, x, y } = measureBoard(parent)
+    panzoom.setOptions({ minScale: scale * 0.5 })
+    panzoom.zoom(scale, { animate: false })
+    panzoom.pan(x, y, { animate: false })
   }
 
   onMounted(() => {
-    initPanzoom()
+    const elem = el.value
+    const parent = elem?.parentElement
+    if (!elem || !parent) return
 
-    // 监听窗口大小变化
-    resizeObserver = new ResizeObserver(handleResize)
-    if (el.value?.parentElement) {
-      resizeObserver.observe(el.value.parentElement)
+    const { scale, x, y } = measureBoard(parent)
+    panzoom = Panzoom(elem, {
+      handleStartEvent: () => {},
+      startScale: scale,
+      startX: x,
+      startY: y,
+      maxScale: isMobile ? 3 : 5,
+      minScale: scale * 0.5,
+      origin: '0 0',
+      step: isMobile ? 0.1 : 0.05,
+      isSVG: true,
+      noBind: isMobile
+    })
+
+    if (!isMobile) {
+      parent.addEventListener('wheel', panzoom.zoomWithWheel)
     }
+    resizeObserver = new ResizeObserver(centerBoard)
+    resizeObserver.observe(parent)
   })
 
+  watch(viewBoxSize, centerBoard, { flush: 'post' })
+
   onBeforeUnmount(() => {
-    if (resizeObserver) {
-      resizeObserver.disconnect()
-    }
+    resizeObserver?.disconnect()
     if (panzoom) {
+      el.value?.parentElement?.removeEventListener('wheel', panzoom.zoomWithWheel)
       panzoom.destroy()
     }
   })

@@ -1,19 +1,16 @@
 <template>
   <Teleport to="body">
-    <div
-      class="choose-mode-modal"
-      :style="{
-        transform: windowSize.isRotate ? 'translate(-50%, -50%) rotate(90deg)' : 'translate(-50%, -50%) rotate(0deg)'
-      }"
-    >
+    <div class="choose-mode-modal arcade-panel arcade-dialog">
       <header class="header">
         <h2 class="title">选择模式</h2>
-        <div
+        <button
+          type="button"
+          aria-label="关闭"
           class="btn-close"
           @click="handleClose"
         >
           ×
-        </div>
+        </button>
       </header>
 
       <ul class="mode-list">
@@ -24,7 +21,12 @@
           :class="{
             current: mode === item.value
           }"
+          role="button"
+          tabindex="0"
+          :aria-pressed="mode === item.value"
           @click="handleSelect(item.value)"
+          @keydown.enter.prevent="handleSelect(item.value)"
+          @keydown.space.prevent="handleSelect(item.value)"
         >
           {{ item.label }}
         </li>
@@ -35,12 +37,9 @@
 
 <script setup lang="ts">
 import { GameMode, gameModes } from '../../config/index.js'
-import { useWindow } from '../../composables/useWindow.js'
 import { inject, ref } from 'vue'
 
 const emit = defineEmits<(e: 'close') => void>()
-
-const windowSize = useWindow()
 
 const mode = inject('mode', ref(GameMode.easy))
 
@@ -62,10 +61,7 @@ const handleClose = (): void => {
   position: fixed;
   left: 50%;
   top: 50%;
-  width: 300px;
-  border: 1px solid #f1f1f1;
-  border-radius: 8px;
-  background-color: #fff;
+  width: min(300px, calc(100vw - 24px), calc(100vh - 24px));
   transform: translate(-50%, -50%);
   transform-origin: center;
   .header {
@@ -73,7 +69,7 @@ const handleClose = (): void => {
     align-items: center;
     justify-content: space-between;
     padding: 0 16px;
-    border-bottom: 1px solid #f1f1f1;
+    border-bottom: 1px solid var(--arcade-line);
 
     .title {
       line-height: 40px;
@@ -86,8 +82,9 @@ const handleClose = (): void => {
       line-height: 22px;
       text-align: center;
       border-radius: 50%;
-      border: 1px solid #ccc;
-      color: #5c5c5c;
+      border: 1px solid var(--arcade-line);
+      color: var(--arcade-text);
+      background: var(--arcade-raised);
       cursor: pointer;
     }
   }
@@ -105,13 +102,13 @@ const handleClose = (): void => {
       }
 
       &.current {
-        background-color: #0088ff;
-        color: #fff;
+        background-color: var(--arcade-gold);
+        color: var(--arcade-ink);
         cursor: default;
       }
 
       &:hover:not(.current) {
-        background-color: rgba($color: #0088ff, $alpha: .2);
+        background-color: var(--arcade-raised);
       }
     }
   }

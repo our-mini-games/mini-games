@@ -4,8 +4,15 @@
       :width="width"
       :height="height"
       :viewBox="`0 0 ${width} ${height}`"
-      class="svg"
+      class="svg arcade-table"
     >
+      <defs>
+        <linearGradient id="number-tile-glaze" x2="0" y2="1">
+          <stop stop-color="#fff7dc" stop-opacity=".27" />
+          <stop offset=".32" stop-color="#fff7dc" stop-opacity="0" />
+          <stop offset="1" stop-color="#12291f" stop-opacity=".21" />
+        </linearGradient>
+      </defs>
       <g
         name="game-grids"
         :transform="`translate(${gap}, ${gap})`"
@@ -22,16 +29,26 @@
             <rect
               x="0"
               y="0"
-              :rx="4"
-              :ry="4"
+              :rx="6"
+              :ry="6"
               :width="size"
               :height="size"
               stroke="transparent"
               class="grid-item"
               :class="`grid-item-${item.value}`"
             />
+            <rect
+              v-if="item.value !== 0"
+              :width="size"
+              :height="size"
+              rx="6"
+              fill="url(#number-tile-glaze)"
+              stroke="#fff1c9"
+              stroke-opacity=".32"
+              class="tile-glaze"
+            />
             <text
-              v-if="(item.value !== 0)"
+              v-if="item.value !== 0"
               class="grid-text"
               text-anchor="middle"
               dominant-baseline="central"
@@ -102,12 +119,17 @@ useSwipe('.game-container .svg', handleSwipe)
 
 .game-container {
   .svg {
-    background-color: var(--bg-color);
-    border-radius: 4px;
+    display: block;
+    width: min(440px, calc(100vw - 34px), max(220px, calc(100svh - 224px)));
+    height: auto;
+    padding: 5px;
+    box-sizing: border-box;
     user-select: none;
   }
   .grid-item-0 {
-    fill: var(--grid-color-0);
+    fill: var(--arcade-slot);
+    stroke: var(--arcade-tile-edge);
+    stroke-opacity: .32;
   }
 
   @for $i from 1 through 11 {
@@ -116,7 +138,13 @@ useSwipe('.game-container .svg', handleSwipe)
     }
   }
 
+  .tile-glaze,
   .grid-text {
+    pointer-events: none;
+  }
+
+  .grid-text {
+    fill: var(--arcade-ink);
     font-weight: 700;
   }
 }

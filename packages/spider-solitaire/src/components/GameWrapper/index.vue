@@ -7,9 +7,15 @@
     :height="windowSize.height"
     :viewBox="`0 0 ${windowSize.viewBoxWidth} ${windowSize.viewBoxHeight}`"
     preserveAspectRatio="xMinYMin meet"
-    class="game-wrapper"
+    class="game-wrapper arcade-table"
     style="touch-action: none;"
   >
+    <text
+      class="table-title"
+      :x="windowSize.padding.left"
+      :y="windowSize.padding.top / 2"
+      dominant-baseline="central"
+    >蜘蛛纸牌</text>
     <g
       :transform="`translate(${windowSize.padding.left}, ${windowSize.padding.top})`"
     >
@@ -66,7 +72,7 @@
                 opacity: isDragging && validTargets.includes(index) ? 0.5 : 0
               }"
               xlink:href="#drop-target"
-              fill="blue"
+              fill="var(--arcade-jade)"
               :y="getOpenedSolitaireTop(item, item.length, windowSize.unopenedGroupGap, windowSize.openedGroupGap)"
             />
           </g>
@@ -98,26 +104,10 @@
         </g>
         <!-- 控制/计分区 -->
         <g
+          v-if="!windowSize.isRotate"
           name="control-wrapper"
           :transform="`translate(${windowSize.receiveAreaSize.width + Math.floor(windowSize.activeAreaSize.width * 0.05)}, 0)`"
         >
-          <rect
-            x="-8"
-            y="8"
-            :width="windowSize.controlAreaSize.width"
-            :height="windowSize.controlAreaSize.height"
-            fill="none"
-            :stroke="colors.border"
-          />
-          <rect
-            x="8"
-            y="-8"
-            :width="windowSize.controlAreaSize.width"
-            :height="windowSize.controlAreaSize.height"
-            fill="none"
-            :stroke="colors.border"
-          />
-
           <g
             :transform="`translate(${windowSize.controlAreaSize.width * 0.1}, ${windowSize.controlAreaSize.height * 0.1})`"
           >
@@ -125,9 +115,14 @@
               v-for="(button, index) of buttons"
               :key="button"
               class="btn"
+              role="button"
+              tabindex="0"
+              :aria-label="button"
               :transform="`translate(0, ${index * (windowSize.controlAreaSize.height * 0.8 - (windowSize.solitaireSize.height / 4))})`"
               style="cursor: pointer;"
               @click="handleButtonClick(button)"
+              @keydown.enter.prevent="handleButtonClick(button)"
+              @keydown.space.prevent="handleButtonClick(button)"
             >
               <rect
                 x="0"
@@ -135,19 +130,19 @@
                 :width="windowSize.solitaireSize.width"
                 :height="windowSize.solitaireSize.height / 4"
                 :stroke="colors.border"
-                fill="transparent"
+                fill="var(--arcade-raised)"
                 :rx="windowSize.solitaireSize.radius / 2"
                 :ry="windowSize.solitaireSize.radius / 2"
               />
               <text
                 dominant-baseline="middle"
                 text-anchor="middle"
-                :font-size="windowSize.solitaireSize.height / 8"
+                :font-size="controlFontSize"
                 font-weight="bold"
-                font-family="Gill Sans, serif"
+                font-family="var(--arcade-font)"
                 :x="windowSize.solitaireSize.width / 2"
                 :y="windowSize.solitaireSize.height / 8"
-                :fill="colors.primary"
+                fill="var(--arcade-text)"
               >
                 {{ button }}
               </text>
@@ -161,17 +156,17 @@
               <text
                 dominant-baseline="middle"
                 text-anchor="middle"
-                :font-size="windowSize.solitaireSize.height / 8"
-                :fill="colors.black"
+                :font-size="controlFontSize"
+                fill="var(--arcade-muted)"
               >
                 {{ item.name }}：
               </text>
               <text
                 dominant-baseline="middle"
                 text-anchor="start"
-                :font-size="windowSize.solitaireSize.height / 8"
+                :font-size="controlFontSize"
                 :transform="`translate(${windowSize.solitaireSize.height / 4}, 0)`"
-                :fill="colors.red"
+                fill="var(--arcade-gold)"
                 font-weight="bold"
               >
                 {{ item.value }}
@@ -227,6 +222,25 @@
     </g>
   </svg>
 
+  <Teleport v-if="windowSize.isRotate" to="body">
+    <aside class="portrait-hud" aria-label="蜘蛛纸牌控制区">
+      <div v-for="item of statistics" :key="item.name" class="portrait-meter">
+        {{ item.name }}
+        <strong>{{ item.value }}</strong>
+      </div>
+      <button
+        v-for="button of buttons"
+        :key="button"
+        type="button"
+        class="arcade-button"
+        :disabled="inAnimation"
+        @click="handleButtonClick(button)"
+      >
+        {{ button }}
+      </button>
+    </aside>
+  </Teleport>
+
   <ChooseModeModal
     v-if="chooseModeModalVisible"
     @close="chooseModeModalVisible = false"
@@ -264,6 +278,7 @@ const statistics = computed(() => {
 })
 
 const windowSize = useWindow()
+const controlFontSize = computed(() => Math.max(windowSize.value.solitaireSize.height / 8, 13 / windowSize.value.scale))
 
 const {
   mode,
@@ -321,11 +336,28 @@ provide('mode', mode)
 
 <style lang="scss" scoped>
 .game-wrapper {
-  box-shadow: 0 0 2px #888;
+  display: block;
+  border-radius: 0;
+  outline: 0;
+
+  .table-title {
+    fill: var(--arcade-text);
+    font-family: var(--arcade-display);
+    font-size: 17px;
+  }
+
+  [name="inactive-group"] use {
+    cursor: pointer;
+  }
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
-  
+
+  .btn:hover rect {
+    fill: var(--arcade-well);
+    stroke: var(--arcade-gold);
+  }
+
   // 移动端优化
   @media (max-width: 768px) {
     // 优化触摸目标
@@ -334,14 +366,37 @@ provide('mode', mode)
         opacity: 0.8;
       }
     }
-    
+
     // 优化按钮触摸目标
     .btn {
       &:active {
         opacity: 0.7;
-        transform: scale(0.98);
       }
     }
   }
 }
+.portrait-hud {
+  position: fixed;
+  top: 50%;
+  left: 10px;
+  display: grid;
+  width: 96px;
+  gap: 6px;
+  padding: 5px;
+  border-radius: var(--arcade-radius);
+  background: var(--arcade-well);
+  transform: translateY(-50%);
+}
+
+.portrait-meter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2px;
+  color: var(--arcade-muted);
+  font-size: 13px;
+}
+
+.portrait-meter strong { color: var(--arcade-gold); }
+.portrait-hud .arcade-button { padding-inline: 4px; }
 </style>

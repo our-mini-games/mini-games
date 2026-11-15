@@ -1,25 +1,23 @@
 <template>
   <header class="header">
-    <div class="container">
+    <div class="container arcade-panel">
       <button
-        class="btn btn-back"
+        class="arcade-button btn-back"
         @click="handleBack"
       >
         退出
       </button>
 
       <button
-        class="btn btn-set-level"
+        class="arcade-button btn-set-level"
         @click="$emit('set-level')"
       >
         游戏设置
       </button>
 
       <button
-        class="btn btn-props btn-rearrange"
-        :class="{
-          disabled: rearrangement <= 0 || gameStatus !== GameStatus.playing
-        }"
+        class="arcade-button btn-props btn-rearrange"
+        :disabled="rearrangement <= 0 || gameStatus !== GameStatus.playing"
         @click="handleRearrange"
       >
         重新排列
@@ -28,10 +26,8 @@
         </span>
       </button>
       <button
-        class="btn btn-props btn-tips"
-        :class="{
-          disabled: tips <= 0 || gameStatus !== GameStatus.playing
-        }"
+        class="arcade-button arcade-button--primary btn-props btn-tips"
+        :disabled="tips <= 0 || gameStatus !== GameStatus.playing"
         @click="handleTips"
       >
         提示
@@ -82,45 +78,24 @@ const {
 }
 .container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  background-color: var(--primary-color);
+  justify-content: center;
+  gap: 6px;
+  padding: 6px;
+}
 
-  .btn {
-    border: 0;
-    background-color: transparent;
-    height: 1.5rem;
-    padding: 0 0.5rem;
-    border-radius: 0.25rem;
-    color: var(--white);
+.arcade-button {
+  padding-inline: clamp(7px, 2.5vw, 16px);
+}
 
-    &:not(:disabled) {
-      cursor: pointer;
-    }
-
-    &:hover:not(:disabled) {
-      color: var(--white);
-    }
-
-    &.btn-props {
-      position: relative;
-      border: 1px solid var(--white);
-
-      .value {
-        position: absolute;
-        right: -0.5rem;
-        top: -0.5rem;
-        width: 1rem;
-        height: 1rem;
-        text-align: center;
-        line-height: 1rem;
-        border-radius: 50%;
-        background-color: var(--red);
-      }
-    }
-  }
+.btn-props .value {
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  min-height: 20px;
+  margin-left: 5px;
+  border-radius: 4px;
+  background: var(--arcade-slot);
+  color: var(--arcade-gold);
+  font-size: 13px;
 }
 </style>

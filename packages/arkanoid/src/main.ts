@@ -1,3 +1,4 @@
+import '../../arcade-theme/theme.css'
 import Hammer from 'hammerjs'
 import Arkanoid, { ArkanoidStatus } from './lib/Arkanoid.js'
 import Layout from './lib/Layout.js'
@@ -81,13 +82,13 @@ const init = (): void => {
   win._on('status', ({ detail: status }: { detail: ArkanoidStatus }) => {
     switch (status) {
       case 'playing':
-        btnCtrl.textContent = '游戏中'
+        btnCtrl.textContent = '暂停'
         break
       case 'paused':
-        btnCtrl.textContent = '暂停中'
+        btnCtrl.textContent = '继续游戏'
         break
       case 'over':
-        btnCtrl.textContent = '游戏结束'
+        btnCtrl.textContent = '再来一局'
         break
       case 'win':
         btnCtrl.textContent = '游戏胜利'
@@ -114,7 +115,8 @@ const init = (): void => {
   })
 
   hammer.on('panmove', (e) => {
-    e.target.style.transform = `translateX(${Math.max(Math.min(e.deltaX, 123), -123)}px)`
+    const travel = (controls.clientWidth - target.offsetWidth) / 2
+    e.target.style.transform = `translateX(${Math.max(Math.min(e.deltaX, travel), -travel)}px)`
     const nowTime = performance.now()
     if (nowTime - startTime > 32) {
       if (startX < e.center.x) {

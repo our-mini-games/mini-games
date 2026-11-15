@@ -1,19 +1,18 @@
 import ImgPreload from '@stan_bk/img-preload'
 
-interface ImgPreloadWithMock extends ImgPreload {
-  mockRender: (per: number) => void
-}
-const ipl: ImgPreloadWithMock = Object.assign(new ImgPreload({
-  customColor: ['rgb(0, 125, 255), aqua']
+const ipl = Object.assign(new ImgPreload({
+  customShade: (percent: number, { shade }: { shade: HTMLElement }) => {
+    shade.classList.add('arcade-loading')
+    shade.setAttribute('role', 'status')
+    shade.textContent = '正在准备棋盘…'
+    if (percent === 100) shade.style.display = 'none'
+  }
 }), {
-  mockRender: (per: number) => {
-    // @ts-expect-error
+  mockRender: (percent: number) => {
     ipl.shade.reload()
-    // @ts-expect-error
     ipl.show()
-    // @ts-expect-error
-    ipl.shade.render(per)
+    ipl.shade.render(percent)
   }
 })
 
-export default (): ImgPreloadWithMock => ipl
+export default (): typeof ipl => ipl

@@ -1,21 +1,21 @@
 <template>
   <div class="klotski">
     <header class="header">
-      <button class="btn btn-back" @click="handleBack">
-        退
+      <h1 class="title arcade-title">华容道</h1>
+      <button class="arcade-button" @click="handleBack">
+        返回
       </button>
-      <h1 class="title">Klotski</h1>
-      <div class="step-info">
-        {{ step }}
+      <div class="arcade-meter step-info">
+        步数 <strong>{{ step }}</strong>
       </div>
-      <div class="timer">
-        {{ timeFormat }}
+      <div class="arcade-meter">
+        用时 <strong>{{ timeFormat }}</strong>
       </div>
-      <button class="btn btn-reset" @click="reset">
-        重
+      <button class="arcade-button" @click="reset">
+        重开
       </button>
     </header>
-    <main class="klotski-board">
+    <main class="klotski-board arcade-table">
       <div
         v-for="item of klotskiItems"
         :key="item.name"
@@ -48,7 +48,7 @@
       </div>
       <button
         v-if="gameStatus === KlotskiGameStatus.Completed && currentLevel < classicalLayouts.length"
-        class="btn btn-next"
+        class="arcade-button arcade-button--primary btn-next"
         @click="nextLevel"
       >
         下一关
@@ -66,10 +66,9 @@
 </template>
 
 <script setup lang="ts">
-import { KlotskiGameStatus } from '../composables/useKlotski.js'
+import { KlotskiGameStatus, useKlotski } from '../composables/useKlotski.js'
 import { classicalLayouts, PERSONS_MAP } from '../config/index.js'
 import { useSize } from '../composables/useSize.js'
-import { useKlotski } from '../composables/useKlotski.js'
 
 const { gap, size, size1, size2, boxWidth, boxHeight } = useSize()
 
@@ -111,91 +110,32 @@ const handleBack = (): void => {
 
 <style lang="scss" scoped>
 .klotski {
-  width: 100%;
-  height: 100%;
   display: flex;
+  min-height: 100svh;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  background-color: var(--color-bg);
-  text-shadow: 1px 1px 1px var(--color-white);
-  padding: 0.2rem v-bind('gap');
+  justify-content: center;
+  gap: 16px;
   box-sizing: border-box;
+  padding: 12px v-bind('gap');
+}
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    gap: 0.5rem;
-    padding: 0.2rem 0;
-    background-color: var(--color-bg);
-    box-sizing: border-box;
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 440px;
+  gap: 8px;
 
-    .title,
-    .step-info,
-    .timer {
-      padding: 0 0.5rem;
-      font-weight: 700;
-      line-height: 2rem;
-      border-radius: 0.2rem;
-      box-shadow:
-        inset -2px -2px 4px var(--color-white),
-        inset 2px 2px 4px var(--color-shadow);
-    }
-
-    .title {
-      flex: 1;
-      margin: 0;
-      text-align: center;
-      font-size: 1.2rem;
-    }
-
-    .timer {
-      font-size: 1.2rem;
-      width: 3em;
-      text-align: center;
-    }
-
-    .step-info {
-      font-size: 1.2rem;
-      width: 2em;
-      text-align: center;
-    }
+  .title {
+    flex-basis: 100%;
+    margin-bottom: 4px;
+    text-align: center;
+    font-size: clamp(30px, 6vw, 46px);
   }
-}
 
-.btn {
-  width: 2rem;
-  height: 2rem;
-  padding: 0;
-  color: var(--color-text);
-  font-size: 1rem;
-  border: 0;
-  border-radius: 0.2rem;
-  font-weight: 700;
-  box-shadow:
-    inset 2px 2px 4px var(--color-white),
-    inset -2px -2px 4px var(--color-shadow);
-}
-
-.btn:active {
-  box-shadow:
-    inset -2px -2px 4px var(--color-white),
-    inset 2px 2px 4px var(--color-shadow);
-}
-
-.btn-back {
-  color: var(--color-red);
-}
-
-.btn-reset {
-  color: var(--color-green);
-}
-
-.btn-next {
-  width: auto;
-  color: var(--color-blue);
 }
 
 .klotski-board {
@@ -203,11 +143,10 @@ const handleBack = (): void => {
   width: v-bind('boxWidth');
   height: v-bind('boxHeight');
   padding: v-bind('gap');
-  background-color: var(--color-bg);
-  border-radius: 0.2rem;
-  box-shadow:
-    inset -2px -2px 4px var(--color-white),
-    inset 2px 2px 4px var(--color-shadow);
+  background:
+    repeating-linear-gradient(to right, #a2d2bc15 0 1px, transparent 1px v-bind('size1')) 10px 10px,
+    repeating-linear-gradient(to bottom, #a2d2bc15 0 1px, transparent 1px v-bind('size1')) 10px 10px,
+    var(--arcade-felt);
   box-sizing: border-box;
 
   .klotski-item {
@@ -215,12 +154,20 @@ const handleBack = (): void => {
     z-index: 2;
     width: v-bind('size1');
     height: v-bind('size1');
-    text-shadow: 3px 3px 2px var(--color-white);
-    background-color: var(--color-bg);
-    border-radius: 0.2rem;
-    box-shadow:
-      inset 2px 2px 4px var(--color-white),
-      inset -2px -2px 4px var(--color-shadow);
+    border-radius: 7px;
+    background: linear-gradient(145deg, #e6e5cc, #a7c2a2);
+    color: var(--arcade-ink);
+    box-shadow: inset 0 0 0 2px var(--arcade-well), inset 0 -5px 0 #809a85;
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    &.item-caocao {
+      background: linear-gradient(145deg, #f6dc9f, #c89655);
+      box-shadow: inset 0 0 0 2px var(--arcade-well), inset 0 -5px 0 #ae8b54;
+    }
 
       .inner {
         display: flex;
@@ -239,10 +186,6 @@ const handleBack = (): void => {
           aspect-ratio: 1 / 1;
           background-repeat: no-repeat;
           background-size: contain;
-          // border: 1px solid var(--color-white);
-          // box-shadow:
-          //   inset -2px -2px 4px var(--color-white),
-          //   inset 2px 2px 4px var(--color-shadow);
         }
 
         .name {
@@ -360,39 +303,23 @@ const handleBack = (): void => {
   width: v-bind('size2');
   height: 10px;
   transform: translate(-50%, 5px) skewX(-45deg);
-  background-color: var(--color-bg);
-  background-image: linear-gradient(to right, transparent 30%, var(--color-green) 30%, var(--color-green) 70%, transparent 70%);
+  background-color: var(--arcade-well);
+  background-image: linear-gradient(to right, transparent 30%, var(--arcade-jade) 30%, var(--arcade-jade) 70%, transparent 70%);
   background-size: 8px 10px;
   background-repeat: repeat-x;
 }
 
 .footer {
-  position: relative;
-  width: 100%;
-  background-color: var(--color-bg);
-  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--arcade-muted);
 
-  .level-info {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    align-items: center;
-    text-align: center;
-    line-height: 2rem;
-
-    .level-name {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--color-blue);
-      text-shadow: 2px 2px 1px var(--color-white);
-    }
-  }
-
-  .btn-next {
-    position: absolute;
-    right: 0;
-    top: 0;
+  .level-name {
+    margin-left: 4px;
+    color: var(--arcade-gold);
+    font-weight: 700;
   }
 }
 </style>

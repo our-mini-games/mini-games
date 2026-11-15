@@ -48,12 +48,12 @@
       </div>
 
       <div class="operations">
-        <div
-          class="btn btn-clear"
+        <button
+          class="arcade-button"
           @click="handleClear"
         >
           清空记录
-        </div>
+        </button>
       </div>
     </div>
   </a-modal>
@@ -123,14 +123,14 @@ const handleClear = (): void => {
 
 <style lang="scss" scoped>
 .records {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 24px 10px;
 
   .item {
     position: relative;
-    width: 240px;
     padding: 16px;
-    border: 1px solid #f1f1f1;
+    border: 1px solid var(--arcade-line);
     border-radius: 16px;
 
     .title {
@@ -141,7 +141,7 @@ const handleClear = (): void => {
       padding: 0 16px;
       font-size: 18px;
       line-height: 24px;
-      background-color: #fff;
+      background-color: var(--arcade-panel);
       transform: translate(-50%, -12px);
     }
 
@@ -163,7 +163,7 @@ const handleClear = (): void => {
 
       .value {
         font-size: 20px;
-        color: #0088ff;
+        color: var(--arcade-gold);
       }
     }
   }
@@ -175,19 +175,5 @@ const handleClear = (): void => {
   align-items: center;
   gap: 32px;
   margin-top: 32px;
-
-  .btn {
-    padding: 6px 16px;
-    border-radius: 4px;
-    border: 1px solid #f1f1f1;
-    background-color: #f1f1f1;
-    cursor: pointer;
-
-    &.btn-clear {
-      color: #fff;
-      border-color: #0088ff;
-      background-color: #0088ff;
-    }
-  }
 }
 </style>
