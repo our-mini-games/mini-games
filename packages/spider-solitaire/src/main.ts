@@ -1,3 +1,4 @@
+import '../../arcade-theme/theme.css'
 import { createApp } from 'vue'
 import App from './App.vue'
 

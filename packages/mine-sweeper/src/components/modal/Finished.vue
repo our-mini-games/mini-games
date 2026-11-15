@@ -5,7 +5,7 @@
       class="finished-modal"
       @contextmenu.prevent="() => false"
     >
-      <div class="wrapper">
+      <div class="wrapper arcade-panel arcade-dialog">
         <img
           class="head-pic"
           :src="gameStatus === 'complete' ? CompletePic : DefeatPic"
@@ -134,9 +134,9 @@ watch(gameStatus, (val) => {
     width: 100%;
     max-width: 360px;
     padding: 50px 16px 30px 16px;
-    background-color: #cdcee5;
+    background-color: var(--arcade-panel);
     border-radius: 16px;
-    box-shadow: 0 4px 16px #888;
+    box-shadow: var(--arcade-shadow);
 
     @media (min-width: 769px) {
       padding: 56px 16px 38px 16px;
@@ -187,7 +187,7 @@ watch(gameStatus, (val) => {
       .value {
         font-size: 18px;
         font-weight: 700;
-        color: #0088ff;
+        color: var(--arcade-gold);
 
         @media (min-width: 769px) {
           font-size: 20px;
@@ -201,7 +201,7 @@ watch(gameStatus, (val) => {
       padding: 12px;
       border-radius: 12px;
       box-sizing: border-box;
-      background-color: #e6e8f7;
+      background-color: var(--arcade-well);
 
       @media (min-width: 769px) {
         margin: 32px auto;
@@ -236,7 +236,7 @@ watch(gameStatus, (val) => {
 
         .value {
           font-size: 18px;
-          color: #0088ff;
+          color: var(--arcade-gold);
 
           @media (min-width: 769px) {
             font-size: 20px;
@@ -258,8 +258,9 @@ watch(gameStatus, (val) => {
       .btn {
         padding: 8px 20px;
         border-radius: 6px;
-        border: 1px solid #f1f1f1;
-        background-color: #f1f1f1;
+        border: 1px solid var(--arcade-line);
+        background-color: var(--arcade-raised);
+        color: var(--arcade-text);
         cursor: pointer;
         font-size: 14px;
         transition: all 0.2s ease;
@@ -280,12 +281,12 @@ watch(gameStatus, (val) => {
         }
 
         &.btn-again {
-          color: #fff;
-          border-color: #0088ff;
-          background-color: #0088ff;
+          color: var(--arcade-ink);
+          border-color: var(--arcade-gold);
+          background-color: var(--arcade-gold);
 
           &:hover {
-            background-color: #0077dd;
+            background-color: var(--arcade-gold-hover);
           }
         }
       }

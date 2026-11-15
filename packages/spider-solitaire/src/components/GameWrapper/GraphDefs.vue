@@ -1,169 +1,80 @@
 <template>
   <svg class="defs">
     <defs>
-      <!-- 渐变 -->
-      <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:rgb(255,0,255);stop-opacity:1" /> <!-- 紫色 -->
-        <stop offset="25%" style="stop-color:rgb(0,255,255);stop-opacity:1" /> <!-- 青色 -->
-        <stop offset="50%" style="stop-color:rgb(255,165,0);stop-opacity:1" /> <!-- 橙色 -->
-        <stop offset="75%" style="stop-color:rgb(255,0,0);stop-opacity:1" /> <!-- 红色 -->
-        <stop offset="100%" style="stop-color:rgb(255,20,147);stop-opacity:1" /> <!-- 深粉色 -->
+      <linearGradient id="card-back" x2="1" y2="1">
+        <stop stop-color="#426654" />
+        <stop offset="1" stop-color="#1e392d" />
+      </linearGradient>
+      <pattern id="card-lattice" width="12" height="12" patternUnits="userSpaceOnUse">
+        <path d="M6 1 11 6 6 11 1 6Z" fill="none" stroke="#e4bc72" stroke-opacity=".31" />
+      </pattern>
+      <linearGradient id="card-ivory" x2="0" y2="1">
+        <stop stop-color="#fff7e5" />
+        <stop offset="1" stop-color="var(--arcade-ivory)" />
       </linearGradient>
 
-      <!-- 外部裁剪 -->
-      <clipPath id="clip-path-solitaire">
-        <rect
-          :x="0"
-          :y="0"
-          :width="solitaireSize.width"
-          :height="solitaireSize.height"
-          :rx="solitaireSize.radius"
-          :ry="solitaireSize.radius"
-        />
-      </clipPath>
-
-      <!-- 内部裁剪 -->
-      <clipPath id="inner-clip-path-solitaire">
-        <rect
-          :x="solitaireSize.radius / 2"
-          :y="solitaireSize.radius / 2"
-          :width="solitaireSize.width - solitaireSize.radius"
-          :height="solitaireSize.height - solitaireSize.radius"
-          :rx="solitaireSize.radius"
-          :ry="solitaireSize.radius"
-        />
-      </clipPath>
-
-      <!-- 空牌面 -->
       <rect
         id="empty-solitaire"
-        x="0"
-        y="0"
         :width="solitaireSize.width"
         :height="solitaireSize.height"
         :rx="solitaireSize.radius"
-        :ry="solitaireSize.radius"
-        :stroke="colors.border"
-        :fill="colors.background"
+        fill="var(--arcade-slot)"
+        stroke="var(--arcade-tile-edge)"
+        stroke-dasharray="4 4"
       />
 
-      <!-- 可放置区域 -->
       <rect
         id="drop-target"
-        x="0"
-        y="0"
         :width="solitaireSize.width"
         :height="solitaireSize.height"
         :rx="solitaireSize.radius"
-        :ry="solitaireSize.radius"
-        stroke="url(#grad1)"
-        stroke-width="4"
         fill="none"
-      >
-        <!-- stroke-dasharray="20 5" -->
-        <!-- <animate
-          attributeName="stroke-dashoffset"
-          from="0"
-          to="25"
-          dur="0.5s"
-          repeatCount="indefinite"
-        /> -->
-      </rect>
+        stroke="var(--arcade-gold-hover)"
+        stroke-width="3"
+      />
 
-      <!-- 未开启牌面 -->
       <g id="unopened-solitaire">
         <rect
-          :x="0"
-          :y="0"
           :width="solitaireSize.width"
           :height="solitaireSize.height"
           :rx="solitaireSize.radius"
-          :ry="solitaireSize.radius"
-          :stroke="colors.border"
-          :fill="colors.background"
+          fill="url(#card-back)"
+          stroke="var(--arcade-edge)"
+          stroke-width="1.6"
         />
-        <g clip-path="url(#inner-clip-path-solitaire)">
-          <rect
-            :x="0"
-            :y="0"
-            :width="solitaireSize.width"
-            :height="solitaireSize.height"
-            :rx="solitaireSize.radius"
-            :ry="solitaireSize.radius"
-            :fill="colors.primary"
-            :stroke="colors.border"
-          />
-          <g v-for="i of Math.floor((solitaireSize.width + solitaireSize.height) / solitaireSize.radius)" :key="i">
-            <line
-              :x1="i * solitaireSize.radius < solitaireSize.width ? i * solitaireSize.radius : solitaireSize.width"
-              :y1="i * solitaireSize.radius < solitaireSize.width ? 0 : (i * solitaireSize.radius - solitaireSize.width)"
-              :x2="i * solitaireSize.radius < solitaireSize.height ? 0 : (i * solitaireSize.radius - solitaireSize.height)"
-              :y2="i * solitaireSize.radius < solitaireSize.height ? i * solitaireSize.radius : solitaireSize.height"
-              :stroke="'#fff'"
-            />
-          </g>
-          <g
-            v-for="j of Math.floor((solitaireSize.width + solitaireSize.height) / solitaireSize.radius)"
-            :key="j"
-          >
-            <line
-              :x1="j * solitaireSize.radius < solitaireSize.height ? 0 : (j * solitaireSize.radius - solitaireSize.height)"
-              :y1="j * solitaireSize.radius < solitaireSize.height ? (solitaireSize.height - j * solitaireSize.radius) : 0"
-              :x2="j * solitaireSize.radius < solitaireSize.width ? j * solitaireSize.radius : solitaireSize.width"
-              :y2="j * solitaireSize.radius < solitaireSize.width ? solitaireSize.height : (solitaireSize.height - (j * solitaireSize.radius - solitaireSize.width))"
-              :stroke="'#fff'"
-            />
-          </g>
-          <!-- <g
-            v-for="m of 2"
-            :key="m"
-            :transform="`rotate(${180 * (m - 1)}, ${solitaireSize.width / 2}, ${solitaireSize.height / 2})`"
-          >
-            <g v-for="n of Math.floor((solitaireSize.width + solitaireSize.height) / solitaireSize.radius)" :key="j">
-              <line
-                :x1="0"
-                :y1="n * solitaireSize.radius"
-                :x2="n * solitaireSize.radius"
-                :y2="solitaireSize.height"
-                :stroke="'#fff'"
-              />
-            </g>
-          </g> -->
-        </g>
-        <circle
-          :cx="solitaireSize.width / 2"
-          :cy="solitaireSize.height / 2"
-          :r="solitaireSize.width * 0.3"
-          :fill="colors.primary"
+        <rect
+          x="4"
+          y="4"
+          :width="solitaireSize.width - 8"
+          :height="solitaireSize.height - 8"
+          :rx="solitaireSize.radius - 2"
+          fill="url(#card-lattice)"
+          stroke="#e4bc7280"
         />
         <circle
           :cx="solitaireSize.width / 2"
           :cy="solitaireSize.height / 2"
-          :r="solitaireSize.width * 0.25"
-          fill="none"
-          stroke="#fff"
-          stroke-width="2"
+          :r="solitaireSize.width * .24"
+          fill="#213b30"
+          stroke="var(--arcade-gold)"
         />
         <image
           :xlink:href="`${PATHNAME}spider.svg`"
-          :width="solitaireSize.width * 0.36"
-          :height="solitaireSize.height * 0.36"
-          :x="(solitaireSize.width - solitaireSize.width * 0.36) / 2"
-          :y="(solitaireSize.height - solitaireSize.height * 0.36) / 2"
+          :width="solitaireSize.width * .32"
+          :height="solitaireSize.height * .29"
+          :x="solitaireSize.width * .34"
+          :y="solitaireSize.height * .355"
+          class="card-emblem"
         />
       </g>
 
-      <!-- 已开启牌面 -->
       <rect
         id="opened-solitaire"
-        x="0"
-        y="0"
         :width="solitaireSize.width"
         :height="solitaireSize.height"
         :rx="solitaireSize.radius"
-        :ry="solitaireSize.radius"
-        :fill="colors.background"
-        :stroke="colors.border"
+        fill="url(#card-ivory)"
+        stroke="var(--arcade-edge)"
       />
 
       <!-- 花色 -->
@@ -348,6 +259,7 @@
             <g v-else>
               <image
                 :xlink:href="`${PATHNAME}${suit}-${number}.png`"
+                class="card-court"
                 :x="solitaireSize.padding.left"
                 :y="solitaireSize.padding.top"
                 :width="solitaireSize.patternArea.width"
@@ -391,7 +303,7 @@
 </template>
 
 <script setup lang="ts">
-import { SolitaireSuits, SolitaireNumber, fillColors, colors } from '../../config/index.js'
+import { SolitaireSuits, SolitaireNumber, fillColors } from '../../config/index.js'
 import { useWindow } from '../../composables/useWindow.js'
 import { computed } from 'vue'
 
@@ -426,4 +338,6 @@ const solitaireSize = computed(() => windowSize.value.solitaireSize)
   height: 0;
   overflow: hidden;
 }
+.card-court { filter: saturate(.62); }
+.card-emblem { filter: sepia(.75) saturate(.7) brightness(1.45); }
 </style>

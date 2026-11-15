@@ -6,16 +6,16 @@
       </template>
     </a-button>
 
-    <div class="statistics-item time">
+    <div class="statistics-item arcade-meter time" aria-label="用时">
       <clock-circle-outlined class="icon" />
-      {{ time }}
+      <strong>{{ time }}</strong>
     </div>
 
     <GameControl />
 
-    <div class="statistics-item mines" :class="isNegative ? 'negative' : ''">
+    <div class="statistics-item arcade-meter mines" aria-label="剩余旗帜" :class="isNegative ? 'negative' : ''">
       <div class="bg"></div>
-      {{ remainingFlags }}
+      <strong>{{ remainingFlags }}</strong>
     </div>
     <MoreMenu />
   </header>
@@ -45,12 +45,12 @@ const handleBack = (): void => {
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  width: 100%;
+  width: min(100%, 550px);
   height: 3.5rem;
   padding: 0 0.5rem;
   box-sizing: border-box;
   background: var(--bg-cell-color-flag);
-  border: 2px solid var(--border-color);
+  border: 1px solid var(--border-color);
   border-radius: 0.5rem;
 
   @media (min-width: 769px) {
@@ -60,11 +60,12 @@ const handleBack = (): void => {
   }
 
   :deep(.btn) {
-    all: unset;
+    font: inherit;
     display: flex;
     align-items: center;
     height: 2rem;
-    color: #fff;
+    color: var(--arcade-text);
+    background: var(--arcade-raised);
     padding: 0 .5rem;
     border-radius: 0.5rem;
     border: 1px solid transparent;
@@ -78,7 +79,7 @@ const handleBack = (): void => {
     &.active,
     &:hover {
       background: var(--bg-cell-color-flag);
-      box-shadow: 0 0 15px var(--border-color), 0 0 30px var(--border-color);
+      border-color: var(--arcade-jade);
     }
   }
 
@@ -100,8 +101,10 @@ const handleBack = (): void => {
       font-size: 1rem;
     }
 
+    strong { font-size: inherit; }
+
     .icon {
-      color: var(--bg-cell-color);
+      color: var(--arcade-muted);
       font-size: 0.7rem;
 
       @media (min-width: 769px) {
@@ -125,8 +128,8 @@ const handleBack = (): void => {
     }
   }
 
-  .negative {
-    color: #f40;
+  .negative strong {
+    color: var(--arcade-danger);
     transition: color .4s;
     animation: twinkle linear infinite 1s;
   }

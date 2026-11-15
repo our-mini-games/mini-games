@@ -84,6 +84,7 @@ export default class Arkanoid {
   }
 
   init (): void {
+    this.createPlayfield()
     this.createWall()
     this.createBall()
     this.createBaffle()
@@ -274,29 +275,39 @@ export default class Arkanoid {
     this.layout.renderer.render(this.layout.scene, this.layout.camera)
   }
 
+  createPlayfield (): void {
+    const { width, height, cx, cz } = this.opts
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(width, height),
+      new THREE.MeshBasicMaterial({ color: 0x294839 })
+    )
+    floor.rotation.x = -Math.PI / 2
+    floor.position.set(cx, -0.52, cz)
+    this.layout.scene.add(floor)
+
+    const lines: THREE.Vector3[] = []
+    for (let z = -height / 2 + 2; z < height / 2; z += 2) {
+      lines.push(new THREE.Vector3(-width / 2, 0, z), new THREE.Vector3(width / 2, 0, z))
+    }
+    const guides = new THREE.LineSegments(
+      new THREE.BufferGeometry().setFromPoints(lines),
+      new THREE.LineBasicMaterial({ color: 0x385a48 })
+    )
+    guides.position.set(cx, -0.51, cz)
+    this.layout.scene.add(guides)
+  }
+
   createWall (): void {
     const { width, height, cx, cz } = this.opts
+
+    const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x557b65 })
 
     const { mesh: topWall, body: topWallBody } = this.boxCtor.createBox({
       width,
       height: 1,
       depth: 1,
       position: new THREE.Vector3(cx, 0, cz - height / 2),
-      materials: Box.createMaterials([
-        'minecraft/grass_dirt.png',
-        'minecraft/grass_dirt.png',
-        'minecraft/grass.png',
-        'minecraft/dirt.png',
-        'minecraft/grass_dirt.png',
-        'minecraft/grass_dirt.png'
-      ], {
-        wrapS: true,
-        wrapT: true,
-        repeat: {
-          x: width,
-          y: 1
-        }
-      })
+      materials: wallMaterial
     })
 
     const { mesh: leftWall, body: leftWallBody } = this.boxCtor.createBox({
@@ -304,21 +315,7 @@ export default class Arkanoid {
       height: 1,
       depth: height,
       position: new THREE.Vector3(cx - width / 2 + 0.5, 0, cz + 0.5),
-      materials: Box.createMaterials([
-        'minecraft/grass_dirt.png',
-        'minecraft/grass_dirt.png',
-        'minecraft/grass.png',
-        'minecraft/dirt.png',
-        'minecraft/grass_dirt.png',
-        'minecraft/grass_dirt.png'
-      ], {
-        wrapS: true,
-        wrapT: true,
-        repeat: {
-          x: 1,
-          y: height
-        }
-      })
+      materials: wallMaterial
     })
 
     const { mesh: rightWall, body: rightWallBody } = this.boxCtor.createBox({
@@ -326,21 +323,7 @@ export default class Arkanoid {
       height: 1,
       depth: height,
       position: new THREE.Vector3(cx + width / 2 - 0.5, 0, cz + 0.5),
-      materials: Box.createMaterials([
-        'minecraft/grass_dirt.png',
-        'minecraft/grass_dirt.png',
-        'minecraft/grass.png',
-        'minecraft/dirt.png',
-        'minecraft/grass_dirt.png',
-        'minecraft/grass_dirt.png'
-      ], {
-        wrapS: true,
-        wrapT: true,
-        repeat: {
-          x: 1,
-          y: height
-        }
-      })
+      materials: wallMaterial
     })
 
     this.wall.push(topWall, leftWall, rightWall)
@@ -351,7 +334,7 @@ export default class Arkanoid {
     const ball = new THREE.Mesh(
       new THREE.SphereGeometry(0.5, 32, 32),
       new THREE.MeshBasicMaterial({
-        map: new THREE.TextureLoader().load(Box.resolvePath('sprite.png'))
+        color: 0xffe4a3
       })
     )
 
@@ -372,21 +355,7 @@ export default class Arkanoid {
   createBaffle (): void {
     const { height, cx, cz } = this.opts
 
-    const materials = Box.createMaterials([
-      'minecraft/grass_dirt.png',
-      'minecraft/grass_dirt.png',
-      'minecraft/grass.png',
-      'minecraft/dirt.png',
-      'minecraft/grass_dirt.png',
-      'minecraft/grass_dirt.png'
-    ], {
-      wrapS: true,
-      wrapT: true,
-      repeat: {
-        x: 4,
-        y: 1
-      }
-    })
+    const materials = new THREE.MeshBasicMaterial({ color: 0xa2d2bc })
     const { mesh: baffle, body: baffleBody } = this.boxCtor.setOptions({
       width: 4,
       height: 1,
@@ -406,15 +375,21 @@ export default class Arkanoid {
       width: 1,
       height: 1,
       depth: 1,
-      position: new THREE.Vector3(0, 0, 0),
-      materials: Box.createMaterial('crate.gif')
+      position: new THREE.Vector3(0, 0, 0)
     })
 
+    const brickMaterials = [0xdba661, 0x9acbab, 0x70a591].map(color =>
+      new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.2, roughness: 0.8 })
+    )
+
     for (let z = 0; z < (height - 2) / 2; z++) {
+      const materials = brickMaterials[Math.floor(z / 5) % brickMaterials.length]
       for (let x = 0; x < (width - 2); x++) {
         const { mesh, body } = this.boxCtor.createBox({
-          position: new THREE.Vector3(x - width / 2 + 1.5, 0, z - height / 2 + 1)
+          position: new THREE.Vector3(x - width / 2 + 1.5, 0, z - height / 2 + 1),
+          materials
         })
+        mesh.scale.set(0.84, 1, 0.84)
         this.items.push(mesh)
         this.itemsBody.push(body)
       }

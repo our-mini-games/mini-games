@@ -52,7 +52,7 @@ export const games: GameConfig[] = [
   },
   {
     path: 'https://github.com/our-mini-games/mini-games/discussions',
-    name: '没有想要的？',
+    name: '推荐游戏',
     cover: 'org.svg'
   }
 ]

@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <div class="game-setting-modal">
-      <section class="game-setting-container">
+      <section class="game-setting-container arcade-panel arcade-dialog">
         <header class="header">
           <h2 class="title">难度设置</h2>
           <button
@@ -107,6 +107,7 @@ const handleItemClick = (level: Level): void => {
   z-index: 9;
   width: 100%;
   height: 100%;
+  background: var(--arcade-scrim);
 
   .game-setting-container {
     position: absolute;
@@ -115,9 +116,6 @@ const handleItemClick = (level: Level): void => {
     width: min(30rem, 90vw);
     max-height: 90vh;
     overflow-y: auto;
-    background-color: var(--white);
-    border-radius: 0.5rem;
-    box-shadow: 0 0 0.25rem var(--shadow-color);
     transform: translate(-50%, -50%);
 
     .header {
@@ -135,44 +133,45 @@ const handleItemClick = (level: Level): void => {
       .btn {
         border: 0;
         background-color: transparent;
+        color: var(--arcade-text);
         cursor: pointer;
       }
     }
 
     .wrapper {
-      padding: 1.5rem;
+      padding: clamp(10px, 3vw, 22px);
 
       .list {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 1.5rem;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
         margin: 0;
         list-style: none;
 
         .item {
-          width: 10rem;
-          padding: 1rem;
+          min-width: 0;
+          padding: clamp(8px, 2.5vw, 14px);
+          font-size: 14px;
           border-radius: 0.5rem;
           border: 1px solid var(--border-color);
           cursor: pointer;
 
           &.current {
             border-color: var(--primary-color);
-            background-color: var(--primary-color);
+            background-color: var(--arcade-raised);
 
             .row {
               .label {
-                color: var(--disabled-color);
+                color: var(--arcade-text);
               }
               .value {
-                color: var(--white);
+                color: var(--arcade-gold);
               }
             }
           }
 
-          &:hover {
-            border-color: var(--primary-color);
+          &:hover:not(.current) {
+            border-color: var(--arcade-jade);
           }
 
           .row {

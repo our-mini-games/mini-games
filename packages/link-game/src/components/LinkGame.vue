@@ -1,5 +1,6 @@
 <template>
   <svg
+    class="link-board arcade-table"
     :width="areaSize.width"
     :height="areaSize.height"
     :viewBox="`0 0 ${areaSize.width} ${areaSize.height}`"
@@ -15,71 +16,20 @@
       <pattern id="fencePattern" x="0" y="0" :width="levelInfo.size / 4" :height="levelInfo.size / 4" patternUnits="userSpaceOnUse">
         <path
           :d="`M 0 ${levelInfo.size / 4} L ${levelInfo.size / 4} 0`"
-          stroke="#707070"
+          stroke="#719a8a"
           stroke-width="1"
         />
         <path
           :d="`M 0 0 L ${levelInfo.size / 4} ${levelInfo.size / 4}`"
-          stroke="#505050"
+          stroke="#4c7360"
           stroke-width="1"
         />
       </pattern>
 
-      <!-- 选中发光滤镜 -->
-      <filter id="glow">
-        <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur1"></feGaussianBlur>
-        <feMerge result="merge1">
-          <feMergeNode in="blur1"></feMergeNode>
-          <feMergeNode in="SourceGraphic"></feMergeNode>
-        </feMerge>
-        <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur2"></feGaussianBlur>
-        <feMerge result="merge2">
-          <feMergeNode in="blur2"></feMergeNode>
-          <feMergeNode in="merge1"></feMergeNode>
-        </feMerge>
-        <feColorMatrix type="matrix" values="
-          1 0 0 0 0
-          0 1 0 0 0
-          0 0 1 0 0
-          0 0 0 1 0
-        " result="colorChange">
-          <animate attributeName="values" values="
-            1 0 0 0 0
-            0 1 0 0 0
-            0 0 1 0 0
-            0 0 0 1 0;
-            1 0 0 0 0.2
-            0 1 0 0 0
-            0 0 1 0 0
-            0 0 0 1 0;
-            1 0 0 0 0
-            0 1 0 0 0.2
-            0 0 1 0 0
-            0 0 0 1 0;
-            1 0 0 0 0
-            0 1 0 0 0
-            0 0 1 0 0.2
-            0 0 0 1 0
-          " dur="2s" repeatCount="indefinite"></animate>
-        </feColorMatrix>
-      </filter>
-      <!-- 连接线渐变流动 -->
-      <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="cyan" stop-opacity="1">
-          <animate attributeName="offset" values="0;1;0" dur="2s" repeatCount="indefinite"></animate>
-        </stop>
-        <stop offset="50%" stop-color="magenta" stop-opacity="1">
-          <animate attributeName="offset" values="0.5;1.5;0.5" dur="2s" repeatCount="indefinite"></animate>
-        </stop>
-        <stop offset="100%" stop-color="yellow" stop-opacity="1">
-          <animate attributeName="offset" values="1;2;1" dur="2s" repeatCount="indefinite"></animate>
-        </stop>
+      <linearGradient id="link-tile-glaze" x2="0" y2="1">
+        <stop stop-color="#456851" />
+        <stop offset="1" stop-color="#254135" />
       </linearGradient>
-
-      <!-- 光点效果 -->
-      <circle id="lightPoint" r="5" fill="white">
-        <animate attributeName="opacity" values="0;1;0" dur="1s" repeatCount="indefinite"></animate>
-      </circle>
     </defs>
 
     <g
@@ -111,54 +61,23 @@
         @click="(e: MouseEvent) => handleCheck(item, e)"
       >
         <rect
-          fill="none"
-          :width="levelInfo.size"
-          :height="levelInfo.size"
-          stroke="#e0e0e0"
-          stroke-width="1"
+          class="link-tile"
+          :class="{ empty: item.seq === 0, selected: item.status === 'checked', error: item.status === 'error' }"
+          x="1.5"
+          y="1.5"
+          :width="levelInfo.size - 3"
+          :height="levelInfo.size - 3"
+          :rx="levelInfo.size * .13"
         />
         <image
           v-if="item.seq !== 0"
-          :width="levelInfo.size"
-          :height="levelInfo.size"
+          :x="levelInfo.size * .1"
+          :y="levelInfo.size * .1"
+          :width="levelInfo.size * .8"
+          :height="levelInfo.size * .8"
           :xlink:href="`${PATHNAME}materials/${item.seq}.png`"
-          :filter="item.status === 'checked' ? 'url(#glow)' : 'none'"
-          :transform-origin="`${levelInfo.size / 2} ${levelInfo.size / 2}`"
-        >
-          <!-- 选中特效 -->
-          <animateTransform
-            v-if="item.status === 'checked'"
-            attributeName="transform"
-            type="scale"
-            from="0.8"
-            to="1"
-            dur="0.8s"
-            repeatCount="indefinite"
-          />
-          <!-- 连接失败特效 -->
-          <animateTransform
-            v-if="item.status === 'error'"
-            attributeName="transform"
-            type="translate"
-            values="0,0;4,0;-4,0;4,0;-4,0;0,0"
-            dur="0.4s"
-            repeatCount="indefinite"
-          />
-        </image>
-        <!-- <text
-          v-if="item.seq !== 0"
-          :x="levelInfo.size / 2"
-          :y="levelInfo.size / 2 + 2"
-          font-weight="bold"
-          font-family="Verdana"
-          :font-size="levelInfo.size / 3"
-          text-anchor="middle"
-          dominant-baseline="middle"
-          fill="#0088ff"
-          style="pointer-events: none;"
-        >
-          {{ item.seq }}
-        </text> -->
+          class="link-piece"
+        />
       </g>
 
       <g
@@ -166,30 +85,13 @@
         name="连接线"
       >
         <path
-          id="connectionPath"
           :d="animationPath"
+          class="link-path"
           fill="none"
-          stroke="url(#lineGradient)"
-          :stroke-width="levelInfo.size / 16"
+          :stroke-width="Math.max(2, levelInfo.size / 12)"
           stroke-linecap="round"
-          stroke-dasharray="1000"
-          stroke-dashoffset="1000"
-        >
-          <!-- 动态绘制线条 -->
-          <animate
-            attributeName="stroke-dashoffset"
-            from="300"
-            to="0"
-            dur="0.2s"
-            fill="freeze"
-          ></animate>
-        </path>
-        <!-- 光点跟随路径 -->
-        <use href="#lightPoint">
-          <animateMotion dur="1s" fill="freeze">
-            <mpath href="#connectionPath"></mpath>
-          </animateMotion>
-        </use>
+          pathLength="1"
+        />
       </g>
     </g>
   </svg>
@@ -210,7 +112,6 @@ const boxes = inject('boxes', ref<Box[]>([]))
 const areaSize = inject<Ref<{ width: number, height: number }>>('areaSize')!
 
 const animationItems = ref<Box[]>([])
-const isRemoveSuccess = ref(false)
 
 const animationPath = computed(() => {
   if (animationItems.value.length < 2) {
@@ -241,13 +142,62 @@ const animationPath = computed(() => {
 
 const linkAnimation = async (items: Box[]): Promise<void> => {
   animationItems.value.push(...items)
-  isRemoveSuccess.value = true
 
   await sleep(200)
 
   animationItems.value = []
-  isRemoveSuccess.value = false
 }
 
 const { handleCheck } = useEvent(boxes, gameStatus, levelInfo, linkAnimation)
 </script>
+
+<style scoped>
+.link-board {
+  display: block;
+}
+
+.link-tile {
+  fill: url(#link-tile-glaze);
+  stroke: var(--arcade-tile-edge);
+  stroke-width: 1;
+  transition: stroke 140ms, fill 140ms;
+}
+
+.link-tile.empty {
+  fill: var(--arcade-slot);
+  stroke: transparent;
+}
+
+.link-tile.selected {
+  fill: #726241;
+  stroke: var(--arcade-gold-hover);
+  stroke-width: 2.5;
+}
+
+.link-tile.error {
+  fill: #69423a;
+  stroke: var(--arcade-danger);
+  stroke-width: 2;
+}
+
+.link-piece {
+  pointer-events: none;
+  filter: saturate(.92) drop-shadow(0 0 1px #f1e3ae9c) drop-shadow(0 2px 1px #10251b9c);
+}
+
+.link-path {
+  pointer-events: none;
+  stroke: var(--arcade-gold-hover);
+  stroke-dasharray: 1;
+  animation: trace-link 160ms ease-out both;
+}
+
+@keyframes trace-link {
+  from { stroke-dashoffset: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-path { animation: none; }
+  .link-tile { transition: none; }
+}
+</style>

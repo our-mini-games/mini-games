@@ -1,6 +1,6 @@
 import { Directions, GameStatus, Orientation, snakeSize } from '../config/index.js'
 import { Coordinate, Snake, SnakePart } from '../types/index.js'
-import { createCanvas, getControlPoints, getOrientation, roundRect } from './utils.js'
+import { createCanvas, getControlPoints, getOrientation } from './utils.js'
 import { createVirtualRocker, RockerDirection } from './VirtualRocker.js'
 import { GreedySnakeContext } from './GreedySnake.js'
 import { DRAW, EXIT, LENGTH_CHANGE, RESTART, STATUS_CHANGE } from '../config/constants.js'
@@ -17,15 +17,14 @@ export const renderHome = (el: string | HTMLElement, startGame: () => void): {
   }
 
   const oHome = document.createElement('div')
-  oHome.classList.add('home')
+  oHome.classList.add('arcade-menu')
   oHome.innerHTML = `
-    <div class="background"></div>
-    <div class="flowing-gradient"></div>
-    <div class="particles" id="J_particles"></div>
-    <div class="content">
-      <h1 class="title">贪吃蛇</h1>
-      <button class="btn btn-start" id="J_btn_start">开始游戏</button>
-      <button class="btn btn-back" id="J_btn_back">返回首页</button>
+    <div class="arcade-menu-content arcade-panel">
+      <h1 class="arcade-title">贪吃蛇</h1>
+      <div class="arcade-menu-actions">
+        <button class="arcade-button arcade-button--primary" id="J_btn_start">开始游戏</button>
+        <button class="arcade-button" id="J_btn_back">返回合集</button>
+      </div>
     </div>
   `
 
@@ -39,14 +38,6 @@ export const renderHome = (el: string | HTMLElement, startGame: () => void): {
 
   const mount = (): void => {
     oContainer.appendChild(oHome)
-
-    for (let i = 0; i < 100; i++) {
-      const span = document.createElement('span')
-      span.style.left = `${Math.random() * 100}vw`
-      span.style.top = `${Math.random() * 100}vh`
-      span.style.animationDelay = `${Math.random() * 5}s`
-      document.querySelector('#J_particles')!.appendChild(span)
-    }
 
     document.querySelector('#J_btn_start')!.addEventListener('click', handleStart)
     document.querySelector('#J_btn_back')!.addEventListener('click', handleBack)
@@ -72,13 +63,20 @@ export const renderGameArea = (context: GreedySnakeContext): {
   const { width, height } = context.mainAreaSize
 
   const canvas = createCanvas(width, height)
+  canvas.className = 'snake-board arcade-table'
 
   const ctx = canvas.getContext('2d')!
 
-  const fillStyle = '#000'
-  const eyeColor = '#fff'
-  const tongueColor = '#f40'
-  const foodColor = '#00ff88'
+  const snakeGlaze = (): CanvasGradient => {
+    const glaze = ctx.createLinearGradient(0, -snakeSize / 2, 0, snakeSize / 2)
+    glaze.addColorStop(0, '#d4e7c8')
+    glaze.addColorStop(0.48, '#a2d2bc')
+    glaze.addColorStop(1, '#658b73')
+    return glaze
+  }
+  const eyeColor = '#17291f'
+  const tongueColor = '#f29b8f'
+  const foodColor = '#e4bc72'
 
   // 行数量
   const rows = context.rows
@@ -94,7 +92,7 @@ export const renderGameArea = (context: GreedySnakeContext): {
   const drawBackground = (): void => {
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
-        ctx.strokeStyle = '#e1e1e1'
+        ctx.strokeStyle = 'rgba(162, 210, 188, .15)'
         ctx.strokeRect(j * snakeSize, i * snakeSize, snakeSize, snakeSize)
       }
     }
@@ -156,7 +154,7 @@ export const renderGameArea = (context: GreedySnakeContext): {
       height / 4
     )
 
-    ctx.fillStyle = fillStyle
+    ctx.fillStyle = snakeGlaze()
     ctx.fill()
     // ctx.stroke()
 
@@ -300,7 +298,7 @@ export const renderGameArea = (context: GreedySnakeContext): {
       ctx.lineTo(startPoint2.x, startPoint2.y)
     }
 
-    ctx.fillStyle = fillStyle
+    ctx.fillStyle = snakeGlaze()
 
     ctx.fill()
     // ctx.stroke()
@@ -345,7 +343,7 @@ export const renderGameArea = (context: GreedySnakeContext): {
     }
 
     ctx.beginPath()
-    ctx.fillStyle = fillStyle
+    ctx.fillStyle = snakeGlaze()
     ctx.moveTo(-width / 4, -height / 2)
     ctx.quadraticCurveTo(-width / 2, height / 2, width / 2, height / 2)
     ctx.quadraticCurveTo(-width / 4, height / 4, width / 4, -height / 2)
@@ -359,7 +357,7 @@ export const renderGameArea = (context: GreedySnakeContext): {
     ctx.translate(food.x * snakeSize + snakeSize / 2, food.y * snakeSize + snakeSize / 2)
     ctx.fillStyle = foodColor
     ctx.beginPath()
-    ctx.shadowBlur = 10
+    ctx.shadowBlur = 5
     ctx.shadowColor = foodColor
     ctx.arc(0, 0, snakeSize / 4, 0, Math.PI * 2)
     ctx.fill()
@@ -396,191 +394,55 @@ export const renderGameArea = (context: GreedySnakeContext): {
   }
 }
 
-interface InfoButton {
-  name: string
-  text: string
-  cx: number
-  cy: number
-  width: number
-  height: number
-  status: 'default' | 'hover'
-}
-
 export const renderInfo = (context: GreedySnakeContext): {
   mount: (el: HTMLElement) => void
   unmount: () => void
-  render: (status: GameStatus, score: number) => void
 } => {
-  const width = context.mainAreaSize.width * 0.5
-  const height = context.footerAreaSize.height
-
-  const canvas = createCanvas(width, height)
-
-  const ctx = canvas.getContext('2d')!
-
-  const buttonGroup: InfoButton[] = [
-    {
-      name: 'ctrl',
-      text: '暂停游戏',
-      cx: width / 4,
-      cy: height / 4,
-      width: Math.max(80, width / 6),
-      height: height / 4,
-      status: 'default'
-    },
-    {
-      name: 'esc',
-      text: '不玩了',
-      cx: width / 4,
-      cy: height * 3 / 4,
-      width: Math.max(80, width / 6),
-      height: height / 4,
-      status: 'default'
-    }
-  ]
-
-  const renderButton = (button: InfoButton): void => {
-    ctx.save()
-    ctx.beginPath()
-    ctx.translate(button.cx, button.cy)
-    if (ctx.roundRect) {
-      ctx.roundRect(-button.width / 2, -button.height / 2, button.width, button.height, height / 16)
-    } else {
-      roundRect(ctx, -button.width / 2, -button.height / 2, button.width, button.height, height / 16)
-    }
-    ctx.strokeStyle = button.status === 'hover' ? 'transparent' : '#333'
-    ctx.stroke()
-
-    const gradient = ctx.createLinearGradient(
-      0,
-      0,
-      button.width,
-      button.height
-    )
-
-    gradient.addColorStop(0, '#00ff88')
-    gradient.addColorStop(1, '#0088ff')
-
-    ctx.fillStyle = button.status === 'hover' ? gradient : 'transparent'
-    ctx.fill()
-    ctx.restore()
-
-    drawText(ctx, button.name === 'ctrl' ? (context.status === GameStatus.paused ? '继续游戏' : context.status === GameStatus.finished ? '再来一局' : '暂停游戏') : button.text, {
-      x: button.cx,
-      y: button.cy,
-      fontSize: button.height * 0.4,
-      color: button.status === 'hover' ? '#fff' : '#333',
-      textAlign: 'center',
-      textBaseline: 'middle'
-    })
-  }
-
-  const renderButtons = (): void => {
-    buttonGroup.forEach((button) => {
-      renderButton(button)
-    })
-  }
-
-  const renderStatus = (status: GameStatus, score: number): void => {
-    drawText(ctx, '状态：', {
-      x: width * 3 / 4,
-      y: height / 4,
-      fontSize: height / 10,
-      color: '#333',
-      textAlign: 'right',
-      textBaseline: 'middle'
-    })
-    drawText(ctx, status === GameStatus.paused ? '暂停中' : status === GameStatus.finished ? '已结束' : '游戏中', {
-      x: width * 3 / 4,
-      y: height / 4,
-      fontSize: Math.min(14, height / 8),
-      color: status === GameStatus.paused ? '#ff0' : status === GameStatus.finished ? '#f40' : '#0088ff',
-      textAlign: 'left',
-      textBaseline: 'middle'
-    })
-
-    drawText(ctx, '长度：', {
-      x: width * 3 / 4,
-      y: height * 3 / 4,
-      fontSize: height / 10,
-      color: '#333',
-      textAlign: 'right',
-      textBaseline: 'middle'
-    })
-    drawText(ctx, `${score}`, {
-      x: width * 3 / 4,
-      y: height * 3 / 4,
-      fontSize: Math.min(14, height / 8),
-      color: '#ff0088',
-      textAlign: 'left',
-      textBaseline: 'middle'
-    })
-  }
+  const info = document.createElement('div')
+  info.className = 'snake-info'
+  info.innerHTML = `
+    <div class="snake-meters">
+      <span class="arcade-meter">长度 <output class="snake-length"></output></span>
+      <span class="arcade-meter"><strong class="snake-status"></strong></span>
+    </div>
+    <div class="snake-actions">
+      <button class="arcade-button arcade-button--primary snake-control"></button>
+      <button class="arcade-button snake-exit">返回菜单</button>
+    </div>
+  `
+  const control = info.querySelector<HTMLButtonElement>('.snake-control')!
+  const status = info.querySelector<HTMLElement>('.snake-status')!
+  const length = info.querySelector<HTMLOutputElement>('.snake-length')!
 
   const render = (): void => {
-    ctx.clearRect(0, 0, width, height)
-
-    renderButtons()
-    renderStatus(context.status, context.length)
+    const { paused, playing } = GameStatus
+    control.textContent = context.status === playing ? '暂停游戏' : context.status === paused ? '继续游戏' : '再来一局'
+    status.textContent = context.status === playing ? '游戏中' : context.status === paused ? '已暂停' : '已结束'
+    status.dataset.state = GameStatus[context.status]
+    length.value = String(context.length)
   }
 
-  const handleMouseMove = (e: MouseEvent): void => {
-    const x = e.clientX - canvas.offsetLeft
-    const y = e.clientY - canvas.offsetTop
-
-    for (const button of buttonGroup) {
-      if (x > button.cx - button.width / 2 && x < button.cx + button.width / 2 && y > button.cy - button.height / 2 && y < button.cy + button.height / 2) {
-        button.status = 'hover'
-        canvas.style.cursor = 'pointer'
-        break
-      }
-
-      button.status = 'default'
-      canvas.style.cursor = 'default'
+  control.addEventListener('click', () => {
+    if (context.status === GameStatus.finished) {
+      context.emitter.emit(RESTART)
+    } else {
+      context.status = context.status === GameStatus.paused ? GameStatus.playing : GameStatus.paused
     }
-
-    render()
-  }
-
-  const handleClick = (e: MouseEvent): void => {
-    const x = e.clientX - canvas.offsetLeft
-    const y = e.clientY - canvas.offsetTop
-
-    for (const button of buttonGroup) {
-      if (x > button.cx - button.width / 2 && x < button.cx + button.width / 2 && y > button.cy - button.height / 2 && y < button.cy + button.height / 2) {
-        console.log(button.name)
-        if (button.name === 'ctrl') {
-          if (context.status === GameStatus.finished) {
-            context.emitter.emit(RESTART)
-          } else {
-            context.emitter.emit(STATUS_CHANGE, context.status === GameStatus.paused ? GameStatus.playing : GameStatus.paused)
-          }
-        } else if (button.name === 'esc') {
-          context.emitter.emit(EXIT)
-        }
-        break
-      }
-    }
-  }
-
-  const mount = (el: HTMLElement): void => {
-    el.appendChild(canvas)
-
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('click', handleClick)
-  }
-
-  context.emitter.on(STATUS_CHANGE, render)
-  context.emitter.on(LENGTH_CHANGE, render)
-
-  const unmount = (): void => {
-    canvas.remove()
-  }
+  })
+  info.querySelector('.snake-exit')!.addEventListener('click', () => context.emitter.emit(EXIT))
 
   return {
-    mount,
-    unmount,
-    render
+    mount (el) {
+      el.appendChild(info)
+      context.emitter.on(STATUS_CHANGE, render)
+      context.emitter.on(LENGTH_CHANGE, render)
+      render()
+    },
+    unmount () {
+      context.emitter.off(STATUS_CHANGE, render)
+      context.emitter.off(LENGTH_CHANGE, render)
+      info.remove()
+    }
   }
 }
 
@@ -588,7 +450,7 @@ export const renderRocker = (context: GreedySnakeContext): {
   mount: (el: HTMLElement) => void
   unmount: () => void
 } => {
-  const width = context.footerAreaSize.width * 0.5
+  const width = Math.min(context.footerAreaSize.width * 0.46, 230)
   const height = context.footerAreaSize.height
   const min = Math.min(width, height)
   const { rocker, destroyRocker } = createVirtualRocker({
@@ -596,9 +458,9 @@ export const renderRocker = (context: GreedySnakeContext): {
     height,
     baseRadius: min * 0.4,
     handleRadius: min * 0.2,
-    baseColor: [255, 255, 255],
-    handleColor: [0, 255, 136],
-    edgeLightColor: [0, 255, 136],
+    baseColor: [180, 197, 185],
+    handleColor: [162, 210, 188],
+    edgeLightColor: [228, 188, 114],
     onDirectionChange: (direction: RockerDirection) => {
       context.direction = direction === RockerDirection.UP ? Directions.up : direction === RockerDirection.RIGHT ? Directions.right : direction === RockerDirection.DOWN ? Directions.down : Directions.left
     }
@@ -616,27 +478,4 @@ export const renderRocker = (context: GreedySnakeContext): {
     mount,
     unmount
   }
-}
-
-interface DrawTextOptions {
-  x?: number
-  y?: number
-  fontSize?: number
-  fontFamily?: string
-  fontWeight?: string
-  color?: string
-  textAlign?: CanvasTextAlign
-  textBaseline?: CanvasTextBaseline
-}
-
-function drawText (ctx: CanvasRenderingContext2D, text: string, options: DrawTextOptions = {}): void {
-  const { x, y, fontSize, fontFamily, fontWeight, color, textAlign, textBaseline } = options
-
-  ctx.save()
-  ctx.font = `${fontWeight ?? 'normal'} ${fontSize ?? 16}px ${fontFamily ?? 'Arial'}`
-  ctx.fillStyle = color ?? '#000'
-  ctx.textAlign = textAlign ?? 'center'
-  ctx.textBaseline = textBaseline ?? 'middle'
-  ctx.fillText(text, x ?? 0, y ?? 0)
-  ctx.restore()
 }

@@ -5,7 +5,7 @@
       class="finished-modal"
       @contextmenu.prevent="() => false"
     >
-      <div class="wrapper">
+      <div class="wrapper arcade-panel arcade-dialog">
         <img
           class="head-pic"
           :src="gameStatus === GameStatus.Complete ? CompletePic : DefeatPic"
@@ -25,13 +25,13 @@
 
         <div class="operations">
           <div
-            class="btn btn-confirm"
+            class="arcade-button"
             @click="visible = false"
           >
             知道了
           </div>
           <div
-            class="btn btn-again"
+            class="arcade-button arcade-button--primary"
             @click="handleAgain"
           >
             再来一局
@@ -76,7 +76,7 @@ watch(gameStatus, (val) => {
   z-index: 9999;
   width: 100vw;
   height: 100vh;
-  background-color: transparent;
+  background-color: var(--arcade-scrim);
 
   .wrapper {
     position: absolute;
@@ -84,9 +84,6 @@ watch(gameStatus, (val) => {
     top: 50%;
     width: 300px;
     padding: 56px 16px 38px 16px;
-    background-color: #cdcee5;
-    border-radius: 16px;
-    box-shadow: 0 4px 16px #888;
     transform: translate(-50%, -50%);
 
     .head-pic {
@@ -116,20 +113,6 @@ watch(gameStatus, (val) => {
       justify-content: center;
       align-items: center;
       gap: 32px;
-
-      .btn {
-        padding: 6px 16px;
-        border-radius: 4px;
-        border: 1px solid #f1f1f1;
-        background-color: #f1f1f1;
-        cursor: pointer;
-
-        &.btn-again {
-          color: #fff;
-          border-color: #0088ff;
-          background-color: #0088ff;
-        }
-      }
     }
   }
 }

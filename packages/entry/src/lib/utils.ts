@@ -5,8 +5,8 @@ export const createGameList = (games: GameConfig[], members: MemberConfig[], roo
   const fragment = new DocumentFragment()
 
   const ProjectTitle = Object.assign(document.createElement('div'), {
-    className: 'title',
-    innerHTML: '<h1>Our <small style="opacity: .6;">Mini</small> Games</h1>'
+    className: 'hero',
+    innerHTML: '<h1 class="arcade-title">小游戏合集</h1>'
   })
 
   const GameList = Object.assign(document.createElement('ul'), {
@@ -16,18 +16,18 @@ export const createGameList = (games: GameConfig[], members: MemberConfig[], roo
   games.forEach(game => {
     const oLi = Object.assign(document.createElement('li'), {
       className: 'game-item',
-      innerHTML: `<a href="${game.path}" title="${game.name}" target="_blank">
-        ${game.cover ? `<img class="game-cover" src="${rootPath}${game.cover}" />` : ''}
-        <span>${game.name}</span>
+      innerHTML: `<a href="${game.path}" target="_blank" rel="noopener">
+        ${game.cover ? `<img class="game-cover" src="${rootPath}${game.cover}" alt="" />` : ''}
+        <span>${game.name}</span><span class="game-arrow" aria-hidden="true">↗</span>
       </a>`
     })
 
     GameList.appendChild(oLi)
   })
 
-  const AuthorTitle = Object.assign(document.createElement('h3'), {
+  const AuthorTitle = Object.assign(document.createElement('h2'), {
     className: 'author-title',
-    innerHTML: '游戏供应商<span class="join-btn"><a href="https://github.com/our-mini-games/mini-games">快来加盟吧</a></span>'
+    innerHTML: '开发者 <a class="join-btn" href="https://github.com/our-mini-games/mini-games">参与项目 ↗</a>'
   })
 
   const MemberList = Object.assign(document.createElement('ul'), {

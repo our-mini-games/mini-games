@@ -28,6 +28,7 @@
           class="tetris-item-inner"
           name="inner"
         />
+        <path d="M2.5 3H9" stroke="#f2e5bb" stroke-opacity=".27" stroke-linecap="round" />
       </g>
     </defs>
   </svg>

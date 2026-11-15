@@ -170,7 +170,7 @@ const wrapperCol = computed(() => {
 })
 
 const buttonCol = computed(() => {
-  return windowWidth.value < 768 
+  return windowWidth.value < 768
     ? { span: 16, offset: 8 }
     : { span: 16, offset: 8 }
 })
@@ -191,30 +191,22 @@ const formState = reactive<FormState>({
   customSetting: customSetting.value
 })
 
-const onFinish = (values: any): void => {
+const onFinish = (values: FormState): void => {
+  const setting = {
+    ...values,
+    customSetting: values.customSetting ?? customSetting.value
+  }
+
   try {
-    const localState = JSON.parse(localStorage.getItem(MINE_SWEEPER_SETTING) ?? 'null')
+    localStorage.setItem(MINE_SWEEPER_SETTING, JSON.stringify(setting))
+  } catch {
+    return
+  }
 
-    if (!localState) {
-      localStorage.setItem(MINE_SWEEPER_SETTING, JSON.stringify(values))
-    } else {
-      localState.level = values.level
-      localState.useDoubtful = values.useDoubtful
-      localState.useLeftClickEnhancements = values.useLeftClickEnhancements
-      localState.customSetting = values.customSetting || localState.customSetting || {
-        row: 10,
-        column: 10,
-        totalOfMines: 10
-      }
-      localStorage.setItem(MINE_SWEEPER_SETTING, JSON.stringify(localState))
-    }
-
-    customSetting.value = localState.customSetting
-    useDoubtful.value = localState.useDoubtful
-    currentLevel.value = localState.level
-    useLeftClickEnhancements.value = localState.useLeftClickEnhancements
-
-    emit('close')
-  } catch {}
+  customSetting.value = setting.customSetting
+  useDoubtful.value = setting.useDoubtful
+  currentLevel.value = setting.level
+  useLeftClickEnhancements.value = setting.useLeftClickEnhancements
+  emit('close')
 }
 </script>

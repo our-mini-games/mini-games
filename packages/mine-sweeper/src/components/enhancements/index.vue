@@ -1,7 +1,7 @@
 <template>
   <section class="enhancements-wrapper">
     <h2 class="title">
-      左键功能
+      操作模式
     </h2>
     <div class="behaviors">
       <a-tooltip
@@ -10,14 +10,17 @@
         :title="item.label"
         placement="top"
       >
-        <div
+        <button
+          type="button"
           class="item"
+          :aria-label="item.label"
+          :aria-pressed="leftButtonBehaviors === item.type"
           :class="{
             current: leftButtonBehaviors === item.type,
             [item.type]: true
           }"
           @click="leftButtonBehaviors = item.type"
-        ></div>
+        ></button>
       </a-tooltip>
     </div>
   </section>
@@ -64,83 +67,41 @@ const behaviors = computed(() => <Array<{
 .enhancements-wrapper {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-  justify-content: center;
-
-  @media (min-width: 769px) {
-    gap: 1rem;
-  }
+  gap: 10px;
+  padding: 5px 8px;
+  border: 1px solid var(--arcade-line);
+  border-radius: var(--arcade-radius);
+  background: var(--arcade-panel);
 
   .title {
-    width: 5em;
-    height: 2rem;
-    margin: 0;
-    padding: 0 0.3em;
-    line-height: 2rem;
-    font-size: 0.85rem;
-    text-align: center;
-    color: var(--white);
-    background-color: var(--bg-cell-color);
-    border-radius: 0.25rem;
-    box-sizing: border-box;
-
-    @media (min-width: 769px) {
-      width: 6em;
-      height: 2.2rem;
-      line-height: 2.2rem;
-      font-size: 1rem;
-      padding: 0 0.5em;
-    }
+    font-size: 13px;
+    color: var(--arcade-muted);
   }
 
   .behaviors {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
-    min-width: 0;
-    flex: 1;
-    justify-content: center;
-
-    @media (min-width: 769px) {
-      gap: 0.5rem;
-    }
+    gap: 5px;
 
     .item {
-      width: 2rem;
-      height: 2rem;
-      border: 1px solid var(--bg-color-1);
-      background-color: var(--bg-cell-color-revealed);
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--arcade-tile-edge);
+      border-radius: 5px;
+      background-color: var(--arcade-slot);
       background-size: cover;
       background-position: center;
-      border-radius: 0.25rem;
       cursor: pointer;
 
-      @media (min-width: 769px) {
-        width: 2.2rem;
-        height: 2.2rem;
-      }
-
-      &:hover {
-        border-color: var(--white);
-      }
-
+      &:hover { border-color: var(--arcade-jade); }
       &.current {
-        background-color: var(--bg-cell-color);
-        border-color: var(--primary-color);
+        background-color: var(--arcade-tile);
+        border-color: var(--arcade-gold);
       }
 
-      &.open {
-        background-image: url('@/assets/img/revealed-1.png');
-      }
-
-      &.doubtful {
-        background-image: url('@/assets/img/doubtful-1.png');
-      }
-
-      &.marked {
-        background-image: url('@/assets/img/flag-1.png');
-      }
+      &.open { background-image: url('@/assets/img/revealed-1.png'); }
+      &.doubtful { background-image: url('@/assets/img/doubtful-1.png'); }
+      &.marked { background-image: url('@/assets/img/flag-1.png'); }
     }
   }
 }

@@ -66,7 +66,7 @@ function calculateAngle (x1: number, y1: number, x2: number, y2: number): number
 }
 
 // 绘制气泡
-function drawBubble (ctx: CanvasRenderingContext2D, x: number, y: number, r: number, fillColor: RGBColorArray = [255, 255, 255], shadowColor: RGBColorArray = [255, 245, 196]): void {
+function drawBubble (ctx: CanvasRenderingContext2D, x: number, y: number, r: number, fillColor: RGBColorArray = [162, 210, 188], shadowColor: RGBColorArray = [228, 188, 114]): void {
   ctx.beginPath()
   ctx.save()
   ctx.translate(x, y)

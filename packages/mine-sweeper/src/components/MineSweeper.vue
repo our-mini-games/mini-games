@@ -4,11 +4,19 @@
     <main class="mine-sweeper-main">
       <svg
         ref="svgRef"
+        class="arcade-table"
         :width="viewBoxSize.width"
         :height="viewBoxSize.height"
         :viewBox="`0 0 ${viewBoxSize.width} ${viewBoxSize.height}`"
         preserveAspectRatio="xMidYMid meet"
       >
+        <defs>
+          <linearGradient id="mine-tile-glaze" x2="0" y2="1">
+            <stop stop-color="#527b65" />
+            <stop offset=".88" stop-color="var(--arcade-tile)" />
+            <stop offset="1" stop-color="#223e32" />
+          </linearGradient>
+        </defs>
         <g>
           <g
             v-for="item of boxes"
@@ -32,7 +40,7 @@
               y="1"
               :width="areaSize - 2"
               :height="areaSize - 2"
-              stroke-width="2"
+              stroke-width="1"
               rx="4"
               ry="4"
             />
@@ -111,7 +119,7 @@
         v-if="useLeftClickEnhancements"
       />
     </footer>
-    
+
     <MobileHint />
   </div>
 </template>
@@ -188,14 +196,20 @@ watch(boxes, (newBoxes) => {
     height: 100%;
     overflow: hidden;
 
+    svg {
+      display: block;
+
+    }
+
     .mine-cell {
-      fill: var(--bg-cell-color);
-      stroke: var(--border-color);
+      fill: url(#mine-tile-glaze);
+      stroke: var(--arcade-tile-edge);
       background-size: cover;
       background-position: center;
 
       &.revealed {
-        fill: var(--bg-cell-color-revealed);
+        fill: var(--arcade-slot);
+        stroke: #3d5d4d;
       }
 
       &.mine {
@@ -205,6 +219,7 @@ watch(boxes, (newBoxes) => {
       }
 
       &.marked {
+        stroke: var(--arcade-gold);
         background-image: url('@/assets/img/flag-1.png');
       }
 
@@ -221,14 +236,11 @@ watch(boxes, (newBoxes) => {
   }
 
   .mine-sweeper-footer {
-    height: 2rem;
+    min-height: 42px;
+    flex-shrink: 0;
     width: 100%;
     display: flex;
     justify-content: center;
-
-    @media (min-width: 769px) {
-      height: 2.5rem;
-    }
   }
 }
 </style>

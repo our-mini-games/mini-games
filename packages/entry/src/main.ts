@@ -1,3 +1,4 @@
+import '../../arcade-theme/theme.css'
 import './style.css'
 
 import { createGameList } from './lib/utils.js'

@@ -1,5 +1,4 @@
 <template>
-  <Bg />
   <div class="mine-sweeper">
     <Home v-if="gameStatus === 'finished'" />
     <MineSweeper v-else />
@@ -15,7 +14,6 @@ import { createStatistics, getBoxes } from './lib/utils.js'
 import { MINE_SWEEPER_SETTING } from './config/constants.js'
 import type { Box, CustomSetting, GameStatus, LeftButtonBehaviors, LevelInfo } from './types/index.js'
 
-import Bg from './components/Bg.vue'
 import Home from './components/Home.vue'
 import MineSweeper from './components/MineSweeper.vue'
 import FinishedModal from './components/modal/Finished.vue'

@@ -4,7 +4,7 @@
       class="finished-modal"
       @contextmenu.prevent="() => false"
     >
-      <div class="wrapper">
+      <div class="wrapper arcade-panel arcade-dialog">
         <img
           class="head-pic"
           :src="`${PATHNAME}icons/complete.png`"
@@ -74,7 +74,7 @@ const handleRefresh = (): void => {
   z-index: 9999;
   width: 100vw;
   height: 100vh;
-  background-color: transparent;
+  background-color: var(--arcade-scrim);
 
   .wrapper {
     position: absolute;
@@ -82,9 +82,6 @@ const handleRefresh = (): void => {
     top: 50%;
     width: 18rem;
     padding: 2.5rem 0.5rem 1.5rem 0.5rem;
-    background-color: var(--finished-color-bg);
-    border-radius: 0.5rem;
-    box-shadow: 0 0.25rem 0.5rem var(--shadow-color);
     transform: translate(-50%, -50%);
 
     .head-pic {
@@ -127,11 +124,12 @@ const handleRefresh = (): void => {
         padding: 0.25rem 0.5rem;
         border-radius: 0.25rem;
         border: 1px solid var(--border-color);
-        background-color: var(--border-color);
+        background-color: var(--arcade-raised);
+        color: var(--arcade-text);
         cursor: pointer;
 
         &.btn-refresh {
-          color: var(--white);
+          color: var(--arcade-ink);
           border-color: var(--primary-color);
           background-color: var(--primary-color);
         }

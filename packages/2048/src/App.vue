@@ -4,7 +4,7 @@
 
     <Game2048 />
 
-    <span class="placeholder"></span>
+    <p class="game-hint">拖动或滑动棋盘，合并相同的数字</p>
 
     <FinisedModal />
   </div>
@@ -23,11 +23,15 @@ useGame()
 .game-2048 {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  gap: clamp(14px, 4vh, 30px);
   align-items: center;
-  width: 100vw;
-  height: 100vh;
-  padding: 16px 0;
-  background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+  min-height: 100svh;
+  padding: 20px 16px;
+}
+.game-hint {
+  color: var(--arcade-muted);
+  font-size: 14px;
+  text-align: center;
 }
 </style>

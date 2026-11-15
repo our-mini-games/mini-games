@@ -1,8 +1,8 @@
 <template>
-  <div class="home">
+  <div class="arcade-menu">
     <!-- 主容器 -->
-    <div class="container">
-      <h1>扫雷</h1>
+    <div class="arcade-menu-content arcade-panel">
+      <h1 class="arcade-title">扫雷</h1>
 
       <!-- 扫雷网格 -->
       <div class="mine-grid">
@@ -34,19 +34,18 @@
       </div>
 
       <!-- 按钮容器 -->
-      <div class="buttons">
-        <button class="btn" @click="handleClick('start')">开始游戏</button>
-        <button class="btn" @click="handleClick('gameSetting')">游戏设置</button>
-        <button class="btn" @click="handleClick('exit')">退出游戏</button>
+      <div class="arcade-menu-actions">
+        <button class="arcade-button arcade-button--primary" @click="handleClick('start')">开始游戏</button>
+        <button class="arcade-button" @click="handleClick('gameSetting')">游戏设置</button>
+        <button class="arcade-button" @click="handleClick('exit')">返回合集</button>
       </div>
     </div>
 
-  <GameSettingModal
-    v-if="gameSettingVisible"
-    @close="gameSettingVisible = false"
-  />
+    <GameSettingModal
+      v-if="gameSettingVisible"
+      @close="gameSettingVisible = false"
+    />
   </div>
-
 </template>
 <script setup lang="ts">
 import { onMounted, inject, Ref, ref, defineAsyncComponent } from 'vue'
@@ -70,7 +69,6 @@ const handleClick = (type: 'start' | 'gameSetting' | 'exit'): void => {
   }
 }
 
-// 粒子效果生成
 onMounted(() => {
   // 扫雷网格交互
   const cells = document.querySelectorAll('.mine-cell')
@@ -88,60 +86,18 @@ onMounted(() => {
   })
 })
 </script>
-<style lang="scss">
-.home {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  padding: 1rem;
-
-  /* 主容器 */
-  .container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    z-index: 1;
-    gap: 1.5rem;
-
-    @media (max-width: 768px) {
-      gap: 1rem;
-    }
-  }
-
-  /* 标题样式 */
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-    background: linear-gradient(90deg, var(--border-color), var(--primary-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: glowText 2s infinite alternate;
-
-    @media (max-width: 768px) {
-      font-size: 2rem;
-    }
-  }
-
-  /* 扫雷网格 */
+<style lang="scss" scoped>
+.arcade-menu-content {
   .mine-grid {
     display: grid;
     grid-template-columns: repeat(5, 1.8rem);
     grid-template-rows: repeat(5, 1.8rem);
     gap: 4px;
-    margin: 1rem 0;
 
     @media (min-width: 769px) {
       grid-template-columns: repeat(5, 2rem);
       grid-template-rows: repeat(5, 2rem);
       gap: 5px;
-      margin: 20px 0;
     }
   }
 
@@ -152,7 +108,7 @@ onMounted(() => {
     position: relative;
     width: 1.8rem;
     height: 1.8rem;
-    border: 2px solid var(--border-color);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 1rem;
     background-color: var(--bg-cell-color);
@@ -160,7 +116,7 @@ onMounted(() => {
     background-repeat: no-repeat;
     background-position: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 150ms;
 
     @media (min-width: 769px) {
       width: 2rem;
@@ -222,81 +178,5 @@ onMounted(() => {
     }
   }
 
-  /* 按钮容器 */
-  .buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    width: 100%;
-    max-width: 280px;
-
-    @media (min-width: 769px) {
-      gap: 1rem;
-      max-width: 320px;
-    }
-  }
-
-  /* 按钮样式 */
-  .btn {
-    padding: 0.6rem 1.5rem;
-    font-size: 1.2rem;
-    color: var(--white);
-    background: var(--bg-cell-color-flag);
-    border: 2px solid var(--border-color);
-    border-radius: 0.3rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-shadow: 0 0 5px var(--border-color);
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    text-align: center;
-
-    @media (min-width: 769px) {
-      padding: .5rem 2rem;
-      font-size: 1.5rem;
-      border-radius: 0.2rem;
-    }
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 300%;
-      height: 300%;
-      background: radial-gradient(circle, var(--bg-cell-color-flag), transparent);
-      transform: translate(-50%, -50%) scale(0);
-      transition: transform 0.5s ease;
-      z-index: -1;
-    }
-
-    &:hover {
-      background: var(--bg-cell-color-flag);
-      box-shadow: 0 0 15px var(--border-color), 0 0 30px var(--border-color);
-      transform: translateY(-3px);
-
-      @media (min-width: 769px) {
-        transform: translateY(-5px);
-      }
-
-      &::before {
-        transform: translate(-50%, -50%) scale(1);
-      }
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
-}
-
-@keyframes glowText {
-  0% {
-    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
-  }
-  100% {
-    text-shadow: 0 0 20px #00ffaa, 0 0 40px #00ffaa, 0 0 60px #00ffaa;
-  }
 }
 </style>

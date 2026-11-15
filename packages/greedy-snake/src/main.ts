@@ -1,3 +1,4 @@
+import '../../arcade-theme/theme.css'
 import { renderGameArea, renderHome, renderInfo, renderRocker } from './lib/Renderer.js'
 import { EXIT } from './config/constants.js'
 import { createContext, createGreedySnake } from './lib/GreedySnake.js'
@@ -6,30 +7,22 @@ import './style.css'
 const startGame = (): void => {
   const context = createContext()
 
-  const mainAreaSize = context.mainAreaSize
-
   const footerAreaSize = context.footerAreaSize
 
   const oRoot = document.querySelector<HTMLElement>('#app')!
   const oFooter = document.createElement('footer')
-  oFooter.style.cssText = `
-    display: flex;
-    align-items: center;
-    width: ${mainAreaSize.width}px;
-    height: ${footerAreaSize.height}px;
-  `
+  oFooter.className = 'snake-hud'
+  oFooter.style.minHeight = `${footerAreaSize.height}px`
 
   const gameCanvas = renderGameArea(context)
 
   const rockerCanvas = renderRocker(context)
-  const infoCanvas = renderInfo(context)
+  const info = renderInfo(context)
 
   gameCanvas.mount(oRoot)
   rockerCanvas.mount(oFooter)
-  infoCanvas.mount(oFooter)
+  info.mount(oFooter)
   oRoot.appendChild(oFooter)
-
-  console.log(gameCanvas, rockerCanvas, infoCanvas)
 
   const { init, destroy } = createGreedySnake(context)
   init()
@@ -37,7 +30,7 @@ const startGame = (): void => {
   context.emitter.on(EXIT, () => {
     destroy()
     rockerCanvas.unmount()
-    infoCanvas.unmount()
+    info.unmount()
     gameCanvas.unmount()
     oRoot.removeChild(oFooter)
 

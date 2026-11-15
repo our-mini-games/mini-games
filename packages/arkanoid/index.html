@@ -9,16 +9,17 @@
   <body>
     <div id="app">
       <header class="header">
-        <button class="btn btn-back">退出</button>
-        <h1 class="title">打砖块</h1>
-        <button class="btn btn-ctrl">开始游戏</button>
-        <button class="btn btn-restart">重新开始</button>
+        <h1 class="arcade-title">打砖块</h1>
+        <button class="arcade-button btn-back">返回</button>
+        <button class="arcade-button arcade-button--primary btn-ctrl">开始游戏</button>
+        <button class="arcade-button btn-restart">重新开始</button>
       </header>
-      <main class="arkanoid"></main>
+      <main class="arkanoid arcade-table" aria-label="打砖块游戏区"></main>
       <footer class="footer">
         <div class="controls">
-          <div class="target">|&ensp;|</div>
+          <div class="target" aria-hidden="true">···</div>
         </div>
+        <p class="control-hint">拖动滑块，或用 ← → 移动挡板</p>
       </footer>
     </div>
     <script type="module" src="/src/main.ts"></script>

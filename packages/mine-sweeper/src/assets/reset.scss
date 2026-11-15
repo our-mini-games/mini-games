@@ -20,42 +20,28 @@ html {
     font-size: 14px;
   }
 
-  --primary-color: #00ffff;
-  --primary-text-color: #333;
-  --secondary-text-color: #666;
-  --tertiary-text-color: #999;
+  --primary-color: var(--arcade-gold);
+  --bg-cell-color: #4a6c5a;
+  --bg-cell-color-hover: #557f68;
+  --bg-cell-color-revealed: var(--arcade-well);
+  --bg-cell-color-flag: var(--arcade-panel);
+  --bg-cell-color-mine: #733f39;
+  --bg-cell-color-number: var(--arcade-raised);
+  --border-color: var(--arcade-line);
+  --white: var(--arcade-text);
+  --red: var(--arcade-danger);
 
-  --bg-color-1: rgba(0, 78, 146, 0.8);
-  --bg-color-2: rgba(0, 4, 40, 0.9);
-
-  --bg-cell-color: rgba(0, 255, 255, 0.6);
-  --bg-cell-color-hover: rgba(0, 255, 255, 0.8);
-  --bg-cell-color-revealed: rgba(0, 255, 255, 0.1);
-  --bg-cell-color-flag: rgba(0, 255, 255, 0.2);
-  --bg-cell-color-doubtful: rgba(0, 255, 255, 0.3);
-  --bg-cell-color-mine: rgba(255, 0, 0, 0.2);
-  --bg-cell-color-number: rgba(0, 255, 255, 0.2);
-
-  --border-color: #00ffff;
-
-  --white: #fff;
-  --black: #000;
-  --red: #f40;
-
-  --number-color-1: #ffffff;
-  --number-color-2: #0fff07;
-  --number-color-3: #f40;
-  --number-color-4: #0511f1;
-  --number-color-5: #972727;
-  --number-color-6: #00fac8;
-  --number-color-7: #ff00f2;
-  --number-color-8: #eaff04;
-  
+  --number-color-1: #c2e4ff;
+  --number-color-2: #a9e7bd;
+  --number-color-3: #ffb49f;
+  --number-color-4: #d5c5fb;
+  --number-color-5: #ffc5e2;
+  --number-color-6: #9df0eb;
+  --number-color-7: #f8dc95;
+  --number-color-8: #fff4d0;
 }
 
 body {
-  font-size: 1rem !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
 }
@@ -63,4 +49,65 @@ body {
 .mine-sweeper {
   width: 100%;
   height: 100%;
+}
+
+.ant-modal .ant-modal-content,
+.ant-modal .ant-modal-header,
+.ant-dropdown .ant-dropdown-menu {
+  background-color: var(--arcade-panel);
+  color: var(--arcade-text);
+}
+
+.ant-modal {
+  .ant-modal-content,
+  .ant-modal-header {
+    border-radius: var(--arcade-radius) var(--arcade-radius) 0 0;
+  }
+
+  .ant-modal-content {
+    border-radius: var(--arcade-radius);
+    box-shadow: var(--arcade-shadow);
+  }
+
+  .ant-btn:not(.ant-btn-primary),
+  .ant-input-number {
+    border-color: var(--arcade-line);
+    background: var(--arcade-raised);
+    color: var(--arcade-text);
+  }
+
+  .ant-input-number-input,
+  .ant-modal-title,
+  .ant-modal-close,
+  .ant-radio-wrapper,
+  .ant-form-item-label > label {
+    color: var(--arcade-text);
+  }
+
+  .ant-modal-header {
+    border-bottom-color: var(--arcade-line);
+  }
+
+  .ant-btn-primary,
+  .ant-switch-checked {
+    background: var(--arcade-gold);
+    border-color: var(--arcade-gold);
+    color: var(--arcade-ink);
+  }
+
+  .ant-radio-checked .ant-radio-inner {
+    border-color: var(--arcade-gold);
+
+    &::after {
+      background: var(--arcade-gold);
+    }
+  }
+}
+
+.ant-dropdown .ant-dropdown-menu-item {
+  color: var(--arcade-text);
+}
+
+.ant-dropdown .ant-dropdown-menu-item:hover {
+  background: var(--arcade-raised);
 }

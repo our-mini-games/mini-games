@@ -40,8 +40,8 @@ class Layout {
   }
 
   init (): void {
-    this.scene.background = new THREE.Color(0xcccccc)
-    this.scene.fog = new THREE.FogExp2(0xcccccc, 0.002)
+    this.scene.background = new THREE.Color(0x14251e)
+    this.scene.fog = new THREE.FogExp2(0x14251e, 0.002)
     // 添加网格
     // this.scene.add(new THREE.GridHelper(window.innerWidth, window.innerHeight))
     // 添加坐标轴
