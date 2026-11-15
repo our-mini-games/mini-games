@@ -70,10 +70,10 @@
 </template>
 
 <script setup lang="ts">
-import { GameMode, colorMapper } from '@/definitions/index'
+import { GameMode, colorMapper } from '@/definitions/index.js'
 import { message } from 'ant-design-vue'
 import { Camp, createServer, createGameInterface, GameContext, GameStatus, switchCamp } from 'chinese-chess-service'
-import { ChessAI, type AIDifficulty } from '@/libs/AI'
+import { ChessAI, type AIDifficulty } from '@/libs/AI.js'
 
 import Drawer from '@/components/Drawer.vue'
 

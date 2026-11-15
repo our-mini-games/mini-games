@@ -6,10 +6,16 @@ on:
     branches:
       - main
     paths:
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
       - 'packages/arkanoid/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+concurrency:
+  group: publish-gh-pages
+  queue: max
 
 jobs:
   # Single deploy job since we're just deploying
@@ -20,15 +26,15 @@ jobs:
         uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '16'
+          node-version: '18'
       - uses: pnpm/action-setup@v2
         with:
-          version: 7.13.4
+          version: 9.5.0
 
       - name: Build and deploy
         run: |
           cd ./packages/arkanoid
-          pnpm install
+          pnpm install --frozen-lockfile
           pnpm run build
           echo "==========Move dist to root=========="
           mkdir -p ../../dist/arkanoid

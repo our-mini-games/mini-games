@@ -1,4 +1,3 @@
-// @ts-expect-error
 import ImgPreload from '@stan_bk/img-preload'
 
 const ipl = Object.assign(new ImgPreload(), {
